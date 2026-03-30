@@ -1,36 +1,86 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# ECHO - Mental Health & Community Support Platform
 
-## Getting Started
+ECHO is a modern, premium mental health platform designed to provide a sanctuary for individuals seeking support, relaxation, and community. Built with Next.js 14, Clerk, and MongoDB, it offers a seamless, secure, and beautiful experience for both users and professional supporters.
 
-First, run the development server:
+## 🌟 Key Features
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+- **Professional Support**: Connect with approved Doctors and certified Volunteers via real-time chat.
+- **AI Companion**: A private, empathetic AI friend available 24/7 for immediate venting and support.
+- **Relaxation Games**: A collection of interactive tools like Breathing Guides and Memory Match to help de-stress.
+- **Mood Tracking**: Log and visualize your emotional journey over time to identify patterns and progress.
+- **Role-Based Access**: Specialized dashboards for Users, Volunteers, Doctors, and Administrators.
+- **Premium Aesthetics**: A custom-built design system with dynamic glassmorphism, smooth animations, and full dark/light mode support.
+
+## 🏗️ Project Structure
+
+```text
+echo/
+├── app/                    # Next.js App Router
+│   ├── (auth)/             # Authentication routes (Clerk)
+│   ├── api/                # Backend API endpoints
+│   │   ├── admin/          # Admin management & user roles
+│   │   ├── chat/           # Real-time chat & message persistence
+│   │   ├── ai-companion/   # OpenAI-powered support logic
+│   │   └── mood-tracker/   # Mood logging & analytics
+│   ├── dashboard/          # User & Admin dashboards
+│   ├── volunteers/         # Support directory & doctor listings
+│   ├── chat/               # Real-time chat interface
+│   ├── games/              # Relaxation games & breathing guides
+│   ├── mood-tracker/       # Emotional intelligence tools
+│   ├── apply/              # Volunteer/Doctor application forms
+│   └── globals.css         # Global styles & design system tokens
+├── components/             # Reusable UI components
+│   ├── ui/                 # Atomic design components (cards, buttons)
+│   ├── ThemeToggle.tsx     # Dark/Light mode switch
+│   └── Navbar.tsx          # Dynamic navigation
+├── lib/                    # Core utilities & database logic
+│   ├── mongodb.ts          # Mongoose connection & caching
+│   └── models/             # MongoDB Schemas (User, Chat, MoodLog, Task)
+├── public/                 # Static assets & icons
+├── .env                    # Environment configuration
+└── next.config.js          # Next.js configuration
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🛠️ Technology Stack
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- **Framework**: [Next.js 14+](https://nextjs.org/) (App Router)
+- **Authentication**: [Clerk](https://clerk.com/) (Role-based metadata)
+- **Database**: [MongoDB](https://www.mongodb.com/) with [Mongoose](https://mongoosejs.com/)
+- **Styling**: Vanilla CSS with CSS Variables (Echo Design System)
+- **AI**: [OpenAI API](https://openai.com/) (GPT-4o)
+- **State Management**: React Hooks & Context API
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 🚀 Getting Started
 
-## Learn More
+1.  **Clone the repository**:
+    ```bash
+    git clone https://github.com/your-repo/echo.git
+    cd echo
+    ```
 
-To learn more about Next.js, take a look at the following resources:
+2.  **Install dependencies**:
+    ```bash
+    npm install
+    ```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+3.  **Set up Environment Variables**:
+    Create a `.env` file in the root directory and add the following:
+    ```env
+    NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=your_key
+    CLERK_SECRET_KEY=your_secret
+    MONODB_URL=your_mongodb_uri
+    OPENAI_API_KEY=your_openai_key
+    ADMIN_TOKEN=your_admin_secret
+    ```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+4.  **Run in development mode**:
+    ```bash
+    npm run dev
+    ```
 
-## Deploy on Vercel
+5.  **Open the app**:
+    Navigate to `http://localhost:3000` to see ECHO in action.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 🛡️ License
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+This project is licensed under the MIT License - see the LICENSE file for details.
