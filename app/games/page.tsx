@@ -8,16 +8,11 @@ import BreathingGame from '@/components/games/BreathingGame';
 import MemoryGame from '@/components/games/MemoryGame';
 import ZenGarden from '@/components/games/ZenGarden';
 import BubblePop from '@/components/games/BubblePop';
-import RainSoundscape from '@/components/games/RainSoundscape';
 import StarGazer from '@/components/games/StarGazer';
 import WordFlow from '@/components/games/WordFlow';
 import GratitudeBloom from '@/components/games/GratitudeBloom';
-import ForestWalk from '@/components/games/ForestWalk';
-import CloudWatcher from '@/components/games/CloudWatcher';
-import CalmClick from '@/components/games/CalmClick';
-import MantraMeditation from '@/components/games/MantraMeditation';
 
-type GameID = 'breathing' | 'memory' | 'zen-garden' | 'bubble-pop' | 'rain' | 'stargazer' | 'wordflow' | 'gratitude' | 'forest' | 'clouds' | 'calm-click' | 'mantra' | null;
+type GameID = 'breathing' | 'memory' | 'zen-garden' | 'bubble-pop' | 'stargazer' | 'wordflow' | 'gratitude' | null;
 
 interface GameConfig {
   id: GameID;
@@ -33,14 +28,9 @@ const GAMES: GameConfig[] = [
   { id: 'memory', title: 'Memory Match', description: 'Gently sharpen focus through soothing pattern recognition.', icon: '🧩', color: 'rgba(124,58,237,0.5)', delay: '0.1s' },
   { id: 'zen-garden', title: 'Zen Sand Garden', description: 'Rake the virtual sand to create peaceful, flowing patterns.', icon: '⏳', color: 'rgba(245,158,11,0.5)', delay: '0.2s' },
   { id: 'bubble-pop', title: 'Bubble Pop', description: 'A satisfying sensory experience to release immediate tension.', icon: '🫧', color: 'rgba(34,197,94,0.5)', delay: '0.3s' },
-  { id: 'rain', title: 'Rain Soundscape', description: 'Customize your own visual rain environment for grounding.', icon: '🌧️', color: 'rgba(59,130,246,0.5)', delay: '0.4s' },
   { id: 'stargazer', title: 'Star Gazer', description: 'Connect distant stars to form beautiful, ethereal constellations.', icon: '✨', color: 'rgba(124,58,237,0.5)', delay: '0.5s' },
   { id: 'wordflow', title: 'Word Flow', description: 'Acknowledge calming words as they drift gently across your screen.', icon: '📝', color: 'rgba(167,139,250,0.5)', delay: '0.6s' },
   { id: 'gratitude', title: 'Gratitude Bloom', description: 'Plant seeds of gratitude and watch your visual garden grow.', icon: '🌸', color: 'rgba(244,114,182,0.5)', delay: '0.7s' },
-  { id: 'forest', title: 'Forest Walk', description: 'Take a virtual stroll through a digital pine forest for grounding.', icon: '🌲', color: 'rgba(5,150,105,0.5)', delay: '0.8s' },
-  { id: 'clouds', title: 'Cloud Watcher', description: 'Gaze at the virtual sky and watch the clouds drift slowly by.', icon: '☁️', color: 'rgba(125,211,252,0.5)', delay: '0.9s' },
-  { id: 'calm-click', title: 'Calm Click', description: 'Tap anywhere to release digital ripples for sensory grounding.', icon: '🔘', color: 'rgba(167,139,250,0.5)', delay: '1.0s' },
-  { id: 'mantra', title: 'Grounded Meditation', description: 'Cycle through soft mantras with breath-focused affirmations.', icon: '🧘', color: 'rgba(124,58,237,0.5)', delay: '1.1s' },
 ];
 
 export default function GamesPage() {
@@ -55,14 +45,9 @@ export default function GamesPage() {
       case 'memory': return <MemoryGame />;
       case 'zen-garden': return <ZenGarden />;
       case 'bubble-pop': return <BubblePop />;
-      case 'rain': return <RainSoundscape />;
       case 'stargazer': return <StarGazer />;
       case 'wordflow': return <WordFlow />;
       case 'gratitude': return <GratitudeBloom />;
-      case 'forest': return <ForestWalk />;
-      case 'clouds': return <CloudWatcher />;
-      case 'calm-click': return <CalmClick />;
-      case 'mantra': return <MantraMeditation />;
       default: return null;
     }
   };

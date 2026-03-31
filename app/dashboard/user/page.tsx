@@ -107,7 +107,12 @@ export default function UserDashboard() {
               <span>Home</span>
             </button>
           </Link>
-          <div style={{ height: '1px', background: 'var(--echo-border)', margin: '0.5rem 0' }} />
+          <Link href="/doctors" style={{ textDecoration: 'none' }}>
+            <button className="sidebar-link" style={{ border: 'none', background: 'none', textAlign: 'left', width: '100%', marginBottom: '0.5rem' }}>
+              <span>👨‍⚕️</span>
+              <span>Expert Doctors</span>
+            </button>
+          </Link>
           {sidebarItems.map(item => (
             <button
               key={item.id}
@@ -126,7 +131,10 @@ export default function UserDashboard() {
             <button className="sidebar-link" style={{ border: 'none', background: 'none', textAlign: 'left', width: '100%'}}>🤖 AI Companion</button>
           </Link>
           <Link href="/volunteers" style={{ textDecoration: 'none' }}>
-            <button className="sidebar-link" style={{ border: 'none', background: 'none', textAlign: 'left', width: '100%'}}>🙏 Find Help</button>
+            <button className="sidebar-link" style={{ border: 'none', background: 'none', textAlign: 'left', width: '100%'}}>🤝 Peer Support</button>
+          </Link>
+          <Link href="/doctors" style={{ textDecoration: 'none' }}>
+            <button className="sidebar-link" style={{ border: 'none', background: 'none', textAlign: 'left', width: '100%'}}>👨‍⚕️ Professional Doctors</button>
           </Link>
           <Link href="/relaxation" style={{ textDecoration: 'none' }}>
             <button className="sidebar-link" style={{ border: 'none', background: 'none', textAlign: 'left', width: '100%'}}>🧘 Relaxation</button>
@@ -146,21 +154,10 @@ export default function UserDashboard() {
       {/* Main Content */}
       <main style={{ flex: 1, padding: 'clamp(1rem, 5vw, 2rem)', overflowY: 'auto', minWidth: 0 }}>
         {/* Mobile Header */}
-        {/* Mobile Header */}
         <div className="show-mobile" style={{ display: 'grid', gridTemplateColumns: '48px 1fr 48px', alignItems: 'center', marginBottom: '1.5rem', minHeight: '40px' }}>
-          <button 
-            onClick={() => setIsSidebarOpen(true)}
-            style={{ 
-              background: 'var(--echo-surface)', 
-              border: '1px solid var(--echo-border)', 
-              borderRadius: '8px', 
-              padding: '0.5rem', 
-              color: 'var(--echo-text)', 
-              display: 'flex', 
-              alignItems: 'center',
-              width: '40px'
-            }}
-          >☰</button>
+          <Link href="/" style={{ textDecoration: 'none', color: 'var(--echo-text)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <span style={{ fontSize: '1.25rem' }}>🏠</span>
+          </Link>
           <h2 style={{ fontSize: '1.125rem', fontWeight: '700', textAlign: 'center' }}>Dashboard</h2>
           <div style={{ width: '40px' }} /> {/* Spacer to center the title */}
         </div>
@@ -213,12 +210,13 @@ export default function UserDashboard() {
               )}
 
               {/* Quick Actions */}
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: '1rem' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1rem' }}>
                 {[
-                  { href: '/companion', label: 'Chat with AI', icon: '🤖' },
-                  { href: '/volunteers', label: 'Find Support', icon: '🙏' },
-                  { href: '/mood-tracker', label: 'Check Mood', icon: '📝' },
-                  { href: '/relaxation', label: 'Relax Now', icon: '🧘' },
+                  { href: '/volunteers', label: 'Talk to Peers', icon: '🤝' },
+                  { href: '/doctors', label: 'Expert Help', icon: '👨‍⚕️' },
+                  { href: '/companion', label: 'AI Companion', icon: '🤖' },
+                  { href: '/mood-tracker', label: 'Mood Tracker', icon: '📝' },
+                  { href: '/relaxation', label: 'Relax Room', icon: '🧘' },
                   { href: '/games', label: 'Relax Games', icon: '🎮' },
                 ].map(action => (
                   <Link key={action.href} href={action.href} style={{ textDecoration: 'none' }}>

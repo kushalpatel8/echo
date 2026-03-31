@@ -89,9 +89,30 @@ export default function RelaxationPage() {
           </div>
         </div>
       </section>
+      {/* Library CTA */}
+      <section style={{ padding: '5rem 1.5rem', background: 'var(--echo-bg)', position: 'relative', overflow: 'hidden' }}>
+        <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, background: 'radial-gradient(circle at bottom right, rgba(124,58,237,0.1) 0%, transparent 60%)', pointerEvents: 'none' }} />
+        <div style={{ maxWidth: '900px', margin: '0 auto', textAlign: 'center' }} className="animate-fade-in-up">
+          <div style={{ display: 'inline-block', padding: '1rem', background: 'var(--echo-surface-2)', borderRadius: '1.5rem', marginBottom: '1.5rem', fontSize: '3rem', boxShadow: '0 10px 30px rgba(0,0,0,0.2)' }}>
+            📚
+          </div>
+          <h2 className="gradient-text" style={{ fontSize: '2.5rem', fontWeight: '900', marginBottom: '1rem', letterSpacing: '-0.02em' }}>
+            The Curated Library
+          </h2>
+          <p style={{ color: 'var(--echo-text-muted)', fontSize: '1.125rem', marginBottom: '2.5rem', lineHeight: '1.6' }}>
+            We've moved our book collection to a dedicated sanctuary. Explore centuries of wisdom in our new, immersive library environment.
+          </p>
+          <Link href="/relaxation/books" style={{ textDecoration: 'none' }}>
+            <button className="btn-primary" style={{ padding: '1rem 2.5rem', fontSize: '1rem', display: 'flex', alignItems: 'center', gap: '0.75rem', margin: '0 auto' }}>
+              <span>Enter the Library</span>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </button>
+          </Link>
+        </div>
+      </section>
 
-      {/* All Quotes Grid */}
-      <section style={{ padding: '3rem 1.5rem', background: 'rgba(18,18,31,0.5)' }}>
+      {/* All Affirmations Grid */}
+      <section style={{ padding: '4rem 1.5rem', background: 'var(--echo-surface-2)', borderTop: '1px solid var(--echo-border)' }}>
         <div style={{ maxWidth: '1100px', margin: '0 auto' }}>
           <h2 style={{ fontSize: '1.5rem', fontWeight: '700', marginBottom: '2rem', textAlign: 'center' }}>
             🌿 All Affirmations

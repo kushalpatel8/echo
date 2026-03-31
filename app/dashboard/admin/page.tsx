@@ -213,7 +213,7 @@ export default function AdminDashboard() {
               <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                 {users.map((u: any) => (
                   <div key={u._id} className="echo-card animate-fade-in-up">
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: (tab === 'volunteers' || tab === 'doctors') ? '1rem' : '0' }}>
+                    <div className="flex-mobile-col" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '1rem', marginBottom: (tab === 'volunteers' || tab === 'doctors') ? '1rem' : '0.5rem' }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
                         <div style={{ width: '44px', height: '44px', borderRadius: '12px', background: 'linear-gradient(135deg, #7c3aed, #06b6d4)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: '700', color: 'white', flexShrink: 0 }}>
                           {(u.name)?.[0]}
@@ -227,7 +227,7 @@ export default function AdminDashboard() {
                           <div style={{ fontSize: '0.8125rem', color: 'var(--echo-text-muted)' }}>{u.email}</div>
                         </div>
                       </div>
-                      <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', justifyContent: 'flex-end', flexShrink: 0 }}>
+                      <div className="admin-actions-mobile" style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', justifyContent: 'flex-end', flexShrink: 0 }}>
                         {u.isBanned ? (
                           <button className="btn-secondary" style={{ padding: '0.4rem 0.875rem', fontSize: '0.75rem', borderRadius: '8px' }} onClick={() => adminAction(u._id, 'unban')} disabled={loading}>
                             Unban

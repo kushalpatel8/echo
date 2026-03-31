@@ -175,13 +175,22 @@ export default function MoodTrackerPage() {
                 </p>
               </div>
 
-              <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
-                <Link href="/companion" style={{ textDecoration: 'none', flex: 1, minWidth: '140px' }}>
-                  <button className="btn-primary" style={{ width: '100%' }}>Talk to AI 🤖</button>
+              <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', flexDirection: 'column' }}>
+                <Link href="/companion" style={{ textDecoration: 'none' }}>
+                  <button className="btn-primary" style={{ width: '100%', padding: '1rem' }}>Talk to AI Companion 🤖</button>
                 </Link>
-                <Link href="/volunteers" style={{ textDecoration: 'none', flex: 1, minWidth: '140px' }}>
-                  <button className="btn-secondary" style={{ width: '100%' }}>Find Volunteer 🤝</button>
-                </Link>
+                <div style={{ display: 'flex', gap: '0.75rem' }}>
+                  <Link href="/volunteers" style={{ textDecoration: 'none', flex: 1 }}>
+                    <button className="btn-secondary" style={{ width: '100%', padding: '0.875rem' }}>Talk to Peers 🤝</button>
+                  </Link>
+                  {result.mood === 'Critical' && (
+                    <Link href="/doctors" style={{ textDecoration: 'none', flex: 1 }}>
+                      <button className="btn-secondary" style={{ width: '100%', padding: '0.875rem', borderColor: 'var(--echo-accent)', color: 'var(--echo-accent)' }}>
+                        Professional Care 👨‍⚕️
+                      </button>
+                    </Link>
+                  )}
+                </div>
               </div>
               <button onClick={() => { setStep(0); setAnswers({}); setResult(null); }} style={{ marginTop: '1rem', background: 'none', border: 'none', color: 'var(--echo-text-muted)', cursor: 'pointer', fontSize: '0.875rem' }}>
                 Take again

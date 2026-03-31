@@ -5,7 +5,7 @@ import { useUser, SignOutButton } from '@clerk/nextjs';
 import Link from 'next/link';
 import ThemeToggle from '@/components/ThemeToggle';
 
-type Tab = 'overview' | 'patients' | 'profile';
+type Tab = 'overview' | 'patients' | 'requests' | 'profile';
 
 export default function DoctorDashboard() {
   const { user: clerkUser } = useUser();
@@ -13,9 +13,11 @@ export default function DoctorDashboard() {
   const [tab, setTab] = useState<Tab>('overview');
   const [dbUser, setDbUser] = useState<Record<string, unknown> | null>(null);
   const [chats, setChats] = useState<Record<string, unknown>[]>([]);
+  const [requests, setRequests] = useState<Record<string, unknown>[]>([]);
   const [editName, setEditName] = useState('');
   const [saving, setSaving] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [requestActionLoading, setRequestActionLoading] = useState<string | null>(null);
 
   useEffect(() => {
     fetch('/api/users/me').then(r => r.json()).then(d => {
@@ -26,7 +28,49 @@ export default function DoctorDashboard() {
       } else router.push('/role-selection');
     });
     fetch('/api/chat').then(r => r.json()).then(d => setChats(d.chats || []));
+    fetch('/api/connections?type=received').then(r => r.json()).then(d => setRequests(d.requests || []));
   }, [router]);
+
+  const updateRequestStatus = async (requestId: string, status: 'accepted' | 'rejected') => {
+    setRequestActionLoading(requestId);
+    try {
+      const res = await fetch('/api/connections', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ requestId, status }),
+      });
+      if (res.ok) {
+        setRequests(prev => prev.map((r: any) => r._id === requestId ? { ...r, status } : r));
+      } else {
+        alert('Failed to update request');
+      }
+    } catch (err) {
+      alert('Network error');
+    } finally {
+      setRequestActionLoading(null);
+    }
+  };
+
+  const removeConnection = async (requestId: string) => {
+    if (!confirm('Are you sure you want to revoke this patient\'s access to your WhatsApp contact?')) return;
+    setRequestActionLoading(requestId);
+    try {
+      const res = await fetch('/api/connections', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ requestId }),
+      });
+      if (res.ok) {
+        setRequests(prev => prev.filter((r: any) => r._id !== requestId));
+      } else {
+        alert('Failed to revoke connection');
+      }
+    } catch (err) {
+      alert('Network error');
+    } finally {
+      setRequestActionLoading(null);
+    }
+  };
 
   const saveProfile = async () => {
     setSaving(true);
@@ -100,6 +144,7 @@ export default function DoctorDashboard() {
           {[
             { id: 'overview', icon: '📊', label: 'Overview' },
             { id: 'patients', icon: '👥', label: 'Patient Chats' },
+            { id: 'requests', icon: '📨', label: 'Incoming Requests' },
             { id: 'profile', icon: '👤', label: 'Profile' },
           ].map(item => (
             <button 
@@ -148,7 +193,7 @@ export default function DoctorDashboard() {
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem', marginBottom: '2rem' }}>
               {[
                 { label: 'Active Patients', value: chats.filter((c: Record<string, unknown>) => c.isActive).length, icon: '👥', color: '#67e8f9' },
-                { label: 'Total Chats', value: chats.length, icon: '💬', color: '#a78bfa' },
+                { label: 'Pending Requests', value: requests.filter((r: any) => r.status === 'pending').length, icon: '📩', color: '#fbbf24' },
                 { label: 'Status', value: appStatus as string || 'Pending', icon: '🔄', color: appStatus === 'approved' ? '#22c55e' : '#f59e0b' },
               ].map(stat => (
                 <div key={stat.label} className="echo-card" style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
@@ -164,7 +209,7 @@ export default function DoctorDashboard() {
               <div className="echo-card" style={{ border: '1px solid var(--echo-border)', background: 'var(--echo-primary-low)', maxWidth: '400px' }}>
                 <div style={{ fontWeight: '700', marginBottom: '0.5rem' }}>📱 Your WhatsApp Contact</div>
                 <p style={{ color: 'var(--echo-text-muted)', fontSize: '0.875rem', marginBottom: '0.75rem' }}>
-                  Patients with Pro subscription can reach you at:
+                  Reach out to patients via your verified contact:
                 </p>
                 <a href={`https://wa.me/${doctorProfile.whatsappNumber}`} target="_blank" rel="noreferrer" style={{ textDecoration: 'none' }}>
                   <button className="btn-primary" style={{ width: '100%' }}>
@@ -234,6 +279,83 @@ export default function DoctorDashboard() {
                     </div>
                   );
                 })}
+              </div>
+            )}
+          </div>
+        )}
+
+        {tab === 'requests' && (
+          <div className="animate-fade-in-up">
+            <h1 className="section-heading">📨 Incoming WhatsApp Requests</h1>
+            <p style={{ color: 'var(--echo-text-muted)', marginBottom: '2rem', fontSize: '0.9375rem' }}>
+              Accept requests to reveal your WhatsApp number to patients for further consultation.
+            </p>
+            
+            {requests.filter((r: any) => r.status === 'pending').length === 0 ? (
+              <div className="echo-card" style={{ textAlign: 'center', padding: '3rem' }}>
+                <p style={{ color: 'var(--echo-text-muted)' }}>No new connection requests.</p>
+              </div>
+            ) : (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                {requests.filter((r: any) => r.status === 'pending').map((request: any) => (
+                  <div key={request._id} className="echo-card" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem' }}>
+                      <div style={{ width: '48px', height: '48px', borderRadius: '50%', background: 'var(--echo-border)', overflow: 'hidden' }}>
+                        {request.userImage && <img src={request.userImage} alt={request.userName} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />}
+                      </div>
+                      <div>
+                        <div style={{ fontWeight: '700', fontSize: '1rem' }}>{request.userName}</div>
+                        <div style={{ fontSize: '0.75rem', color: 'var(--echo-text-muted)' }}>Requested: {new Date(request.createdAt).toLocaleDateString()}</div>
+                      </div>
+                    </div>
+                    <div style={{ display: 'flex', gap: '0.75rem' }}>
+                      <button 
+                        className="btn-primary" 
+                        style={{ background: '#22c55e', borderColor: '#22c55e', padding: '0.5rem 1.25rem', fontSize: '0.875rem' }}
+                        onClick={() => updateRequestStatus(request._id, 'accepted')}
+                        disabled={requestActionLoading === request._id}
+                      >
+                        {requestActionLoading === request._id ? '...' : 'Accept'}
+                      </button>
+                      <button 
+                        className="btn-danger" 
+                        style={{ padding: '0.5rem 1.25rem', fontSize: '0.875rem' }}
+                        onClick={() => updateRequestStatus(request._id, 'rejected')}
+                        disabled={requestActionLoading === request._id}
+                      >
+                        Reject
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* History */}
+            {requests.filter((r: any) => r.status !== 'pending').length > 0 && (
+              <div style={{ marginTop: '3rem' }}>
+                <h3 style={{ fontSize: '0.875rem', fontWeight: '700', color: 'var(--echo-text-muted)', textTransform: 'uppercase', marginBottom: '1rem' }}>Recent History</h3>
+                <div style={{ opacity: 0.7 }}>
+                  {requests.filter((r: any) => r.status !== 'pending').slice(0, 5).map((request: any) => (
+                    <div key={request._id} style={{ display: 'flex', justifyContent: 'space-between', padding: '0.75rem 0', borderBottom: '1px solid var(--echo-border)' }}>
+                      <span style={{ fontSize: '0.875rem' }}>{request.userName}</span>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                        <span className={`badge badge-${request.status === 'accepted' ? 'cyan' : 'red'}`} style={{ fontSize: '0.75rem' }}>
+                          {request.status}
+                        </span>
+                        {request.status === 'accepted' && (
+                          <button 
+                            onClick={() => removeConnection(request._id)}
+                            disabled={requestActionLoading === request._id}
+                            style={{ background: 'none', border: 'none', color: '#ef4444', fontSize: '0.75rem', cursor: 'pointer', padding: '0.25rem', textDecoration: 'underline' }}
+                          >
+                            {requestActionLoading === request._id ? '...' : 'Revoke'}
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
             )}
           </div>

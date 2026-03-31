@@ -2,16 +2,16 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { MessageCircle, Heart, Quote, Bot, Home, Gamepad2 } from 'lucide-react';
+import { MessageCircle, Heart, Quote, Bot, Stethoscope, Gamepad2 } from 'lucide-react';
 
 const ACTIONS = [
   {
-    href: '/',
-    label: 'Home',
-    icon: Home,
-    color: '#ffffff', // White
-    bgGlow: 'rgba(255, 255, 255, 0.1)',
-    iconBg: 'rgba(255, 255, 255, 0.05)'
+    href: '/doctors',
+    label: 'Expert Doctors',
+    icon: Stethoscope,
+    color: '#10b981', // Emerald/Green for Doctors
+    bgGlow: 'rgba(16, 185, 129, 0.15)',
+    iconBg: 'rgba(16, 185, 129, 0.1)'
   },
   {
     href: '/volunteers',

@@ -24,19 +24,16 @@ export default function VolunteersListPage() {
   const { user, isLoaded: userLoaded } = useUser();
   const [helpers, setHelpers] = useState<Helper[]>([]);
   const [loading, setLoading] = useState(true);
-  const [type, setType] = useState<'volunteer' | 'doctor'>('volunteer');
-
-
 
   useEffect(() => {
     setLoading(true);
-    fetch(`/api/volunteers?type=${type}`)
+    fetch(`/api/volunteers?type=volunteer`)
       .then(r => r.json())
       .then(data => {
         setHelpers(data.helpers || []);
       })
       .finally(() => setLoading(false));
-  }, [type]);
+  }, []);
 
   const startChat = async (targetUserId: string) => {
     try {
@@ -64,41 +61,28 @@ export default function VolunteersListPage() {
       <header style={{ padding: '1rem 1.5rem', borderBottom: '1px solid var(--echo-border)', background: 'var(--echo-surface)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
           <Link href="/dashboard" style={{ textDecoration: 'none', color: 'var(--echo-text-muted)', fontSize: '0.875rem' }}>← Back</Link>
-          <h1 style={{ fontSize: '1.25rem', fontWeight: '800' }}>Get Support</h1>
+          <h1 style={{ fontSize: '1.25rem', fontWeight: '800', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <span>🤝</span> Peer Support
+          </h1>
         </div>
 
       </header>
 
       <div className="page-container">
-        {/* Toggle */}
-        <div style={{ display: 'inline-flex', padding: '0.25rem', background: 'var(--echo-surface)', borderRadius: '0.75rem', marginBottom: '2rem', border: '1px solid var(--echo-border)' }}>
-          <button
-            onClick={() => setType('volunteer')}
-            style={{
-              padding: '0.5rem 1.5rem', borderRadius: '0.5rem', color: type === 'volunteer' ? 'white' : 'var(--echo-text-muted)',
-              background: type === 'volunteer' ? 'var(--echo-primary)' : 'transparent',
-              border: 'none', fontWeight: '600', cursor: 'pointer', transition: 'all 0.2s'
-            }}
-          >🤝 Volunteers</button>
-          <button
-            onClick={() => setType('doctor')}
-            style={{
-              padding: '0.5rem 1.5rem', borderRadius: '0.5rem', color: type === 'doctor' ? 'white' : 'var(--echo-text-muted)',
-              background: type === 'doctor' ? 'var(--echo-primary)' : 'transparent',
-              border: 'none', fontWeight: '600', cursor: 'pointer', transition: 'all 0.2s'
-            }}
-          >👨‍⚕️ Doctors</button>
+        <div style={{ marginBottom: '2.5rem' }}>
+          <h2 className="gradient-text" style={{ fontSize: '2rem', fontWeight: '900', marginBottom: '0.75rem' }}>Compassionate Peer Support</h2>
+          <p style={{ color: 'var(--echo-text-muted)', maxWidth: '600px' }}>
+            Talk to trained volunteers who are here to listen, support, and help you navigate your wellness journey with empathy and care.
+          </p>
         </div>
 
-
-
         {loading ? (
-          <div style={{ textAlign: 'center', padding: '4rem' }}><p style={{ color: 'var(--echo-text-muted)' }}>Searching for {type}s...</p></div>
+          <div style={{ textAlign: 'center', padding: '4rem' }}><p style={{ color: 'var(--echo-text-muted)' }}>Connecting you with volunteers...</p></div>
         ) : (
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '1.5rem' }}>
             {helpers.length === 0 ? (
               <div style={{ gridColumn: '1/-1', textAlign: 'center', padding: '4rem' }} className="echo-card">
-                <p style={{ color: 'var(--echo-text-muted)' }}>No {type}s currently available. Please try again later.</p>
+                <p style={{ color: 'var(--echo-text-muted)' }}>No volunteers currently available. Please check back shortly.</p>
               </div>
             ) : (
               helpers.map(helper => (
@@ -110,7 +94,7 @@ export default function VolunteersListPage() {
                     <div style={{ flex: 1 }}>
                       <div style={{ fontWeight: '700', fontSize: '1.125rem' }}>{helper.name}</div>
                       <div style={{ color: 'var(--echo-text-muted)', fontSize: '0.8125rem' }}>
-                        {helper.role === 'doctor' ? (helper.doctorProfile?.degree || 'Medical Professional') : 'Certified Volunteer'}
+                        Certified Support Volunteer
                       </div>
                     </div>
                     <div style={{ textAlign: 'right' }}>

@@ -91,23 +91,27 @@ export default function Navbar() {
         </div>
 
         {/* Mobile Actions */}
-        <div className="show-mobile mobile-nav-actions" style={{ alignItems: 'center', gap: '0.75rem' }}>
+        <div className="show-mobile mobile-nav-actions" style={{ alignItems: 'center', gap: '0.75rem', display: 'flex' }}>
           <ThemeToggle />
-          <button 
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-            style={{ 
-              background: 'none', 
-              border: 'none', 
-              color: 'var(--echo-text)',
-              fontSize: '1.5rem',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              padding: '0.25rem'
-            }}
-          >
-            {isMenuOpen ? '✕' : '☰'}
-          </button>
+          {isLoaded && user ? (
+            <UserButton appearance={{ elements: { userButtonAvatarBox: 'w-9 h-9 border-2 border-primary/20 hover:border-primary/50 transition-all' } }} />
+          ) : (
+            <button 
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              style={{ 
+                background: 'none', 
+                border: 'none', 
+                color: 'var(--echo-text)',
+                fontSize: '1.5rem',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                padding: '0.25rem'
+              }}
+            >
+              {isMenuOpen ? '✕' : '☰'}
+            </button>
+          )}
         </div>
       </div>
 
