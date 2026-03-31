@@ -74,6 +74,6 @@ echo/
     npm run dev
     ```
 
-## 🛡️ Privacy & Professionalism
+## 🛡️ Privacy & Professionalism:
 
-ECHO prioritizes medical privacy. Professional WhatsApp connections follow a **Request-Accept-Connect** handshake, ensuring and maintaining a professional boundary between patients and practitioners at all times.
+ECHO prioritizes medical privacy. Professional WhatsApp connections follow a **Request-Accept-Connect** handshake, ensuring and maintaining a professional boundary between patients and practitioners at all times. This is the best of human health.
