@@ -228,7 +228,7 @@ export default function HomePage() {
         background: 'var(--echo-nav-bg)',
         backdropFilter: 'blur(10px)'
       }}>
-        <p>© 2025 ECHO Mental Health Platform. Built with compassion. 💜</p>
+        <p>© 2026 ECHO Mental Health Platform. Built with compassion. 💜</p>
       </footer>
     </main>
   );
