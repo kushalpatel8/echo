@@ -1,7 +1,6 @@
 import mongoose, { Schema, Document, models, model } from 'mongoose';
 
 export type UserRole = 'user' | 'volunteer' | 'doctor' | 'admin';
-export type SubscriptionPlan = 'free' | 'subscription' | 'pro';
 export type ApplicationStatus = 'pending' | 'approved' | 'rejected';
 
 export interface IUser extends Document {
@@ -10,7 +9,6 @@ export interface IUser extends Document {
   name: string;
   imageUrl: string;
   role: UserRole;
-  subscription: SubscriptionPlan;
   isBanned: boolean;
   applicationStatus?: ApplicationStatus;
   volunteerProfile?: {
@@ -38,7 +36,6 @@ const UserSchema = new Schema<IUser>({
   name: { type: String, required: true },
   imageUrl: { type: String, default: '' },
   role: { type: String, enum: ['user', 'volunteer', 'doctor', 'admin'], default: 'user' },
-  subscription: { type: String, enum: ['free', 'subscription', 'pro'], default: 'free' },
   isBanned: { type: Boolean, default: false },
   applicationStatus: { type: String, enum: ['pending', 'approved', 'rejected'] },
   volunteerProfile: {

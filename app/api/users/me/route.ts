@@ -31,7 +31,6 @@ export async function POST(req: NextRequest) {
     name: `${clerkUser.firstName || ''} ${clerkUser.lastName || ''}`.trim(),
     imageUrl: clerkUser.imageUrl || '',
     role,
-    subscription: 'community',
   });
 
   return NextResponse.json({ user: newUser });

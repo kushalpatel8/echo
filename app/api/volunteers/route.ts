@@ -23,5 +23,5 @@ export async function GET(req: NextRequest) {
     .select('clerkId name imageUrl volunteerProfile doctorProfile role')
     .sort({ 'volunteerProfile.rating': -1 });
 
-  return NextResponse.json({ helpers, subscription: currentUser?.subscription });
+  return NextResponse.json({ helpers });
 }
