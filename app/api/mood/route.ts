@@ -41,3 +41,24 @@ export async function GET() {
   const logs = await MoodLog.find({ userId }).sort({ createdAt: -1 }).limit(10);
   return NextResponse.json({ logs });
 }
+
+export async function DELETE(req: NextRequest) {
+  const { userId } = await auth();
+  if (!userId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+
+  const { logId, deleteAll } = await req.json();
+  await connectDB();
+
+  if (deleteAll) {
+    await MoodLog.deleteMany({ userId });
+    return NextResponse.json({ message: 'All logs deleted' });
+  }
+
+  if (logId) {
+    const log = await MoodLog.findOneAndDelete({ _id: logId, userId });
+    if (!log) return NextResponse.json({ error: 'Log not found' }, { status: 404 });
+    return NextResponse.json({ message: 'Log deleted' });
+  }
+
+  return NextResponse.json({ error: 'Missing parameters' }, { status: 400 });
+}

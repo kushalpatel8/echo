@@ -33,15 +33,15 @@ export default function HomePage() {
       }}>
         {/* Background orbs - Responsive sizing */}
         <div style={{
-          position: 'absolute', top: '-100px', left: '50%', transform: 'translateX(-50%)',
-          width: 'min(600px, 120vw)', height: 'min(600px, 120vw)', borderRadius: '50%',
-          background: 'radial-gradient(circle, rgba(124,58,237,0.15) 0%, transparent 70%)',
+          position: 'absolute', top: '-150px', left: '50%', transform: 'translateX(-50%)',
+          width: 'min(800px, 140vw)', height: 'min(800px, 140vw)', borderRadius: '50%',
+          background: 'radial-gradient(circle, rgba(0,255,153,0.08) 0%, transparent 70%)',
           pointerEvents: 'none',
         }} />
         <div className="hide-mobile" style={{
-          position: 'absolute', top: '200px', left: '-100px',
-          width: '400px', height: '400px', borderRadius: '50%',
-          background: 'radial-gradient(circle, rgba(6,182,212,0.1) 0%, transparent 70%)',
+          position: 'absolute', top: '100px', left: '-50px',
+          width: '500px', height: '500px', borderRadius: '50%',
+          background: 'radial-gradient(circle, rgba(0,255,153,0.05) 0%, transparent 70%)',
           pointerEvents: 'none',
         }} />
         <div className="hide-mobile" style={{
@@ -196,8 +196,8 @@ export default function HomePage() {
         {/* Subtle glow effect */}
         <div style={{
           position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)',
-          width: '500px', height: '500px', borderRadius: '50%',
-          background: 'radial-gradient(circle, rgba(124,58,237,0.05) 0%, transparent 70%)',
+          width: '600px', height: '600px', borderRadius: '50%',
+          background: 'radial-gradient(circle, rgba(0,255,153,0.04) 0%, transparent 70%)',
           pointerEvents: 'none',
         }} />
 

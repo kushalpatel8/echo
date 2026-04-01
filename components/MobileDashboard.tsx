@@ -1,7 +1,8 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { useTheme } from 'next-themes';
 import { MessageCircle, Heart, Quote, Bot, Stethoscope, Gamepad2 } from 'lucide-react';
 
 const ACTIONS = [
@@ -9,17 +10,17 @@ const ACTIONS = [
     href: '/doctors',
     label: 'Expert Doctors',
     icon: Stethoscope,
-    color: '#10b981', // Emerald/Green for Doctors
-    bgGlow: 'rgba(16, 185, 129, 0.15)',
-    iconBg: 'rgba(16, 185, 129, 0.1)'
+    color: '#00ff99', // Vibrant Emerald
+    bgGlow: 'rgba(0, 255, 153, 0.15)',
+    iconBg: 'rgba(0, 255, 153, 0.1)'
   },
   {
     href: '/volunteers',
     label: 'Chat with Volunteer',
     icon: MessageCircle,
-    color: '#60a5fa', // Blue
-    bgGlow: 'rgba(59, 130, 246, 0.15)',
-    iconBg: 'rgba(59, 130, 246, 0.1)'
+    color: '#4ade80', // Light Green
+    bgGlow: 'rgba(74, 222, 128, 0.15)',
+    iconBg: 'rgba(74, 222, 128, 0.1)'
   },
   {
     href: '/mood-tracker',
@@ -56,6 +57,19 @@ const ACTIONS = [
 ];
 
 export default function MobileDashboard() {
+  const { resolvedTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    return <div style={{ minHeight: '80vh' }} />;
+  }
+
+  const isDark = resolvedTheme === 'dark';
+
   return (
     <div style={{
       minHeight: '80vh',
@@ -63,15 +77,19 @@ export default function MobileDashboard() {
       flexDirection: 'column',
       justifyContent: 'center',
       padding: '1.5rem',
-      background: 'radial-gradient(circle at top, #1e293b, #0f172a)',
+      background: isDark 
+        ? 'radial-gradient(circle at top, #0a1a12, #040d08)' 
+        : 'radial-gradient(circle at top, #f0fdf4, #ffffff)',
       borderRadius: '2rem',
-      gap: '2.5rem'
+      gap: '2.5rem',
+      border: isDark ? 'none' : '1px solid #e2e8f0',
+      boxShadow: isDark ? 'none' : '0 10px 30px rgba(0, 0, 0, 0.05)'
     }}>
       <h1 style={{
         fontSize: '1.75rem',
         fontWeight: '800',
         textAlign: 'center',
-        color: '#ffffff',
+        color: isDark ? '#ffffff' : '#064e3b',
         marginBottom: '0.5rem',
         letterSpacing: '-0.025em'
       }}>
@@ -99,11 +117,12 @@ export default function MobileDashboard() {
                 alignItems: 'center',
                 justifyContent: 'center',
                 height: '100%',
-                background: 'rgba(255, 255, 255, 0.05)',
-                border: '1px solid rgba(255, 255, 255, 0.1)',
+                background: isDark ? 'rgba(255, 255, 255, 0.05)' : 'rgba(255, 255, 255, 0.8)',
+                border: isDark ? '1px solid rgba(255, 255, 255, 0.1)' : '1px solid #e2e8f0',
                 transition: 'all 0.2s ease',
                 position: 'relative',
-                overflow: 'hidden'
+                overflow: 'hidden',
+                boxShadow: isDark ? 'none' : '0 4px 12px rgba(0, 0, 0, 0.03)'
               }}
             >
               {/* Icon Glow */}
@@ -139,7 +158,7 @@ export default function MobileDashboard() {
               </div>
 
               <span style={{
-                color: '#e2e8f0',
+                color: isDark ? '#e2e8f0' : '#1e293b',
                 fontSize: '0.875rem',
                 fontWeight: '600',
                 textAlign: 'center',

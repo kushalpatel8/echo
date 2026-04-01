@@ -20,7 +20,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <ClerkProvider>
+    <ClerkProvider appearance={{
+      variables: {
+        colorPrimary: '#10b981', // Keeping it a bit more readable than #00ff99 for UI buttons
+      }
+    }}>
       <html lang="en" className={`${inter.variable} h-full`} suppressHydrationWarning>
         <body className="min-h-full flex flex-col antialiased">
           <Providers>

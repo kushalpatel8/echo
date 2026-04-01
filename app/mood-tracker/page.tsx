@@ -93,6 +93,11 @@ export default function MoodTrackerPage() {
               <button className="btn-primary" onClick={() => setStep(1)} style={{ width: '100%', padding: '1rem', fontSize: '1rem' }}>
                 Begin Assessment →
               </button>
+              <Link href="/mood-tracker/history" style={{ textDecoration: 'none', display: 'block', marginTop: '1rem' }}>
+                <button className="btn-secondary" style={{ width: '100%', padding: '0.875rem' }}>
+                  View History 🕒
+                </button>
+              </Link>
             </div>
           )}
 

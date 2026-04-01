@@ -7,17 +7,17 @@
   --font-inter: 'Inter', sans-serif;
   
   /* ECHO Color System */
-  --echo-primary: #7c3aed;
-  --echo-primary-light: #a78bfa;
-  --echo-secondary: #06b6d4;
+  --echo-primary: #a78bfa; /* Keep purple for primary logo but allow it to be shifted if needed */
+  --echo-primary-light: #c4b5fd;
+  --echo-secondary: #00ff99; /* Vibrant Emerald from image */
   --echo-accent: #f472b6;
-  --echo-bg: #0a0a14;
-  --echo-surface: #12121f;
-  --echo-surface-2: #1a1a2e;
-  --echo-border: #2a2a40;
+  --echo-bg: #040d08;
+  --echo-surface: #0a1a12;
+  --echo-surface-2: #12221a;
+  --echo-border: #1a2b22;
   --echo-text: #e2e8f0;
   --echo-text-muted: #8892a4;
-  --echo-nav-bg: rgba(10, 10, 20, 0.85);
+  --echo-nav-bg: rgba(4, 13, 8, 0.85);
   
   /* Semantic low-opacity backgrounds */
   --echo-primary-low: rgba(124, 58, 237, 0.12);
@@ -34,11 +34,15 @@
   --echo-surface: #ffffff;
   --echo-surface-2: #f1f5f9;
   --echo-border: #e2e8f0;
-  --echo-text: #0f172a;
-  --echo-text-muted: #64748b;
+  --echo-text: #064e3b; /* Deep Emerald for readability */
+  --echo-text-muted: #10b981; /* Brighter Emerald for muted text */
   --echo-nav-bg: rgba(255, 255, 255, 0.85);
 
-  --echo-primary-low: rgba(124, 58, 237, 0.06);
+  /* Primary Light Mode Theme: Emerald Shift */
+  --echo-primary: #10b981;
+  --echo-primary-light: #34d399;
+  --echo-primary-low: rgba(16, 185, 129, 0.08);
+  
   --echo-danger-low: rgba(239, 68, 68, 0.06);
   --echo-success-low: rgba(34, 197, 94, 0.06);
   --echo-warning-low: rgba(245, 158, 11, 0.06);
@@ -155,12 +159,12 @@ body {
 }
 
 .glow-secondary {
-  box-shadow: 0 0 30px rgba(6, 182, 212, 0.2);
+  box-shadow: 0 0 30px rgba(16, 185, 129, 0.2);
 }
 
 /* Gradient text */
 .gradient-text {
-  background: linear-gradient(135deg, #a78bfa, #06b6d4, #f472b6);
+  background: linear-gradient(135deg, #a78bfa, #10b981, #f472b6);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -169,7 +173,7 @@ body {
 
 /* Animated gradient background */
 .gradient-bg {
-  background: linear-gradient(135deg, rgba(124, 58, 237, 0.08) 0%, rgba(6, 182, 212, 0.05) 50%, rgba(244, 114, 182, 0.05) 100%);
+  background: linear-gradient(135deg, rgba(124, 58, 237, 0.08) 0%, rgba(16, 185, 129, 0.05) 50%, rgba(244, 114, 182, 0.05) 100%);
 }
 
 /* Buttons */
@@ -390,7 +394,7 @@ body {
 }
 
 .badge-purple { background: rgba(124, 58, 237, 0.2); color: var(--echo-primary-light); }
-.badge-cyan { background: rgba(6, 182, 212, 0.2); color: #67e8f9; }
+.badge-cyan { background: rgba(16, 185, 129, 0.2); color: #34d399; }
 .badge-pink { background: rgba(244, 114, 182, 0.2); color: #f9a8d4; }
 .badge-green { background: rgba(34, 197, 94, 0.2); color: #86efac; }
 .badge-red { background: rgba(239, 68, 68, 0.2); color: #fca5a5; }
@@ -453,7 +457,7 @@ body {
 /* Mood colors */
 .mood-radiant { color: #fde047; }
 .mood-calm { color: #86efac; }
-.mood-neutral { color: #93c5fd; }
+.mood-neutral { color: #a7f3d0; }
 .mood-uneasy { color: #fdba74; }
 .mood-distressed { color: #fca5a5; }
 .mood-critical { color: #f87171; }

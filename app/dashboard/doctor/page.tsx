@@ -163,23 +163,35 @@ export default function DoctorDashboard() {
       </aside>
 
       <main style={{ flex: 1, padding: 'clamp(1rem, 5vw, 2rem)', overflowY: 'auto', minWidth: 0 }}>
-        {/* Mobile Header */}
-        <div className="show-mobile" style={{ display: 'grid', gridTemplateColumns: '48px 1fr 48px', alignItems: 'center', marginBottom: '1.5rem', minHeight: '40px' }}>
-          <button 
-            onClick={() => setIsSidebarOpen(true)}
-            style={{ 
-              background: 'var(--echo-surface)', 
-              border: '1px solid var(--echo-border)', 
-              borderRadius: '8px', 
-              padding: '0.5rem', 
-              color: 'var(--echo-text)', 
-              display: 'flex', 
-              alignItems: 'center',
-              width: '40px'
-            }}
-          >☰</button>
-          <h2 style={{ fontSize: '1.125rem', fontWeight: '700', textAlign: 'center' }}>Doctor Dashboard</h2>
-          <div style={{ width: '40px' }} />
+        <div className="show-mobile" style={{ marginBottom: '1.5rem' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '48px 1fr 48px', alignItems: 'center', minHeight: '44px' }}>
+            <Link href="/" style={{ textDecoration: 'none', color: 'var(--echo-text)', display: 'flex', alignItems: 'center', justifyContent: 'flex-start' }}>
+              <span style={{ fontSize: '1.25rem' }}>🏠</span>
+            </Link>
+            <h2 style={{ fontSize: '1.125rem', fontWeight: '800', textAlign: 'center', margin: 0 }}>Doctor Hub</h2>
+            <button 
+              onClick={() => setTab('profile')}
+              style={{ 
+                background: 'none', 
+                border: 'none', 
+                padding: 0, 
+                display: 'flex', 
+                alignItems: 'center', 
+                justifyContent: 'flex-end',
+                cursor: 'pointer'
+              }}
+            >
+              {clerkUser?.imageUrl ? (
+                <img 
+                  src={clerkUser.imageUrl} 
+                  alt="Profile" 
+                  style={{ width: '32px', height: '32px', borderRadius: '50%', border: '2px solid var(--echo-primary)' }} 
+                />
+              ) : (
+                <span style={{ fontSize: '1.25rem' }}>👤</span>
+              )}
+            </button>
+          </div>
         </div>
         {appStatus === 'pending' && (
           <div style={{ padding: '1rem 1.5rem', borderRadius: '0.75rem', background: 'var(--echo-warning-low)', border: '1px solid var(--echo-border)', marginBottom: '1.5rem' }}>
@@ -187,9 +199,56 @@ export default function DoctorDashboard() {
           </div>
         )}
 
+        {/* Mobile Navigation Grid */}
+        <div className="show-mobile animate-fade-in-up" style={{ marginBottom: '2rem' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '1rem' }}>
+            {[
+              { id: 'overview', icon: '📊', label: 'Overview' },
+              { id: 'patients', icon: '👥', label: 'Patient Chats', badge: chats.filter((c: any) => c.isActive).length },
+              { id: 'requests', icon: '📨', label: 'Incoming Requests', badge: requests.filter((r: any) => r.status === 'pending').length },
+              { id: 'profile', icon: '👤', label: 'My Profile' },
+            ].map(item => (
+              <div 
+                key={item.id} 
+                onClick={() => setTab(item.id as Tab)}
+                className="glass-panel"
+                style={{ 
+                  padding: '1.5rem 1rem', 
+                  textAlign: 'center', 
+                  cursor: 'pointer',
+                  border: tab === item.id ? '2px solid var(--echo-primary)' : '1px solid var(--echo-border)',
+                  position: 'relative',
+                  overflow: 'hidden'
+                }}
+              >
+                <div style={{ fontSize: '2rem', marginBottom: '0.75rem' }}>{item.icon}</div>
+                <div style={{ fontWeight: '700', fontSize: '0.8125rem', color: 'var(--echo-text)' }}>{item.label}</div>
+                {item.badge !== undefined && item.badge > 0 && (
+                  <div style={{ 
+                    position: 'absolute', 
+                    top: '0.5rem', 
+                    right: '0.5rem', 
+                    background: '#7c3aed', 
+                    color: 'white', 
+                    borderRadius: '50%', 
+                    width: '20px', 
+                    height: '20px', 
+                    fontSize: '0.625rem', 
+                    fontWeight: '800',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    boxShadow: '0 2px 4px rgba(0,0,0,0.2)'
+                  }}>{item.badge}</div>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+
         {tab === 'overview' && (
           <div className="animate-fade-in-up">
-            <h1 className="section-heading">Doctor Dashboard 👨‍⚕️</h1>
+            <h1 className="section-heading hide-mobile">Doctor Dashboard 👨‍⚕️</h1>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem', marginBottom: '2rem' }}>
               {[
                 { label: 'Active Patients', value: chats.filter((c: Record<string, unknown>) => c.isActive).length, icon: '👥', color: '#67e8f9' },

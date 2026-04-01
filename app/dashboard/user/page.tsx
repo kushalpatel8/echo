@@ -154,12 +154,35 @@ export default function UserDashboard() {
       {/* Main Content */}
       <main style={{ flex: 1, padding: 'clamp(1rem, 5vw, 2rem)', overflowY: 'auto', minWidth: 0 }}>
         {/* Mobile Header */}
-        <div className="show-mobile" style={{ display: 'grid', gridTemplateColumns: '48px 1fr 48px', alignItems: 'center', marginBottom: '1.5rem', minHeight: '40px' }}>
-          <Link href="/" style={{ textDecoration: 'none', color: 'var(--echo-text)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <span style={{ fontSize: '1.25rem' }}>🏠</span>
-          </Link>
-          <h2 style={{ fontSize: '1.125rem', fontWeight: '700', textAlign: 'center' }}>Dashboard</h2>
-          <div style={{ width: '40px' }} /> {/* Spacer to center the title */}
+        <div className="show-mobile" style={{ marginBottom: '1.5rem' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '48px 1fr 48px', alignItems: 'center', minHeight: '44px' }}>
+            <Link href="/" style={{ textDecoration: 'none', color: 'var(--echo-text)', display: 'flex', alignItems: 'center', justifyContent: 'flex-start' }}>
+              <span style={{ fontSize: '1.25rem' }}>🏠</span>
+            </Link>
+            <h2 style={{ fontSize: '1.125rem', fontWeight: '800', textAlign: 'center', margin: 0 }}>Dashboard</h2>
+            <button 
+              onClick={() => setTab('profile')}
+              style={{ 
+                background: 'none', 
+                border: 'none', 
+                padding: 0, 
+                display: 'flex', 
+                alignItems: 'center', 
+                justifyContent: 'flex-end',
+                cursor: 'pointer'
+              }}
+            >
+              {clerkUser?.imageUrl ? (
+                <img 
+                  src={clerkUser.imageUrl} 
+                  alt="Profile" 
+                  style={{ width: '32px', height: '32px', borderRadius: '50%', border: '2px solid var(--echo-primary)' }} 
+                />
+              ) : (
+                <span style={{ fontSize: '1.25rem' }}>👤</span>
+              )}
+            </button>
+          </div>
         </div>
         {tab === 'overview' && (
           <>

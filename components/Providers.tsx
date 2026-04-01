@@ -16,7 +16,7 @@ export function Providers({ children }: { children: ReactNode }) {
   }
 
   return (
-    <ThemeProvider attribute="data-theme" defaultTheme="dark" enableSystem={true}>
+    <ThemeProvider attribute="data-theme" defaultTheme="light" enableSystem={true}>
       {children}
     </ThemeProvider>
   );

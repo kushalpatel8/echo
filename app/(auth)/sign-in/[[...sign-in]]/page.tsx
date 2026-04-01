@@ -34,7 +34,7 @@ export default function SignInPage() {
         <div style={{ textAlign: 'center', marginBottom: '2rem', position: 'relative' }}>
           <div style={{
             width: '56px', height: '56px', borderRadius: '16px',
-            background: 'linear-gradient(135deg, #7c3aed, #06b6d4)',
+            background: 'linear-gradient(135deg, #7c3aed, #10b981)',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             fontSize: '1.5rem', fontWeight: '800', color: 'white',
             margin: '0 auto 1rem',
@@ -50,10 +50,10 @@ export default function SignInPage() {
               colorPrimary: '#7c3aed',
               colorText: isDark ? '#e2e8f0' : '#0f172a',
               colorTextSecondary: isDark ? '#8892a4' : '#64748b',
-              colorBackground: isDark ? '#12121f' : '#ffffff',
-              colorInputBackground: isDark ? '#1a1a2e' : '#f8fafc',
+              colorBackground: isDark ? '#0a0f0a' : '#ffffff',
+              colorInputBackground: isDark ? '#121812' : '#f8fafc',
               colorInputText: isDark ? '#e2e8f0' : '#0f172a',
-              colorBorder: isDark ? '#2a2a40' : '#e2e8f0',
+              colorBorder: isDark ? '#1a221a' : '#e2e8f0',
             },
             elements: {
               rootBox: 'w-full',
@@ -65,15 +65,15 @@ export default function SignInPage() {
               },
               headerTitle: isDark ? 'text-white' : 'text-slate-900',
               headerSubtitle: isDark ? 'text-slate-400' : 'text-slate-500',
-              socialButtonsBlockButton: isDark ? 'bg-[#1a1a2e] border-[#2a2a40] text-white hover:bg-[#252545]' : 'bg-white border-slate-200 text-slate-900 hover:bg-slate-50',
+              socialButtonsBlockButton: isDark ? 'bg-[#121812] border-[#1a221a] text-white hover:bg-[#1a221a]' : 'bg-white border-slate-200 text-slate-900 hover:bg-slate-50',
               socialButtonsBlockButtonText: isDark ? 'text-white' : 'text-slate-900',
               formFieldLabel: isDark ? 'text-slate-400' : 'text-slate-700',
               formButtonPrimary: 'bg-gradient-to-r from-[#7c3aed] to-[#6d28d9] hover:opacity-90 transition-all text-white',
               footerActionLink: 'text-[#7c3aed] hover:text-[#6d28d9]',
               identityPreviewText: isDark ? 'text-white' : 'text-slate-900',
-              formFieldInput: isDark ? 'bg-[#1a1a2e] border-[#2a2a40] text-white focus:border-[#7c3aed]' : 'bg-white border-slate-200 text-slate-900 focus:border-[#7c3aed]',
+              formFieldInput: isDark ? 'bg-[#121812] border-[#1a221a] text-white focus:border-[#7c3aed]' : 'bg-white border-slate-200 text-slate-900 focus:border-[#7c3aed]',
               footer: {
-                background: isDark ? '#0f0f1a' : '#f8fafc',
+                background: isDark ? '#060806' : '#f8fafc',
                 borderTop: '1px solid var(--echo-border)',
               }
             }
