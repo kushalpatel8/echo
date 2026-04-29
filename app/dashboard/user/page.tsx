@@ -68,7 +68,7 @@ export default function UserDashboard() {
   const moodColors: Record<string, string> = { Radiant: '#fde047', Calm: '#86efac', Neutral: '#93c5fd', Uneasy: '#fdba74', Distressed: '#fca5a5', Critical: '#f87171' };
 
   return (
-    <div style={{ display: 'flex', minHeight: '100vh', background: 'var(--echo-bg)' }}>
+    <div style={{ display: 'flex', minHeight: '100vh', background: 'transparent' }}>
       {/* Sidebar Overlay */}
       <div 
         className={`sidebar-overlay ${isSidebarOpen ? 'open' : ''}`} 

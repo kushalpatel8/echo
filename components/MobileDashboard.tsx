@@ -10,49 +10,49 @@ const ACTIONS = [
     href: '/doctors',
     label: 'Expert Doctors',
     icon: Stethoscope,
-    color: '#00ff99', // Vibrant Emerald
-    bgGlow: 'rgba(0, 255, 153, 0.15)',
-    iconBg: 'rgba(0, 255, 153, 0.1)'
+    color: '#5eead4', // Soothing Teal
+    bgGlow: 'rgba(94, 234, 212, 0.15)',
+    iconBg: 'rgba(94, 234, 212, 0.1)'
   },
   {
     href: '/volunteers',
     label: 'Chat with Volunteer',
     icon: MessageCircle,
-    color: '#4ade80', // Light Green
-    bgGlow: 'rgba(74, 222, 128, 0.15)',
-    iconBg: 'rgba(74, 222, 128, 0.1)'
+    color: '#86efac', // Soft Sage Green
+    bgGlow: 'rgba(134, 239, 172, 0.15)',
+    iconBg: 'rgba(134, 239, 172, 0.1)'
   },
   {
     href: '/mood-tracker',
     label: 'Mood Tracker',
     icon: Heart,
-    color: '#f472b6', // Pink
-    bgGlow: 'rgba(244, 114, 182, 0.15)',
-    iconBg: 'rgba(244, 114, 182, 0.1)'
+    color: '#fbcfe8', // Soft Blush Pink
+    bgGlow: 'rgba(251, 207, 232, 0.15)',
+    iconBg: 'rgba(251, 207, 232, 0.1)'
   },
   {
     href: '/relaxation',
     label: 'Relaxation Room',
     icon: Quote,
-    color: '#fbbf24', // Yellow
-    bgGlow: 'rgba(251, 191, 36, 0.15)',
-    iconBg: 'rgba(251, 191, 36, 0.1)'
+    color: '#fde047', // Soft Sunlight Yellow
+    bgGlow: 'rgba(253, 224, 71, 0.15)',
+    iconBg: 'rgba(253, 224, 71, 0.1)'
   },
   {
     href: '/companion',
     label: 'AI Companion',
     icon: Bot,
-    color: '#34d399', // Green
-    bgGlow: 'rgba(52, 211, 153, 0.15)',
-    iconBg: 'rgba(52, 211, 153, 0.1)'
+    color: '#99f6e4', // Soft Mint
+    bgGlow: 'rgba(153, 246, 228, 0.15)',
+    iconBg: 'rgba(153, 246, 228, 0.1)'
   },
   {
     href: '/games',
     label: 'Relax Games',
     icon: Gamepad2,
-    color: '#a78bfa', // Purple
-    bgGlow: 'rgba(167, 139, 250, 0.15)',
-    iconBg: 'rgba(167, 139, 250, 0.1)'
+    color: '#c4b5fd', // Soft Lavender
+    bgGlow: 'rgba(196, 181, 253, 0.15)',
+    iconBg: 'rgba(196, 181, 253, 0.1)'
   }
 ];
 
@@ -78,7 +78,7 @@ export default function MobileDashboard() {
       justifyContent: 'center',
       padding: '1.5rem',
       background: isDark 
-        ? 'radial-gradient(circle at top, #0a1a12, #040d08)' 
+        ? 'radial-gradient(circle at top, #1e293b, #0f172a)' 
         : 'radial-gradient(circle at top, #f0fdf4, #ffffff)',
       borderRadius: '2rem',
       gap: '2.5rem',

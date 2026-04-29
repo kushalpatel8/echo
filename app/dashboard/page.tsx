@@ -29,7 +29,7 @@ export default function DashboardPage() {
   }, [router]);
 
   return (
-    <main style={{ minHeight: '100vh', background: 'var(--echo-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+    <main style={{ minHeight: '100vh', background: 'transparent', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
       <div style={{ textAlign: 'center' }}>
         <div style={{
           width: '64px', height: '64px', borderRadius: '50%',

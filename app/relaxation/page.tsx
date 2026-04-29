@@ -62,7 +62,7 @@ export default function RelaxationPage() {
 
       {/* Hero Quote */}
       <section style={{ padding: '5rem 1.5rem', textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
-        <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, background: 'radial-gradient(ellipse at center, rgba(124,58,237,0.08) 0%, transparent 70%)', pointerEvents: 'none' }} />
+        <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, background: 'radial-gradient(ellipse at center, var(--echo-primary-low) 0%, transparent 70%)', pointerEvents: 'none' }} />
         <div style={{ maxWidth: '700px', margin: '0 auto', position: 'relative' }}>
           <div style={{ fontSize: '3rem', marginBottom: '1.5rem' }}>✨</div>
           <blockquote style={{ opacity: fade ? 1 : 0, transition: 'opacity 0.5s ease', marginBottom: '1.5rem' }}>
@@ -91,7 +91,7 @@ export default function RelaxationPage() {
       </section>
       {/* Library CTA */}
       <section style={{ padding: '5rem 1.5rem', background: 'var(--echo-bg)', position: 'relative', overflow: 'hidden' }}>
-        <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, background: 'radial-gradient(circle at bottom right, rgba(124,58,237,0.1) 0%, transparent 60%)', pointerEvents: 'none' }} />
+        <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, background: 'radial-gradient(circle at bottom right, var(--echo-primary-low) 0%, transparent 60%)', pointerEvents: 'none' }} />
         <div style={{ maxWidth: '900px', margin: '0 auto', textAlign: 'center' }} className="animate-fade-in-up">
           <div style={{ display: 'inline-block', padding: '1rem', background: 'var(--echo-surface-2)', borderRadius: '1.5rem', marginBottom: '1.5rem', fontSize: '3rem', boxShadow: '0 10px 30px rgba(0,0,0,0.2)' }}>
             📚

@@ -22,7 +22,7 @@ export default function RootLayout({
   return (
     <ClerkProvider appearance={{
       variables: {
-        colorPrimary: '#10b981', // Keeping it a bit more readable than #00ff99 for UI buttons
+        colorPrimary: '#8b5cf6', // Soft Violet, matching the calming mental health theme
       }
     }}>
       <html lang="en" className={`${inter.variable} h-full`} suppressHydrationWarning>
