@@ -10,7 +10,7 @@ ECHO is a modern, premium mental health sanctuary designed to provide a safe spa
 - **Zen Relaxation Suite**: 
     - **Library**: Extensive collection of spiritual and literary classics including Osho's Hindi and English audio discourses.
     - **Sensory Games**: Interactive experiences like Forest Walk, Cloud Watcher, and Mantra Meditation designed for immediate de-stressing.
-- **Intelligent Mood Tracking**: AI-powered analysis of your daily check-ins with critical mood alerts that prompt immediate professional care.
+- **Intelligent Mood Tracking**: AI-powered analysis of your daily check-ins with critical mood alerts that prompt immediate professional care. Features a built-in **AI Face Analysis** scanner to detect moods (Happy, Sad, Depressed, Tired) locally using your device camera or photo uploads.
 - **Premium Aesthetics**: A state-of-the-art design system featuring dynamic glassmorphism, animated gradients, and seamless dark/light mode integration.
 
 ## 🏗️ Project Structure
@@ -30,6 +30,7 @@ echo/
 │   ├── games/              # Zen sensory experiences
 │   └── chat/               # Multi-mode real-time communication
 ├── components/             # Reusable UI Architecture
+│   ├── mood/               # FaceMoodDetector & AI Face Analysis
 │   ├── MobileDashboard.tsx # Tailored mobile navigation grid
 │   ├── ThemeToggle.tsx     # System-wide aesthetic control
 │   └── ui/                 # Atomic design tokens (Cards, Buttons, Grids)
@@ -45,6 +46,7 @@ echo/
 - **Database**: [MongoDB](https://www.mongodb.com/) with [Mongoose](https://mongoosejs.com/)
 - **Styling**: Vanilla CSS (Custom Design Tokens)
 - **AI Integration**: [Google Gemini Pro](https://deepmind.google/technologies/gemini/) (Mood Analysis & AI Companion)
+- **Computer Vision**: [@vladmandic/face-api](https://github.com/vladmandic/face-api) (Local AI Facial Expression Detection)
 
 ## 🚀 Getting Started
 
