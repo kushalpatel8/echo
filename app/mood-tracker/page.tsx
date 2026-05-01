@@ -32,11 +32,14 @@ const MOOD_COLORS: Record<string, string> = {
   Radiant: '#fde047', Calm: '#86efac', Neutral: '#93c5fd', Uneasy: '#fdba74', Distressed: '#fca5a5', Critical: '#f87171'
 };
 
+import FaceMoodDetector from '@/components/mood/FaceMoodDetector';
+
 export default function MoodTrackerPage() {
   const [step, setStep] = useState(0); // 0 = intro, 1-20 = questions, 21 = result
   const [answers, setAnswers] = useState<Record<string, number>>({});
   const [result, setResult] = useState<{ mood: string; score: number } | null>(null);
   const [loading, setLoading] = useState(false);
+  const [showFaceDetector, setShowFaceDetector] = useState(false);
 
   const currentQ = MOOD_QUESTIONS[step - 1];
   const progress = ((step) / 20) * 100;
@@ -62,6 +65,12 @@ export default function MoodTrackerPage() {
     } else {
       setStep(step + 1);
     }
+  };
+
+  const handleFaceMoodDetected = (mood: string, score: number) => {
+    setResult({ mood, score });
+    setStep(21);
+    setShowFaceDetector(false);
   };
 
   return (
@@ -90,9 +99,19 @@ export default function MoodTrackerPage() {
                   <span key={f} className="badge badge-purple">{f}</span>
                 ))}
               </div>
-              <button className="btn-primary" onClick={() => setStep(1)} style={{ width: '100%', padding: '1rem', fontSize: '1rem' }}>
-                Begin Assessment →
-              </button>
+              <div style={{ display: 'flex', gap: '1rem', marginBottom: '1rem', flexDirection: 'column' }}>
+                <button className="btn-primary" onClick={() => setStep(1)} style={{ width: '100%', padding: '1rem', fontSize: '1rem' }}>
+                  Begin Assessment →
+                </button>
+                <Link href="/mood-tracker/camera" style={{ textDecoration: 'none' }}>
+                  <button 
+                    className="btn-secondary" 
+                    style={{ width: '100%', padding: '1rem', fontSize: '1rem', borderColor: 'var(--echo-primary)', color: 'var(--echo-primary)' }}
+                  >
+                    Detect via Camera 📷
+                  </button>
+                </Link>
+              </div>
               <Link href="/mood-tracker/history" style={{ textDecoration: 'none', display: 'block', marginTop: '1rem' }}>
                 <button className="btn-secondary" style={{ width: '100%', padding: '0.875rem' }}>
                   View History 🕒
