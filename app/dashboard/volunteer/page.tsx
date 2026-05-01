@@ -26,6 +26,10 @@ export default function VolunteerDashboard() {
           router.push('/dashboard');
           return;
         }
+        if (d.user.applicationStatus !== 'approved') {
+          router.push('/apply/status');
+          return;
+        }
         setDbUser(d.user);
         setEditName(d.user.name);
       } else {

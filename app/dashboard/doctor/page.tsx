@@ -23,6 +23,10 @@ export default function DoctorDashboard() {
     fetch('/api/users/me').then(r => r.json()).then(d => {
       if (d.user) {
         if (d.user.role !== 'doctor') { router.push('/dashboard'); return; }
+        if (d.user.applicationStatus !== 'approved') {
+          router.push('/apply/status');
+          return;
+        }
         setDbUser(d.user);
         setEditName(d.user.name);
       } else router.push('/role-selection');

@@ -238,7 +238,7 @@ export default function CameraMoodTrackerPage() {
   return (
     <div style={{ minHeight: '100vh', background: 'var(--echo-bg)', display: 'flex', flexDirection: 'column', alignItems: 'center', paddingTop: '4rem', paddingBottom: '4rem', paddingLeft: '1.5rem', paddingRight: '1.5rem', fontFamily: 'var(--font-inter)' }}>
       <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
-        <h1 style={{ fontSize: '2.25rem', fontWeight: '800', color: 'white', marginBottom: '0.75rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>
+        <h1 style={{ fontSize: '2.25rem', fontWeight: '800', color: 'var(--echo-text)', marginBottom: '0.75rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>
           Let your face tell the story 🎭
         </h1>
         <p style={{ color: 'var(--echo-text-muted)', fontSize: '1.125rem' }}>
@@ -262,14 +262,14 @@ export default function CameraMoodTrackerPage() {
                    </svg>
                  </div>
                  <h2 style={{ color: '#ef4444', fontSize: '1.25rem', fontWeight: 'bold', marginBottom: '1rem' }}>Camera Error</h2>
-                 <p style={{ color: 'var(--echo-text-muted)', fontSize: '0.875rem', maxWidth: '85%', lineHeight: '1.5' }}>{error}</p>
+                 <p style={{ color: '#94a3b8', fontSize: '0.875rem', maxWidth: '85%', lineHeight: '1.5' }}>{error}</p>
                </>
              ) : (
                <>
                  {!isCameraActive && !imageUrl && (
                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem' }}>
                      <div style={{ width: '2rem', height: '2rem', border: '3px solid', borderColor: '#a855f7 transparent #a855f7 transparent', borderRadius: '50%', animation: 'spin 1s linear infinite' }}></div>
-                     <div style={{ color: 'var(--echo-text-muted)' }}>{status}</div>
+                     <div style={{ color: '#94a3b8' }}>{status}</div>
                    </div>
                  )}
                  {imageUrl ? (
@@ -294,7 +294,7 @@ export default function CameraMoodTrackerPage() {
           </div>
           
           {/* Bottom Status Bar */}
-          <div style={{ background: '#1e293b', padding: '1rem 1.25rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.875rem', color: 'var(--echo-text-muted)', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
+          <div style={{ background: '#1e293b', padding: '1rem 1.25rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.875rem', color: '#94a3b8', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
               <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: error ? '#ef4444' : (imageUrl ? '#8b5cf6' : (isCameraActive ? '#22c55e' : '#eab308')) }}></div>
               {error ? 'Camera unavailable' : (imageUrl ? 'Image analysis' : (isCameraActive ? 'Camera active' : 'Starting camera...'))}
@@ -335,7 +335,7 @@ export default function CameraMoodTrackerPage() {
               </div>
               <div style={{ marginBottom: '1.5rem' }}>
                  <p style={{ color: 'var(--echo-text-muted)', fontSize: '0.875rem', marginBottom: '0.5rem' }}>Status:</p>
-                 <div style={{ fontWeight: '600', fontSize: '1rem', color: 'white' }}>{status}</div>
+                 <div style={{ fontWeight: '600', fontSize: '1rem', color: 'var(--echo-text)' }}>{status}</div>
                  {detectedMood && (
                     <div style={{ marginTop: '1rem', padding: '1.25rem', background: 'rgba(168, 85, 247, 0.1)', borderRadius: '0.75rem', border: '1px solid rgba(168, 85, 247, 0.2)', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                        <div style={{ fontSize: '0.875rem', color: 'var(--echo-text-muted)', marginBottom: '0.5rem' }}>Detected Mood</div>
@@ -359,7 +359,7 @@ export default function CameraMoodTrackerPage() {
                 <button 
                   onClick={handleCapturePhoto}
                   disabled={!isCameraActive || !!imageUrl}
-                  style={{ flex: 1, background: 'var(--echo-surface-2)', color: 'white', padding: '0.75rem', borderRadius: '0.5rem', border: '1px solid var(--echo-border)', cursor: (!isCameraActive || !!imageUrl) ? 'not-allowed' : 'pointer', fontSize: '0.875rem', transition: 'all 0.2s', opacity: (!isCameraActive || !!imageUrl) ? 0.5 : 1 }}
+                  style={{ flex: 1, background: 'var(--echo-surface-2)', color: 'var(--echo-text)', padding: '0.75rem', borderRadius: '0.5rem', border: '1px solid var(--echo-border)', cursor: (!isCameraActive || !!imageUrl) ? 'not-allowed' : 'pointer', fontSize: '0.875rem', transition: 'all 0.2s', opacity: (!isCameraActive || !!imageUrl) ? 0.5 : 1 }}
                 >
                   📸 Capture
                 </button>
@@ -372,7 +372,7 @@ export default function CameraMoodTrackerPage() {
                 />
                 <button 
                   onClick={() => fileInputRef.current?.click()}
-                  style={{ flex: 1, background: 'var(--echo-surface-2)', color: 'white', padding: '0.75rem', borderRadius: '0.5rem', border: '1px solid var(--echo-border)', cursor: 'pointer', fontSize: '0.875rem', transition: 'all 0.2s' }}
+                  style={{ flex: 1, background: 'var(--echo-surface-2)', color: 'var(--echo-text)', padding: '0.75rem', borderRadius: '0.5rem', border: '1px solid var(--echo-border)', cursor: 'pointer', fontSize: '0.875rem', transition: 'all 0.2s' }}
                 >
                   📁 Upload
                 </button>
@@ -396,7 +396,7 @@ export default function CameraMoodTrackerPage() {
           {/* Privacy Badge */}
           <div style={{ background: 'var(--echo-surface-2)', borderRadius: '1rem', padding: '1.25rem', textAlign: 'center', fontSize: '0.875rem', color: 'var(--echo-text-muted)', border: '1px solid var(--echo-border)', marginTop: '0.5rem' }}>
             <div style={{ marginBottom: '0.25rem' }}>
-              <span style={{ color: '#eab308', marginRight: '0.25rem' }}>🔒</span> <strong style={{ color: '#f8fafc' }}>100% private.</strong> All AI processing runs locally in your browser.
+              <span style={{ color: '#eab308', marginRight: '0.25rem' }}>🔒</span> <strong style={{ color: 'var(--echo-text)' }}>100% private.</strong> All AI processing runs locally in your browser.
             </div>
             No images or video are ever uploaded or stored.
           </div>

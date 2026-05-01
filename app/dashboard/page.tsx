@@ -16,10 +16,16 @@ export default function DashboardPage() {
           setUser(data.user);
           // Redirect to role-specific dashboard
           const role = data.user.role;
+          const status = data.user.applicationStatus;
+          
           if (role === 'admin') router.replace('/dashboard/admin');
+          else if (role === 'user') router.replace('/dashboard/user');
+          else if ((role === 'volunteer' || role === 'doctor') && status !== 'approved') {
+            router.replace('/apply/status');
+          }
           else if (role === 'volunteer') router.replace('/dashboard/volunteer');
           else if (role === 'doctor') router.replace('/dashboard/doctor');
-          else router.replace('/dashboard/user');
+          else router.replace('/role-selection');
         } else {
           router.replace('/role-selection');
         }

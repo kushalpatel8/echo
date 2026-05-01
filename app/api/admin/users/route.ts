@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { auth } from '@clerk/nextjs/server';
+import { auth, clerkClient } from '@clerk/nextjs/server';
 import connectDB from '@/lib/mongodb';
 import User from '@/lib/models/User';
 
@@ -19,5 +19,23 @@ export async function GET(req: NextRequest) {
   if (role) filter.role = role;
 
   const users = await User.find(filter).select('-__v').sort({ createdAt: -1 });
-  return NextResponse.json({ users });
+  
+  const client = await clerkClient();
+  const validUsers = [];
+
+  for (const u of users) {
+    try {
+      const clerkUser = await client.users.getUser(u.clerkId);
+      if (clerkUser) {
+        validUsers.push(u);
+      }
+    } catch (error: any) {
+      if (error.status === 404 || error.clerkError) {
+        console.log(`User ${u.clerkId} not found in Clerk, deleting from DB.`);
+        await User.deleteOne({ clerkId: u.clerkId });
+      }
+    }
+  }
+
+  return NextResponse.json({ users: validUsers });
 }
