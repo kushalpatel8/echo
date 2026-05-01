@@ -181,7 +181,7 @@ export default function CharityPage() {
         background: 'var(--echo-nav-bg)',
         backdropFilter: 'blur(10px)'
       }}>
-        <p>© 2025 ECHO Mental Health Platform. Supporting global wellbeing. 💜</p>
+        <p>© 2026 ECHO Mental Health Platform. Supporting global wellbeing. 💜</p>
       </footer>
     </main>
   );
