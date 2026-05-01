@@ -1,10 +1,11 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { SignOutButton } from '@clerk/nextjs';
+import { SignOutButton, useClerk } from '@clerk/nextjs';
 
 export default function ApplicationStatusPage() {
   const router = useRouter();
+  const { signOut } = useClerk();
   const [user, setUser] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
@@ -29,7 +30,7 @@ export default function ApplicationStatusPage() {
   const deleteAccount = async () => {
     if (!confirm('Are you sure you want to withdraw your application and delete your account?')) return;
     await fetch('/api/users/profile', { method: 'DELETE' });
-    router.push('/');
+    signOut(() => router.push('/'));
   };
 
   if (loading) return <div style={{ minHeight: '100vh', background: 'var(--echo-bg)' }} />;
@@ -50,6 +51,13 @@ export default function ApplicationStatusPage() {
         </p>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+          <button 
+            className="btn-secondary" 
+            style={{ width: '100%', padding: '0.875rem' }}
+            onClick={() => router.push('/')}
+          >
+            Return to Home
+          </button>
           <SignOutButton>
             <button className="btn-primary" style={{ width: '100%', padding: '0.875rem' }}>
               Sign Out & Wait
