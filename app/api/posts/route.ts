@@ -51,3 +51,37 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }
+
+export async function DELETE(req: NextRequest) {
+  try {
+    const { userId } = await auth();
+    if (!userId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+
+    await connectDB();
+    const currentUser = await User.findOne({ clerkId: userId });
+
+    const { searchParams } = new URL(req.url);
+    const postId = searchParams.get('id');
+
+    if (!postId) {
+      return NextResponse.json({ error: 'Post ID is required' }, { status: 400 });
+    }
+
+    const post = await Post.findById(postId);
+    if (!post) {
+      return NextResponse.json({ error: 'Post not found' }, { status: 404 });
+    }
+
+    // Only allow deletion if the user is the author or an admin
+    if (post.authorId !== userId && currentUser?.role !== 'admin') {
+      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+    }
+
+    await Post.findByIdAndDelete(postId);
+
+    return NextResponse.json({ success: true });
+  } catch (error: any) {
+    console.error('Error deleting post:', error);
+    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+  }
+}

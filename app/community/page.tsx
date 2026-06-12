@@ -11,6 +11,7 @@ export default function CommunityPage() {
   const [content, setContent] = useState('');
   const [file, setFile] = useState<File | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isDeleting, setIsDeleting] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -24,6 +25,21 @@ export default function CommunityPage() {
       setPosts(data.posts || []);
     } catch (e) {
       console.error('Failed to fetch posts', e);
+    }
+  };
+
+  const handleDeletePost = async (postId: string) => {
+    if (!confirm('Are you sure you want to delete this post?')) return;
+    setIsDeleting(postId);
+    try {
+      const res = await fetch(`/api/posts?id=${postId}`, { method: 'DELETE' });
+      if (!res.ok) throw new Error('Failed to delete');
+      fetchPosts();
+    } catch (e) {
+      console.error(e);
+      alert('Failed to delete post.');
+    } finally {
+      setIsDeleting(null);
     }
   };
 
@@ -205,7 +221,7 @@ export default function CommunityPage() {
                   <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: 'linear-gradient(135deg, var(--echo-primary), #06b6d4)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: '700', color: 'white', fontSize: '1.25rem' }}>
                     {post.authorName[0]}
                   </div>
-                  <div>
+                  <div style={{ flex: 1 }}>
                     <div style={{ fontWeight: '700', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                       {post.authorName}
                       <span className={`badge badge-${post.authorRole === 'doctor' ? 'cyan' : post.authorRole === 'volunteer' ? 'purple' : 'gray'}`}>
@@ -216,6 +232,16 @@ export default function CommunityPage() {
                       {new Date(post.createdAt).toLocaleString()}
                     </div>
                   </div>
+                  {user?.id === post.authorId && (
+                    <button 
+                      onClick={() => handleDeletePost(post._id)}
+                      disabled={isDeleting === post._id}
+                      style={{ background: 'none', border: 'none', color: 'var(--echo-text-muted)', cursor: 'pointer', fontSize: '1.25rem', opacity: 0.7 }}
+                      title="Delete Post"
+                    >
+                      {isDeleting === post._id ? '⏳' : '🗑️'}
+                    </button>
+                  )}
                 </div>
 
                 <p style={{ color: 'var(--echo-text)', lineHeight: '1.6', whiteSpace: 'pre-wrap', marginBottom: post.mediaUrl ? '1rem' : '0' }}>
