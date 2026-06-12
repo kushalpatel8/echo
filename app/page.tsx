@@ -138,7 +138,7 @@ export default function HomePage() {
           <div style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
             <Link href="/community" style={{ textDecoration: 'none' }}>
               <button className="btn-secondary" style={{ padding: '0.75rem 2rem', fontSize: '1rem', background: 'transparent', border: '1px solid var(--echo-primary)', color: 'var(--echo-primary-light)' }}>
-                🌍 Explore Community Feed
+                🌍 Explore Echo Community
               </button>
             </Link>
           </div>
