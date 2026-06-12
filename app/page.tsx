@@ -112,7 +112,7 @@ export default function HomePage() {
             A multi-sided platform where healing happens through human connection and technology.
           </p>
 
-          <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap', width: '100%' }}>
+          <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap', width: '100%', marginBottom: '1.5rem' }}>
             {isLoaded && user ? (
               <Link href="/dashboard" style={{ textDecoration: 'none' }}>
                 <button className="btn-primary" style={{ padding: '1rem 3rem', fontSize: '1.125rem' }}>
@@ -133,6 +133,14 @@ export default function HomePage() {
                 </Link>
               </>
             )}
+          </div>
+          
+          <div style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
+            <Link href="/community" style={{ textDecoration: 'none' }}>
+              <button className="btn-secondary" style={{ padding: '0.75rem 2rem', fontSize: '1rem', background: 'transparent', border: '1px solid var(--echo-primary)', color: 'var(--echo-primary-light)' }}>
+                🌍 Explore Community Feed
+              </button>
+            </Link>
           </div>
         </div>
 
