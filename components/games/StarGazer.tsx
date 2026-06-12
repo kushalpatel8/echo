@@ -37,13 +37,13 @@ export default function StarGazer() {
 
   return (
     <div className="echo-card animate-fade-in-up star-gazer-card" style={{ textAlign: 'center', padding: '2rem', height: '500px', position: 'relative', overflow: 'hidden' }}>
-      {/* Sky background — dark in both modes so stars are always visible */}
+      {/* Sky background — uses theme variables so it adapts to light/dark mode */}
       <div className="star-gazer-sky" />
 
       <div style={{ position: 'relative', zIndex: 10, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <div style={{ textAlign: 'left' }}>
-          <h2 className="star-gazer-title" style={{ fontWeight: '800', fontSize: '1.25rem', color: 'white' }}>Star Gazer</h2>
-          <p className="star-gazer-subtitle" style={{ fontSize: '0.8125rem', color: '#cbd5e1' }}>Connect the stars through your own pattern.</p>
+          <h2 className="star-gazer-title" style={{ fontWeight: '800', fontSize: '1.25rem', color: 'var(--echo-text)' }}>Star Gazer</h2>
+          <p className="star-gazer-subtitle" style={{ fontSize: '0.8125rem', color: 'var(--echo-text-muted)' }}>Connect the stars through your own pattern.</p>
         </div>
         <button onClick={reset} className="btn-secondary" style={{ fontSize: '0.75rem', padding: '0.3rem 1rem' }}>Rebuild Universe</button>
       </div>
@@ -60,7 +60,7 @@ export default function StarGazer() {
               y1={`${from.y}%`}
               x2={`${to.x}%`}
               y2={`${to.y}%`}
-              stroke="rgba(124, 58, 237, 0.4)"
+              stroke="var(--echo-primary)"
               strokeWidth="2"
               className="line-animation"
             />
@@ -78,12 +78,12 @@ export default function StarGazer() {
             top: `${star.y}%`,
             width: '12px',
             height: '12px',
-            background: connections.includes(star.id) ? '#7c3aed' : 'white',
+            background: connections.includes(star.id) ? 'var(--echo-primary)' : 'var(--echo-text-muted)',
             borderRadius: '50%',
             transform: 'translate(-50%, -50%)',
             cursor: 'pointer',
             transition: 'all 0.5s',
-            boxShadow: connections.includes(star.id) ? '0 0 15px #7c3aed' : '0 0 10px rgba(255,255,255,0.6)',
+            boxShadow: connections.includes(star.id) ? '0 0 15px var(--echo-primary)' : '0 0 8px var(--echo-text-muted)',
             zIndex: 20
           }}
           className="star-item"
@@ -92,58 +92,33 @@ export default function StarGazer() {
 
       {isFinished && (
         <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', zIndex: 30 }} className="animate-fade-in-up">
-           <h3 className="star-gazer-complete-title" style={{ color: 'white', fontWeight: '800', fontSize: '1.5rem', marginBottom: '0.5rem' }}>Ethereal Pattern Complete</h3>
-           <p className="star-gazer-complete-subtitle" style={{ color: '#94a3b8', fontSize: '0.875rem' }}>Focused breathing while connecting stars helps settle the mind.</p>
+           <h3 className="star-gazer-complete-title" style={{ color: 'var(--echo-text)', fontWeight: '800', fontSize: '1.5rem', marginBottom: '0.5rem' }}>Ethereal Pattern Complete</h3>
+           <p className="star-gazer-complete-subtitle" style={{ color: 'var(--echo-text-muted)', fontSize: '0.875rem' }}>Focused breathing while connecting stars helps settle the mind.</p>
         </div>
       )}
 
       <style jsx>{`
         @keyframes line-glow {
           0% { stroke-opacity: 0.2; }
-          50% { stroke-opacity: 0.6; }
+          50% { stroke-opacity: 0.8; }
           100% { stroke-opacity: 0.2; }
         }
         .line-animation {
           animation: line-glow 3s infinite;
         }
 
-        /* Sky overlay — deep space in dark mode */
+        /* Sky overlay */
         .star-gazer-sky {
           position: absolute;
           inset: 0;
-          background: linear-gradient(135deg, #0a0f2c 0%, #0d1b4b 50%, #020617 100%);
+          background: linear-gradient(135deg, var(--echo-bg) 0%, var(--echo-surface) 50%, var(--echo-bg) 100%);
           border-radius: inherit;
           z-index: 0;
-        }
-
-        /* Light mode sky — soft dusk/dawn gradient matching emerald theme */
-        [data-theme='light'] .star-gazer-sky {
-          background: linear-gradient(160deg, #dbeafe 0%, #ede9fe 35%, #d1fae5 70%, #a7f3d0 100%);
         }
 
         /* Ensure the card itself doesn't fight the sky background */
         .star-gazer-card {
           background: transparent !important;
-        }
-
-        /* Light mode text overrides */
-        [data-theme='light'] .star-gazer-title {
-          color: #064e3b !important;
-        }
-        [data-theme='light'] .star-gazer-subtitle {
-          color: #065f46 !important;
-        }
-        [data-theme='light'] .star-gazer-complete-title {
-          color: #064e3b !important;
-        }
-        [data-theme='light'] .star-gazer-complete-subtitle {
-          color: #047857 !important;
-        }
-
-        /* Light mode star dots — use deep emerald so they pop on the dusk sky */
-        [data-theme='light'] .star-item {
-          background: #065f46 !important;
-          box-shadow: 0 0 8px rgba(6, 95, 70, 0.6) !important;
         }
       `}</style>
     </div>

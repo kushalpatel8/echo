@@ -26,16 +26,14 @@ export default function GratitudeBloom() {
   return (
     <div className="echo-card animate-fade-in-up" style={{ 
       textAlign: 'center', 
-      background: 'linear-gradient(180deg, #fdf2f8 0%, #fce7f3 100%)', 
       padding: '2rem', 
       height: '500px', 
       position: 'relative', 
-      overflow: 'hidden',
-      border: '1px solid #f9a8d4'
+      overflow: 'hidden'
     }}>
       <div style={{ position: 'relative', zIndex: 10 }}>
-        <h2 style={{ fontWeight: '800', fontSize: '1.25rem', color: '#be185d' }}>Gratitude Bloom</h2>
-        <p style={{ fontSize: '0.8125rem', color: '#db2777' }}>Plant a thought of gratitude and watch your garden grow.</p>
+        <h2 style={{ fontWeight: '800', fontSize: '1.25rem', color: 'var(--echo-text)' }}>Gratitude Bloom</h2>
+        <p style={{ fontSize: '0.8125rem', color: 'var(--echo-text-muted)' }}>Plant a thought of gratitude and watch your garden grow.</p>
         
         <form onSubmit={addBloom} style={{ marginTop: '1.5rem', display: 'flex', gap: '0.5rem', justifyContent: 'center' }}>
           <input 
@@ -43,9 +41,9 @@ export default function GratitudeBloom() {
             value={input} 
             onChange={e => setInput(e.target.value)} 
             placeholder="What are you grateful for today?" 
-            style={{ maxWidth: '400px', background: 'white', border: '1px solid #f9a8d4' }}
+            style={{ maxWidth: '400px' }}
           />
-          <button className="btn-primary" style={{ background: '#ec4899' }}>Plant</button>
+          <button className="btn-primary">Plant</button>
         </form>
       </div>
 
@@ -64,14 +62,14 @@ export default function GratitudeBloom() {
           >
             <div style={{ fontSize: '2.5rem', marginBottom: '0.25rem' }}>🌸</div>
             <div style={{ 
-              background: 'rgba(255,255,255,0.8)', 
+              background: 'var(--echo-surface)', 
               padding: '0.2rem 0.6rem', 
               borderRadius: '999px', 
               fontSize: '0.75rem', 
-              color: '#be185d',
+              color: 'var(--echo-text)',
               whiteSpace: 'nowrap',
-              boxShadow: '0 2px 5px rgba(0,0,0,0.05)',
-              border: `1px solid ${flower.color}`
+              boxShadow: '0 2px 5px rgba(0,0,0,0.1)',
+              border: `1px solid var(--echo-border)`
             }}>
               {flower.text}
             </div>

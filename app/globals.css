@@ -7,23 +7,23 @@
 :root {
   --font-inter: 'Inter', sans-serif;
   
-  /* ECHO Color System */
-  --echo-primary: #a78bfa; /* Soft Lavender for calming effect */
-  --echo-primary-rgb: 167, 139, 250;
-  --echo-primary-light: #c4b5fd;
-  --echo-secondary: #5eead4; /* Soothing Teal, replacing harsh vibrant emerald */
-  --echo-accent: #fbcfe8; /* Soft Blush Pink */
-  --echo-bg: #0f172a; /* Calming Deep Slate/Navy */
-  --echo-surface: #1e293b; /* Soft Elevated Slate */
-  --echo-surface-2: #334155; /* Higher Elevation Slate */
-  --echo-border: #334155; /* Subtle border */
-  --echo-text: #f8fafc; /* Soft white */
-  --echo-text-muted: #94a3b8; /* Muted slate */
+  /* Mindful Dusk Palette */
+  --echo-primary: #F59E0B; /* Calming Amber */
+  --echo-primary-rgb: 245, 158, 11;
+  --echo-primary-light: #FBBF24;
+  --echo-secondary: #94A3B8; /* Soft Periwinkle */
+  --echo-accent: #F59E0B; 
+  --echo-bg: #0F172A; /* Midnight Slate */
+  --echo-surface: #1E293B; /* Twilight Blue-Gray */
+  --echo-surface-2: #334155; 
+  --echo-border: rgba(148, 163, 184, 0.3); /* Soft Periwinkle (Opacity for subtlety) */
+  --echo-text: #F8FAFC; /* Frost White */
+  --echo-text-muted: #94A3B8; /* Soft Periwinkle */
   --echo-nav-bg: rgba(15, 23, 42, 0.85);
   --echo-glass-bg: rgba(30, 41, 59, 0.4);
   
   /* Semantic low-opacity backgrounds */
-  --echo-primary-low: rgba(var(--echo-primary-rgb), 0.12);
+  --echo-primary-low: rgba(var(--echo-primary-rgb), 0.15);
   --echo-danger-low: rgba(239, 68, 68, 0.12);
   --echo-success-low: rgba(34, 197, 94, 0.12);
   --echo-warning-low: rgba(245, 158, 11, 0.12);
@@ -33,25 +33,27 @@
 }
 
 [data-theme='light'] {
-  --echo-bg: #f8fafc;
-  --echo-surface: #ffffff;
-  --echo-surface-2: #f1f5f9;
-  --echo-border: #e2e8f0;
-  --echo-text: #064e3b; /* Deep Emerald for readability */
-  --echo-text-muted: #10b981; /* Brighter Emerald for muted text */
-  --echo-nav-bg: rgba(255, 255, 255, 0.85);
+  /* Mindful Dawn Palette (Light Mode) */
+  --echo-bg: #F8FAFC; /* Frost White */
+  --echo-surface: #FFFFFF; /* Pure White */
+  --echo-surface-2: #F1F5F9; 
+  --echo-border: #E2E8F0;
+  --echo-text: #0F172A; /* Midnight Slate */
+  --echo-text-muted: #64748B; /* Slate Muted */
+  --echo-nav-bg: rgba(248, 250, 252, 0.85);
   --echo-glass-bg: rgba(255, 255, 255, 0.6);
 
-  /* Primary Light Mode Theme: Emerald Shift */
-  --echo-primary: #10b981;
-  --echo-primary-rgb: 16, 185, 129;
-  --echo-primary-light: #34d399;
-  --echo-primary-low: rgba(16, 185, 129, 0.08);
+  --echo-primary: #F59E0B; /* Calming Amber */
+  --echo-primary-rgb: 245, 158, 11;
+  --echo-primary-light: #FBBF24;
+  --echo-primary-low: rgba(245, 158, 11, 0.15);
+  
+  --echo-secondary: #94A3B8; /* Soft Periwinkle */
   
   --echo-danger-low: rgba(239, 68, 68, 0.06);
   --echo-success-low: rgba(34, 197, 94, 0.06);
   --echo-warning-low: rgba(245, 158, 11, 0.06);
-  --echo-orb-opacity: 0.04;
+  --echo-orb-opacity: 0.08;
 }
 
 * {
@@ -197,7 +199,7 @@ body::after {
 
 /* Gradient text */
 .gradient-text {
-  background: linear-gradient(135deg, var(--echo-primary), var(--echo-secondary), var(--echo-accent));
+  background: linear-gradient(135deg, var(--echo-primary), var(--echo-secondary), var(--echo-primary-light));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -206,16 +208,16 @@ body::after {
 
 /* Animated gradient background */
 .gradient-bg {
-  background: linear-gradient(135deg, rgba(var(--echo-primary-rgb), 0.08) 0%, rgba(94, 234, 212, 0.05) 50%, rgba(251, 207, 232, 0.05) 100%);
+  background: linear-gradient(135deg, rgba(var(--echo-primary-rgb), 0.08) 0%, rgba(var(--echo-primary-rgb), 0.05) 50%, rgba(var(--echo-primary-rgb), 0.02) 100%);
 }
 
 /* Buttons */
 .btn-primary {
-  background: linear-gradient(135deg, var(--echo-primary), #6d28d9);
-  color: white;
+  background: linear-gradient(135deg, var(--echo-primary), var(--echo-primary-light));
+  color: var(--echo-bg);
   padding: 0.75rem 1.5rem;
   border-radius: 0.75rem;
-  font-weight: 600;
+  font-weight: 700;
   border: 1px solid rgba(255, 255, 255, 0.1);
   cursor: pointer;
   transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);

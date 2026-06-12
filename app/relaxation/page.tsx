@@ -81,10 +81,10 @@ export default function RelaxationPage() {
           </div>
 
           {/* Dots */}
-          <div style={{ display: 'flex', justifyContent: 'center', gap: '0.375rem', marginTop: '1.25rem' }}>
+          <div style={{ display: 'flex', justifyContent: 'center', gap: '0.375rem', marginTop: '1.25rem', flexWrap: 'wrap' }}>
             {QUOTES.map((_, i) => (
               <button key={i} onClick={() => { setFade(false); setTimeout(() => { setCurrentQuote(i); setFade(true); }, 300); }}
-                style={{ width: i === currentQuote ? '20px' : '8px', height: '8px', borderRadius: '999px', background: i === currentQuote ? 'var(--echo-primary)' : 'var(--echo-border)', border: 'none', cursor: 'pointer', transition: 'all 0.3s ease', padding: 0 }} />
+                style={{ width: i === currentQuote ? '20px' : '8px', height: '8px', borderRadius: '999px', background: i === currentQuote ? 'var(--echo-primary)' : 'var(--echo-surface-2)', border: 'none', cursor: 'pointer', transition: 'all 0.3s ease', padding: 0 }} />
             ))}
           </div>
         </div>
