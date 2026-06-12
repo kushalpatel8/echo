@@ -300,7 +300,7 @@ export default function CameraMoodTrackerPage() {
               {error ? 'Camera unavailable' : (imageUrl ? 'Image analysis' : (isCameraActive ? 'Camera active' : 'Starting camera...'))}
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#eab308' }}>
-              🔒 Local only
+              🔒 Secured
             </div>
           </div>
         </div>
