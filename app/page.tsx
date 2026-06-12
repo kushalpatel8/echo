@@ -8,6 +8,30 @@ import { useState, useEffect } from 'react';
 export default function HomePage() {
   const { user, isLoaded } = useUser();
   const [role, setRole] = useState<string | null>(null);
+  const [suggestionText, setSuggestionText] = useState('');
+  const [isSubmittingSuggestion, setIsSubmittingSuggestion] = useState(false);
+  const [suggestionSent, setSuggestionSent] = useState(false);
+
+  const handleSuggestionSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!suggestionText.trim()) return;
+    setIsSubmittingSuggestion(true);
+    try {
+      await fetch('/api/suggestions', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text: suggestionText, role: role || 'anonymous' })
+      });
+      setSuggestionSent(true);
+      setSuggestionText('');
+      setTimeout(() => setSuggestionSent(false), 5000);
+    } catch (error) {
+      console.error(error);
+      alert('Failed to send suggestion. Please try again.');
+    } finally {
+      setIsSubmittingSuggestion(false);
+    }
+  };
 
   useEffect(() => {
     if (user) {
@@ -221,14 +245,57 @@ export default function HomePage() {
       <footer style={{
         padding: '4rem 1.5rem',
         borderTop: '1px solid var(--echo-border)',
-        textAlign: 'center',
         color: 'var(--echo-text-muted)',
-        fontSize: '0.875rem',
         width: '100%',
         background: 'var(--echo-nav-bg)',
         backdropFilter: 'blur(10px)'
       }}>
-        <p>© 2026 ECHO Mental Health Platform. Built with compassion. 💜</p>
+        {role !== 'admin' && (
+          <div style={{ maxWidth: '1200px', margin: '0 auto', display: 'flex', flexWrap: 'wrap', gap: '3rem', justifyContent: 'space-between' }}>
+            {/* Contact Section */}
+            <div style={{ flex: '1 1 300px' }}>
+              <h3 style={{ color: 'var(--echo-text)', fontSize: '1.25rem', fontWeight: '800', marginBottom: '1.5rem' }}>Contact Us</h3>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', fontSize: '1rem' }}>
+                  <span style={{ fontSize: '1.25rem' }}>✉️</span> 
+                  <a href="mailto:support@echo.com" style={{ color: 'var(--echo-primary)', textDecoration: 'none', fontWeight: '500' }}>support@echo.com</a>
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', fontSize: '1rem' }}>
+                  <span style={{ fontSize: '1.25rem' }}>📞</span> 
+                  <span style={{ fontWeight: '500', color: 'var(--echo-text)' }}>+91 8869452123</span>
+                </div>
+              </div>
+            </div>
+            
+            {/* Suggestion Box */}
+            <div style={{ flex: '1 1 400px' }}>
+              <h3 style={{ color: 'var(--echo-text)', fontSize: '1.25rem', fontWeight: '800', marginBottom: '1.5rem' }}>Suggestions</h3>
+              {suggestionSent ? (
+                <div style={{ padding: '1.5rem', background: 'var(--echo-success-low)', color: 'var(--echo-text)', borderRadius: '12px', border: '1px solid rgba(34, 197, 94, 0.2)' }}>
+                  ✅ Thank you! Your suggestion has been sent.
+                </div>
+              ) : (
+                <form style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }} onSubmit={handleSuggestionSubmit}>
+                  <textarea 
+                    className="echo-input" 
+                    placeholder="Share your thoughts or suggestions to help us improve..." 
+                    style={{ minHeight: '100px', resize: 'vertical' }}
+                    value={suggestionText}
+                    onChange={(e) => setSuggestionText(e.target.value)}
+                    required
+                  />
+                  <button type="submit" className="btn-primary" style={{ alignSelf: 'flex-start', padding: '0.6rem 1.5rem', fontSize: '0.875rem' }} disabled={isSubmittingSuggestion}>
+                    {isSubmittingSuggestion ? 'Sending...' : 'Send Suggestion'}
+                  </button>
+                </form>
+              )}
+            </div>
+          </div>
+        )}
+
+        <div style={{ textAlign: 'center', marginTop: '4rem', paddingTop: '2rem', borderTop: '1px solid var(--echo-border)', fontSize: '0.875rem' }}>
+          <p>© 2026 ECHO Mental Health Platform. Built with compassion. 💜</p>
+        </div>
       </footer>
     </main>
   );

@@ -5,7 +5,7 @@ import { SignOutButton } from '@clerk/nextjs';
 import Link from 'next/link';
 import ThemeToggle from '@/components/ThemeToggle';
 
-type Tab = 'applications' | 'users' | 'volunteers' | 'doctors';
+type Tab = 'applications' | 'users' | 'volunteers' | 'doctors' | 'suggestions';
 
 export default function AdminDashboard() {
   const router = useRouter();
@@ -13,6 +13,7 @@ export default function AdminDashboard() {
   const [dbUser, setDbUser] = useState<any>(null);
   const [applications, setApplications] = useState<any[]>([]);
   const [users, setUsers] = useState<any[]>([]);
+  const [suggestions, setSuggestions] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
@@ -33,10 +34,28 @@ export default function AdminDashboard() {
     fetch(url).then(r => r.json()).then(d => setUsers(d.users || []));
   };
 
+  const loadSuggestions = () => {
+    fetch('/api/suggestions').then(r => r.json()).then(d => setSuggestions(d.suggestions || []));
+  };
+
+  const deleteSuggestion = async (id: string) => {
+    if (!confirm('Are you sure you want to delete this suggestion?')) return;
+    setLoading(true);
+    try {
+      await fetch(`/api/suggestions?id=${id}`, { method: 'DELETE' });
+      loadSuggestions();
+    } catch (e) {
+      console.error(e);
+      alert('Failed to delete suggestion');
+    }
+    setLoading(false);
+  };
+
   useEffect(() => {
     if (tab === 'users') loadUsers('user');
     else if (tab === 'volunteers') loadUsers('volunteer');
     else if (tab === 'doctors') loadUsers('doctor');
+    else if (tab === 'suggestions') loadSuggestions();
     else loadApplications();
   }, [tab]);
 
@@ -60,6 +79,7 @@ export default function AdminDashboard() {
     { id: 'users', icon: '👥', label: 'Users' },
     { id: 'volunteers', icon: '🤝', label: 'Volunteers' },
     { id: 'doctors', icon: '👨‍⚕️', label: 'Doctors' },
+    { id: 'suggestions', icon: '💡', label: 'Suggestions' },
   ];
 
   return (
@@ -329,6 +349,48 @@ export default function AdminDashboard() {
                         )}
                       </div>
                     )}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
+        {tab === 'suggestions' && (
+          <div className="animate-fade-in-up">
+            <h1 className="section-heading hide-mobile">💡 Suggestions</h1>
+            {suggestions.length === 0 ? (
+              <div className="echo-card" style={{ textAlign: 'center', padding: '3rem' }}>
+                <p style={{ color: 'var(--echo-text-muted)' }}>No suggestions received yet.</p>
+              </div>
+            ) : (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                {suggestions.map((s: any) => (
+                  <div key={s._id} className="echo-card">
+                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem', flexWrap: 'wrap', gap: '0.5rem' }}>
+                      <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center', flexWrap: 'wrap' }}>
+                        <span className={`badge badge-${s.role === 'anonymous' ? 'gray' : 'purple'}`}>
+                          {s.role.toUpperCase()}
+                        </span>
+                        {s.name && (
+                          <span style={{ fontWeight: '600', color: 'var(--echo-text)' }}>
+                            {s.name} <span style={{ fontWeight: 'normal', color: 'var(--echo-text-muted)', fontSize: '0.8125rem' }}>({s.email})</span>
+                          </span>
+                        )}
+                        <span style={{ fontSize: '0.8125rem', color: 'var(--echo-text-muted)' }}>
+                          {new Date(s.createdAt).toLocaleDateString()} {new Date(s.createdAt).toLocaleTimeString()}
+                        </span>
+                      </div>
+                      <button 
+                        className="btn-danger" 
+                        style={{ padding: '0.3rem 0.75rem', fontSize: '0.75rem', borderRadius: '6px' }}
+                        onClick={() => deleteSuggestion(s._id)}
+                        disabled={loading}
+                      >
+                        🗑️ Delete
+                      </button>
+                    </div>
+                    <p style={{ color: 'var(--echo-text)', lineHeight: '1.6', whiteSpace: 'pre-wrap' }}>{s.text}</p>
                   </div>
                 ))}
               </div>
