@@ -1,5 +1,11 @@
 # ECHO - Open-Access Mental Health & Community Support Platform
 
+[![Next.js](https://img.shields.io/badge/Next.js-14+-black?style=flat&logo=next.js)](https://nextjs.org/)
+[![MongoDB](https://img.shields.io/badge/MongoDB-Enabled-green?style=flat&logo=mongodb)](https://www.mongodb.com/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+
+**Live Demo**: [https://mentalexpert.vercel.app/](https://mentalexpert.vercel.app/)
+
 ECHO is a modern, premium mental health sanctuary designed to provide a safe space for individuals seeking professional guidance, peer support, and digital relaxation. Transitioned to a fully open-access model, ECHO offers high-end mental health tools, AI-driven analytics, and direct professional connections at no cost.
 
 ## 🌟 Key Features
@@ -76,6 +82,18 @@ echo/
     npm run dev
     ```
 
-## 🛡️ Privacy & Professionalism:
+## 🛡️ Privacy & Professionalism
 
 ECHO prioritizes medical privacy. Professional WhatsApp connections follow a **Request-Accept-Connect** handshake, ensuring and maintaining a professional boundary between patients and practitioners at all times. This is the best of human health.
+
+## 🌍 About ECHO Community
+
+ECHO is more than just a platform; it is a thriving, open-access community where empathy meets technology. We believe that mental health support should not be a luxury. The ECHO community is built on the pillars of mutual respect, peer-to-peer empowerment, and accessible professional care. Whether you are seeking a quiet space to meditate, a volunteer willing to listen, or professional guidance, you are never alone here.
+
+## 🤝 Contributing
+
+We welcome contributions to make ECHO even better. Feel free to open issues, submit pull requests, or share your feedback to help us build a more supportive mental health platform.
+
+## 📄 License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
