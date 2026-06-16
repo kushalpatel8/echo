@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { useUser, SignOutButton, UserButton } from '@clerk/nextjs';
 import { useState, useEffect } from 'react';
 import ThemeToggle from './ThemeToggle';
+import BackButton from './BackButton';
 
 export default function Navbar() {
   const { user, isLoaded } = useUser();
@@ -30,6 +31,9 @@ export default function Navbar() {
         height: '72px',
         gap: '0.5rem'
       }}>
+        {/* Back Button — hidden on home/auth pages */}
+        <BackButton />
+
         {/* Logo Section */}
         <Link href="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '0.75rem', flexShrink: 0 }}>
           <div style={{

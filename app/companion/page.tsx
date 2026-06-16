@@ -2,6 +2,7 @@
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { useUser } from '@clerk/nextjs';
+import BackButton from '@/components/BackButton';
 
 interface Message {
   role: 'user' | 'assistant';
@@ -46,7 +47,7 @@ export default function AICompanionPage() {
     <div style={{ minHeight: '100vh', background: 'var(--echo-bg)', display: 'flex', flexDirection: 'column' }}>
       {/* Header */}
       <header style={{ padding: '1rem 1.5rem', borderBottom: '1px solid var(--echo-border)', display: 'flex', alignItems: 'center', gap: '1rem', background: 'var(--echo-surface)' }}>
-        <Link href="/dashboard" style={{ textDecoration: 'none', color: 'var(--echo-text-muted)', fontSize: '0.875rem' }}>← Back</Link>
+        <BackButton />
         <div style={{ flex: 1, display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
           <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: 'linear-gradient(135deg, #7c3aed, #06b6d4)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.25rem' }} className="animate-pulse-glow">🤖</div>
           <div>

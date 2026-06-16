@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useUser } from '@clerk/nextjs';
+import BackButton from '@/components/BackButton';
 
 interface Helper {
   clerkId: string;
@@ -121,7 +122,7 @@ export default function DoctorsListPage() {
     <main style={{ minHeight: '100vh', background: 'var(--echo-bg)' }}>
       <header style={{ padding: '1rem 1.5rem', borderBottom: '1px solid var(--echo-border)', background: 'var(--echo-surface)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-          <Link href="/dashboard" style={{ textDecoration: 'none', color: 'var(--echo-text-muted)', fontSize: '0.875rem' }}>← Back</Link>
+          <BackButton />
           <h1 style={{ fontSize: '1.25rem', fontWeight: '800', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
             <span>👨‍⚕️</span> Professional Doctors
           </h1>

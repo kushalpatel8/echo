@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import { useUser, SignOutButton } from '@clerk/nextjs';
 import Link from 'next/link';
 import ThemeToggle from '@/components/ThemeToggle';
+import BackButton from '@/components/BackButton';
 
 type Tab = 'overview' | 'chats' | 'tasks' | 'profile';
 
@@ -88,33 +89,74 @@ export default function VolunteerDashboard() {
   };
 
   return (
-    <div style={{ display: 'flex', minHeight: '100vh', background: 'transparent' }}>
-      {/* Sidebar Overlay */}
-      <div 
-        className={`sidebar-overlay ${isSidebarOpen ? 'open' : ''}`} 
+    <>
+      {/* ── Sidebar overlay — outside flex, always covers full viewport ── */}
+      <div
+        className={`sidebar-overlay ${isSidebarOpen ? 'open' : ''}`}
         onClick={() => setIsSidebarOpen(false)}
+        style={{ zIndex: 190 }}
       />
 
-      {/* Sidebar */}
-      <aside className={`echo-sidebar ${isSidebarOpen ? 'open' : ''}`} style={{ padding: '1.5rem 1rem', display: 'flex', flexDirection: 'column' }}>
-        <div style={{ marginBottom: '2rem' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1rem' }}>
-          <Link href="/" style={{ textDecoration: 'none' }}>
-            <img 
-              src="/favicon.ico" 
-              alt="Logo" 
-              style={{ width: '40px', height: '40px', borderRadius: '12px', flexShrink: 0, cursor: 'pointer' }} 
-            />
-          </Link>
-            <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
-              <ThemeToggle />
-              <button 
-                className="show-mobile"
-                onClick={() => setIsSidebarOpen(false)}
-                style={{ background: 'none', border: 'none', color: 'var(--echo-text)', fontSize: '1.25rem', padding: '0.25rem' }}
-              >✕</button>
-            </div>
+      {/* ── Sidebar — outside flex, always fixed overlay on all screen sizes ── */}
+      <aside
+        className={`echo-sidebar ${isSidebarOpen ? 'open' : ''}`}
+        style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          height: '100vh',
+          width: '240px',
+          transform: isSidebarOpen ? 'translateX(0)' : 'translateX(-100%)',
+          visibility: isSidebarOpen ? 'visible' : 'hidden',
+          zIndex: 200,
+          transition: 'transform 0.3s ease, visibility 0.3s',
+          padding: '1.25rem 1rem',
+          display: 'flex',
+          flexDirection: 'column',
+          boxShadow: isSidebarOpen ? '10px 0 40px rgba(0,0,0,0.3)' : 'none',
+          overflowY: 'auto',
+        }}
+      >
+        {/* ── Sidebar header ── */}
+        <div style={{ marginBottom: '1.5rem' }}>
+          {/* Back / close button */}
+          <button
+            onClick={() => setIsSidebarOpen(false)}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.5rem',
+              background: 'rgba(255,255,255,0.06)',
+              border: '1px solid var(--echo-border)',
+              borderRadius: '0.625rem',
+              color: 'var(--echo-text)',
+              padding: '0.45rem 0.875rem',
+              fontSize: '0.8125rem',
+              fontWeight: '600',
+              cursor: 'pointer',
+              marginBottom: '1.25rem',
+              width: '100%',
+              transition: 'background 0.2s',
+            }}
+            onMouseEnter={e => (e.currentTarget.style.background = 'rgba(255,255,255,0.1)')}
+            onMouseLeave={e => (e.currentTarget.style.background = 'rgba(255,255,255,0.06)')}
+          >
+            <span style={{ fontSize: '1rem' }}>←</span>
+            <span>Close Menu</span>
+          </button>
+
+          {/* Logo + theme */}
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+            <Link href="/" style={{ textDecoration: 'none' }}>
+              <img
+                src="/favicon.ico"
+                alt="Logo"
+                style={{ width: '38px', height: '38px', borderRadius: '10px', cursor: 'pointer' }}
+              />
+            </Link>
+            <ThemeToggle />
           </div>
+
           <div style={{ fontWeight: '700', fontSize: '1rem', marginBottom: '0.25rem' }}>{dbUser?.name as string || clerkUser?.firstName}</div>
           <span className={`badge badge-${appStatus === 'approved' ? 'green' : appStatus === 'pending' ? 'yellow' : 'red'}`}>
             {dbUser?.role === 'doctor' ? '👨‍⚕️ Doctor' : '🤝 Volunteer'} · {appStatus as string || 'pending'}
@@ -139,13 +181,54 @@ export default function VolunteerDashboard() {
         </div>
       </aside>
 
-      <main style={{ flex: 1, padding: 'clamp(1rem, 5vw, 2rem)', overflowY: 'auto', minWidth: 0 }}>
-        <div className="show-mobile" style={{ marginBottom: '1.5rem' }}>
-          <div style={{ display: 'grid', gridTemplateColumns: '48px 1fr 48px', alignItems: 'center', minHeight: '44px' }}>
-            <Link href="/" style={{ textDecoration: 'none', color: 'var(--echo-text)', display: 'flex', alignItems: 'center', justifyContent: 'flex-start' }}>
-              <span style={{ fontSize: '1.25rem' }}>🏠</span>
-            </Link>
-            <h2 style={{ fontSize: '1.125rem', fontWeight: '800', textAlign: 'center', margin: 0 }}>Volunteer Hub</h2>
+      {/* ── Main layout — full viewport width, never affected by sidebar ── */}
+      <div style={{
+        minHeight: '100vh',
+        width: '100%',
+        background: 'transparent',
+        transition: 'filter 0.3s ease, opacity 0.3s ease',
+        filter: isSidebarOpen ? 'blur(4px)' : 'none',
+        opacity: isSidebarOpen ? 0.3 : 1,
+        pointerEvents: isSidebarOpen ? 'none' : 'auto',
+      }}>
+        <main style={{ width: '100%', padding: 'clamp(1rem, 5vw, 2rem)', overflowY: 'auto', minWidth: 0 }}>
+          {/* ── Universal top bar (all screen sizes) ── */}
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'auto 1fr auto',
+            alignItems: 'center',
+            gap: '0.75rem',
+            marginBottom: '1.75rem',
+          }}>
+            {/* Left Controls */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+              {/* Hamburger / menu toggle */}
+              <button
+                onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+                style={{
+                  width: '44px',
+                  height: '44px',
+                  borderRadius: '12px',
+                  border: '1px solid var(--echo-border)',
+                  background: 'var(--echo-surface)',
+                  color: 'var(--echo-text)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  cursor: 'pointer',
+                  fontSize: '1.25rem',
+                  transition: 'background 0.2s',
+                }}
+              >
+                ☰
+              </button>
+              <BackButton />
+            </div>
+
+            <h2 style={{ fontSize: '1.125rem', fontWeight: '800', textAlign: 'center', margin: 0 }} className="gradient-text">
+              Volunteer Hub
+            </h2>
+
             <button 
               onClick={() => setTab('profile')}
               style={{ 
@@ -162,14 +245,13 @@ export default function VolunteerDashboard() {
                 <img 
                   src={clerkUser.imageUrl} 
                   alt="Profile" 
-                  style={{ width: '32px', height: '32px', borderRadius: '50%', border: '2px solid var(--echo-primary)' }} 
+                  style={{ width: '38px', height: '38px', borderRadius: '50%', border: '2px solid var(--echo-primary)' }} 
                 />
               ) : (
                 <span style={{ fontSize: '1.25rem' }}>👤</span>
               )}
             </button>
           </div>
-        </div>
         {/* Pending Application Banner */}
         {appStatus === 'pending' && (
           <div style={{ padding: '1rem 1.5rem', borderRadius: '0.75rem', background: 'rgba(245,158,11,0.1)', border: '1px solid rgba(245,158,11,0.3)', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
@@ -178,9 +260,9 @@ export default function VolunteerDashboard() {
           </div>
         )}
 
-        {/* Mobile Navigation Grid */}
-        <div className="show-mobile animate-fade-in-up" style={{ marginBottom: '2rem' }}>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '1rem' }}>
+        {/* Navigation Grid (Visible on all sizes) */}
+        <div className="animate-fade-in-up" style={{ marginBottom: '2rem' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: '1rem' }}>
             {[
               { id: 'overview', icon: '📊', label: 'Overview' },
               { id: 'chats', icon: '💬', label: 'User Chats', badge: chats.filter((c: any) => c.isActive).length },
@@ -369,7 +451,8 @@ export default function VolunteerDashboard() {
             </div>
           </div>
         )}
-      </main>
-    </div>
+        </main>
+      </div>
+    </>
   );
 }

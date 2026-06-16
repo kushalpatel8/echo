@@ -1,6 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import BackButton from '@/components/BackButton';
 
 const QUOTES = [
   { text: "You don't have to be positive all the time. It's perfectly okay to feel sad, angry, annoyed, frustrated, scared, or anxious. Having feelings doesn't make you a negative person. It makes you human.", author: "Lori Deschene" },
@@ -56,7 +57,7 @@ export default function RelaxationPage() {
     <div style={{ minHeight: '100vh', background: 'var(--echo-bg)' }}>
       {/* Header */}
       <header style={{ padding: '1rem 1.5rem', borderBottom: '1px solid var(--echo-border)', background: 'var(--echo-surface)', display: 'flex', alignItems: 'center', gap: '1rem' }}>
-        <Link href="/dashboard" style={{ textDecoration: 'none', color: 'var(--echo-text-muted)', fontSize: '0.875rem' }}>← Back</Link>
+        <BackButton />
         <div style={{ fontWeight: '700' }}>🧘 Relaxation Room</div>
       </header>
 

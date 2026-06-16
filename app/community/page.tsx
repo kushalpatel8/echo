@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useUser } from '@clerk/nextjs';
 import Link from 'next/link';
 import ThemeToggle from '@/components/ThemeToggle';
+import BackButton from '@/components/BackButton';
 
 export default function CommunityPage() {
   const { user, isLoaded, isSignedIn } = useUser();
@@ -135,10 +136,13 @@ export default function CommunityPage() {
   return (
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
       <nav className="echo-nav" style={{ padding: '1rem 1.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <Link href="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-          <img src="/favicon.ico" alt="Echo Logo" style={{ width: '40px', height: '40px', borderRadius: '12px' }} />
-          <span style={{ fontSize: '1.5rem', fontWeight: '800', letterSpacing: '-0.02em', color: 'var(--echo-text)' }}>ECHO <span style={{ fontWeight: '400', opacity: 0.7 }}>Community</span></span>
-        </Link>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+          <BackButton />
+          <Link href="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+            <img src="/favicon.ico" alt="Echo Logo" style={{ width: '40px', height: '40px', borderRadius: '12px' }} />
+            <span style={{ fontSize: '1.5rem', fontWeight: '800', letterSpacing: '-0.02em', color: 'var(--echo-text)' }}>ECHO <span style={{ fontWeight: '400', opacity: 0.7 }}>Community</span></span>
+          </Link>
+        </div>
         <ThemeToggle />
       </nav>
 

@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { useUser } from '@clerk/nextjs';
+import BackButton from '@/components/BackButton';
 
 // Game Components
 import BreathingGame from '@/components/games/BreathingGame';
@@ -56,12 +57,7 @@ export default function GamesPage() {
     <main style={{ minHeight: '100vh', background: 'var(--echo-bg)', padding: 'clamp(1rem, 5vw, 2rem)' }}>
       <header style={{ maxWidth: '1000px', margin: '0 auto 3rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem', flexWrap: 'wrap' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-          <Link href="/dashboard" style={{ textDecoration: 'none', color: 'var(--echo-text-muted)', fontSize: '0.875rem' }}>
-            <span style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>
-              Back to Dashboard
-            </span>
-          </Link>
+          <BackButton />
           <h1 style={{ fontSize: '1.5rem', fontWeight: '800' }} className="gradient-text">Relaxation Games</h1>
         </div>
         

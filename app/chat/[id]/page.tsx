@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import { useUser } from '@clerk/nextjs';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
+import BackButton from '@/components/BackButton';
 
 interface Message {
   senderId: string;
@@ -130,16 +131,7 @@ export default function ChatPage() {
         zIndex: 10
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', minWidth: 'fit-content' }}>
-          <Link href="/dashboard" style={{ 
-            textDecoration: 'none', 
-            color: 'var(--echo-text-muted)', 
-            fontSize: '0.875rem',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '0.25rem'
-          }}>
-            <span>←</span> <span className="hide-mobile">Back</span>
-          </Link>
+          <BackButton />
           <div style={{ 
             width: '42px', 
             height: '42px', 

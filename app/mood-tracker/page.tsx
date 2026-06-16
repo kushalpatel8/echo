@@ -1,6 +1,7 @@
 'use client';
 import { useState } from 'react';
 import Link from 'next/link';
+import BackButton from '@/components/BackButton';
 
 const MOOD_QUESTIONS = [
   { id: 'q1', text: 'How would you rate your overall mood right now?', type: 'scale' },
@@ -77,7 +78,7 @@ export default function MoodTrackerPage() {
     <div style={{ minHeight: '100vh', background: 'var(--echo-bg)', display: 'flex', flexDirection: 'column' }}>
       {/* Header */}
       <header style={{ padding: '1rem 1.5rem', borderBottom: '1px solid var(--echo-border)', background: 'var(--echo-surface)', display: 'flex', alignItems: 'center', gap: '1rem' }}>
-        <Link href="/dashboard" style={{ textDecoration: 'none', color: 'var(--echo-text-muted)', fontSize: '0.875rem' }}>← Back</Link>
+        <BackButton />
         <div style={{ fontWeight: '700' }}>📝 Mood Tracker</div>
         {step > 0 && step <= 20 && (
           <div style={{ marginLeft: 'auto', fontSize: '0.875rem', color: 'var(--echo-text-muted)' }}>{step} / 20</div>
