@@ -79,19 +79,19 @@ export default function CharityPage() {
             }}>
               <li style={{ marginBottom: '1rem', display: 'flex', gap: '0.75rem' }}>
                 <span style={{ fontSize: '1.25rem', flexShrink: 0 }}>✨</span> 
-                <span>To provide **zero-cost, high-quality mental health support** to everyone, everywhere, regardless of their financial status.</span>
+                <span><strong style={{ color: 'var(--echo-text)' }}>Democratize Mental Healthcare</strong>: We believe well-being is a fundamental right. We are breaking down financial barriers to provide world-class, zero-cost support to anyone, anywhere.</span>
               </li>
               <li style={{ marginBottom: '1rem', display: 'flex', gap: '0.75rem' }}>
                 <span style={{ fontSize: '1.25rem', flexShrink: 0 }}>🤝</span> 
-                <span>To bridge the gap between **AI technology and human empathy**, creating a holistic healing experience.</span>
+                <span><strong style={{ color: 'var(--echo-text)' }}>Harmonize Technology & Humanity</strong>: By blending advanced AI companions with compassionate human volunteers, we create an always-on, deeply empathetic healing ecosystem.</span>
               </li>
               <li style={{ marginBottom: '1rem', display: 'flex', gap: '0.75rem' }}>
                 <span style={{ fontSize: '1.25rem', flexShrink: 0 }}>🛡️</span> 
-                <span>To cultivate a **safe, anonymous sanctuary** where individuals can express themselves without fear of judgment.</span>
+                <span><strong style={{ color: 'var(--echo-text)' }}>Guarantee Absolute Sanctuary</strong>: We provide a completely anonymous, judgment-free space where vulnerable individuals can voice their deepest struggles with total peace of mind.</span>
               </li>
               <li style={{ display: 'flex', gap: '0.75rem' }}>
                 <span style={{ fontSize: '1.25rem', flexShrink: 0 }}>🌍</span> 
-                <span>To empower a **global network of volunteers** and professionals dedicated to making a tangible, compassionate difference.</span>
+                <span><strong style={{ color: 'var(--echo-text)' }}>Mobilize Global Compassion</strong>: We empower a worldwide network of dedicated listeners and certified professionals united by a shared purpose to heal and uplift.</span>
               </li>
             </ul>
           </div>
@@ -114,19 +114,19 @@ export default function CharityPage() {
             }}>
               <li style={{ marginBottom: '1rem', display: 'flex', gap: '0.75rem' }}>
                 <span style={{ fontSize: '1.25rem', flexShrink: 0 }}>💸</span> 
-                <span>**Cost Barriers**: Traditional therapy is often prohibitively expensive, leaving the most vulnerable without support.</span>
+                <span><strong style={{ color: 'var(--echo-text)' }}>The Cost Crisis</strong>: Traditional therapy is increasingly unaffordable, systematically excluding the most vulnerable populations from receiving life-saving care.</span>
               </li>
               <li style={{ marginBottom: '1rem', display: 'flex', gap: '0.75rem' }}>
                 <span style={{ fontSize: '1.25rem', flexShrink: 0 }}>⌛</span> 
-                <span>**Waiting Lists**: Public healthcare systems often have month-long delays, while mental health crises require immediate attention.</span>
+                <span><strong style={{ color: 'var(--echo-text)' }}>Critical Delays</strong>: Public health systems are overwhelmed. When individuals face an acute crisis, month-long waiting lists can be devastating.</span>
               </li>
               <li style={{ marginBottom: '1rem', display: 'flex', gap: '0.75rem' }}>
                 <span style={{ fontSize: '1.25rem', flexShrink: 0 }}>🤐</span> 
-                <span>**Stigma & Privacy**: Many avoid seeking help due to social stigma; our anonymous platform removes this barrier.</span>
+                <span><strong style={{ color: 'var(--echo-text)' }}>The Weight of Stigma</strong>: Societal pressure and fear of judgment silence millions. We dismantle this barrier with absolute anonymity, letting people speak safely.</span>
               </li>
               <li style={{ display: 'flex', gap: '0.75rem' }}>
                 <span style={{ fontSize: '1.25rem', flexShrink: 0 }}>🌙</span> 
-                <span>**24/7 Accessibility**: Distress doesn't follow a schedule; Echo provides support during late nights and sudden moments of isolation.</span>
+                <span><strong style={{ color: 'var(--echo-text)' }}>The Midnight Struggle</strong>: Distress doesn't adhere to business hours. ECHO ensures no one has to face the isolating hours of the night alone.</span>
               </li>
             </ul>
           </div>

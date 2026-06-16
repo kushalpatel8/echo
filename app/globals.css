@@ -33,27 +33,28 @@
 }
 
 [data-theme='light'] {
-  /* Mindful Dawn Palette (Light Mode) */
-  --echo-bg: #F8FAFC; /* Frost White */
+  /* Vibrant Indigo Palette (Light Mode) */
+  --echo-bg: #F8FAFC; /* Soft Frost White */
   --echo-surface: #FFFFFF; /* Pure White */
   --echo-surface-2: #F1F5F9; 
-  --echo-border: #E2E8F0;
-  --echo-text: #0F172A; /* Midnight Slate */
-  --echo-text-muted: #64748B; /* Slate Muted */
-  --echo-nav-bg: rgba(248, 250, 252, 0.85);
-  --echo-glass-bg: rgba(255, 255, 255, 0.6);
+  --echo-border: rgba(15, 23, 42, 0.1); /* Subtle dark border */
+  --echo-text: #0F172A; /* Deep Slate for high contrast */
+  --echo-text-muted: #475569; /* Darker Slate for better readability */
+  --echo-nav-bg: rgba(255, 255, 255, 0.85);
+  --echo-glass-bg: rgba(255, 255, 255, 0.7);
 
-  --echo-primary: #F59E0B; /* Calming Amber */
-  --echo-primary-rgb: 245, 158, 11;
-  --echo-primary-light: #FBBF24;
-  --echo-primary-low: rgba(245, 158, 11, 0.15);
+  /* Deep Indigo & Pink gradient */
+  --echo-primary: #6366F1; /* Indigo 500 */
+  --echo-primary-rgb: 99, 102, 241;
+  --echo-primary-light: #818CF8; /* Indigo 400 */
+  --echo-primary-low: rgba(99, 102, 241, 0.12);
   
-  --echo-secondary: #94A3B8; /* Soft Periwinkle */
+  --echo-secondary: #EC4899; /* Pink 500 for stunning gradient */
   
-  --echo-danger-low: rgba(239, 68, 68, 0.06);
-  --echo-success-low: rgba(34, 197, 94, 0.06);
-  --echo-warning-low: rgba(245, 158, 11, 0.06);
-  --echo-orb-opacity: 0.08;
+  --echo-danger-low: rgba(239, 68, 68, 0.08);
+  --echo-success-low: rgba(34, 197, 94, 0.08);
+  --echo-warning-low: rgba(245, 158, 11, 0.08);
+  --echo-orb-opacity: 0.06;
 }
 
 * {

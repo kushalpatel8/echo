@@ -1,15 +1,13 @@
 'use client';
 import Link from 'next/link';
+import BackButton from '@/components/BackButton';
 
 export default function RelaxationBooksPage() {
   return (
     <div style={{ minHeight: '100vh', background: 'var(--echo-bg)' }}>
       {/* Header */}
       <header style={{ padding: '1rem 1.5rem', borderBottom: '1px solid var(--echo-border)', background: 'var(--echo-surface)', display: 'flex', alignItems: 'center', gap: '1rem', position: 'sticky', top: 0, zIndex: 10 }}>
-        <Link href="/relaxation" style={{ textDecoration: 'none', color: 'var(--echo-text-muted)', fontSize: '0.875rem', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6" /></svg>
-          Back to Relaxation Room
-        </Link>
+        <BackButton />
         <div style={{ fontWeight: '700', marginLeft: 'auto' }} className="gradient-text">📚 Curated Library</div>
       </header>
 

@@ -52,7 +52,7 @@ export default function HomePage() {
       <section style={{
         position: 'relative',
         overflow: 'hidden',
-        padding: 'clamp(4rem, 10vw, 8rem) 1.5rem 2rem',
+        padding: 'clamp(2rem, 5vw, 4rem) 1.5rem 2rem',
         textAlign: 'center',
       }}>
         {/* Background orbs - Responsive sizing */}
@@ -108,8 +108,7 @@ export default function HomePage() {
             maxWidth: '650px',
             margin: '0 auto 3rem',
           }}>
-            Connect with compassionate volunteers, expert doctors, and your personal AI companion.
-            A multi-sided platform where healing happens through human connection and technology.
+            Experience a revolutionary mental health sanctuary. We blend the limitless availability of advanced AI with the profound empathy of expert doctors and compassionate volunteers to guide you through your darkest moments.
           </p>
 
           <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap', width: '100%', marginBottom: '1.5rem' }}>
@@ -153,62 +152,62 @@ export default function HomePage() {
             <h2 className="gradient-text" style={{ fontSize: 'clamp(2rem, 5vw, 3rem)', fontWeight: '900', marginBottom: '1.25rem', letterSpacing: '-0.03em' }}>
               Designed for Your Mental Wellbeing
             </h2>
-            <p style={{ color: 'var(--echo-text-muted)', maxWidth: '600px', margin: '0 auto', fontSize: '1.125rem' }}>
-              Echo combines advanced technology with human empathy to provide a comprehensive support system for everyone.
+            <p style={{ color: 'var(--echo-text-muted)', maxWidth: '600px', margin: '0 auto', fontSize: '1.125rem', lineHeight: '1.6' }}>
+              We have meticulously crafted an ecosystem where advanced technology and human empathy converge to provide the comprehensive, zero-cost support you deserve.
             </p>
           </div>
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '2.5rem' }}>
             <div className="echo-card glass-panel" style={{ padding: '3rem', position: 'relative', overflow: 'hidden' }}>
               <div style={{ fontSize: '2.5rem', marginBottom: '1.5rem' }}>🤖</div>
-              <h3 style={{ fontSize: '1.5rem', fontWeight: '800', marginBottom: '1rem' }}>Intelligent AI Counseling</h3>
+              <h3 style={{ fontSize: '1.5rem', fontWeight: '800', marginBottom: '1rem' }}>Always-On AI Companionship</h3>
               <p style={{ color: 'var(--echo-text-muted)', lineHeight: '1.7', marginBottom: '1.5rem' }}>
-                Our proprietary AI, Echo, is trained in empathetic communication to provide non-judgmental support 24/7. Whether you're feeling anxious at 3 AM or just need someone to talk to, Echo is always there.
+                Meet Echo, your proprietary AI companion trained in deep, empathetic communication. Whether it's a 3 AM panic attack or a midday moment of isolation, Echo provides instant, non-judgmental support 24/7.
               </p>
               <div style={{ color: 'var(--echo-primary-light)', fontWeight: '700', fontSize: '0.875rem' }}>Available 24/7 • Private • Empathetic</div>
             </div>
 
             <div className="echo-card glass-panel" style={{ padding: '3rem' }}>
               <div style={{ fontSize: '2.5rem', marginBottom: '1.5rem' }}>🤝</div>
-              <h3 style={{ fontSize: '1.5rem', fontWeight: '800', marginBottom: '1rem' }}>Global Support Network</h3>
+              <h3 style={{ fontSize: '1.5rem', fontWeight: '800', marginBottom: '1rem' }}>A Global Network of Care</h3>
               <p style={{ color: 'var(--echo-text-muted)', lineHeight: '1.7', marginBottom: '1.5rem' }}>
-                Connect with verified mental health professionals and trained volunteers across the globe. We bridge the gap between those who need help and those who want to give it, ensuring no one feels alone.
+                Access a worldwide ecosystem of certified mental health professionals and dedicated, trained volunteers. We bridge the gap between human compassion and those in need, ensuring you never have to walk alone.
               </p>
               <div style={{ color: 'var(--echo-primary-light)', fontWeight: '700', fontSize: '0.875rem' }}>Professional Doctors • Verified Volunteers</div>
             </div>
 
             <div className="echo-card glass-panel" style={{ padding: '3rem' }}>
               <div style={{ fontSize: '2.5rem', marginBottom: '1.5rem' }}>🧘</div>
-              <h3 style={{ fontSize: '1.5rem', fontWeight: '800', marginBottom: '1rem' }}>The Relaxation Sanctuary</h3>
+              <h3 style={{ fontSize: '1.5rem', fontWeight: '800', marginBottom: '1rem' }}>The Serenity Sanctuary</h3>
               <p style={{ color: 'var(--echo-text-muted)', lineHeight: '1.7', marginBottom: '1.5rem' }}>
-                Take a break in our curated relaxation room. From interactive sensory games and breathing exercises to a library of timeless wisdom, we provide the tools you need to ground yourself and find peace.
+                Escape into a curated digital oasis designed to ground your mind. From interactive sensory exercises and guided breathing techniques to a library of calming wisdom, find the peace you deserve.
               </p>
               <div style={{ color: 'var(--echo-primary-light)', fontWeight: '700', fontSize: '0.875rem' }}>Interactive Games • Curated Library</div>
             </div>
 
             <div className="echo-card glass-panel" style={{ padding: '3rem' }}>
               <div style={{ fontSize: '2.5rem', marginBottom: '1.5rem' }}>🛡️</div>
-              <h3 style={{ fontSize: '1.5rem', fontWeight: '800', marginBottom: '1rem' }}>Privacy as a Priority</h3>
+              <h3 style={{ fontSize: '1.5rem', fontWeight: '800', marginBottom: '1rem' }}>Absolute Anonymity & Privacy</h3>
               <p style={{ color: 'var(--echo-text-muted)', lineHeight: '1.7', marginBottom: '1.5rem' }}>
-                Your mental health journey is personal. We use end-to-end encryption and anonymous support options to ensure your safety and privacy are never compromised. You are safe here.
+                Your healing journey is profoundly personal. We employ uncompromising, bank-grade encryption and strictly anonymous support channels to guarantee your safety. You can speak your truth without fear.
               </p>
               <div style={{ color: 'var(--echo-primary-light)', fontWeight: '700', fontSize: '0.875rem' }}>Encrypted • Secure • Safe Space</div>
             </div>
 
             <div className="echo-card glass-panel" style={{ padding: '3rem' }}>
               <div style={{ fontSize: '2.5rem', marginBottom: '1.5rem' }}>🌟</div>
-              <h3 style={{ fontSize: '1.5rem', fontWeight: '800', marginBottom: '1rem' }}>Shared Journeys</h3>
+              <h3 style={{ fontSize: '1.5rem', fontWeight: '800', marginBottom: '1rem' }}>A Community That Understands</h3>
               <p style={{ color: 'var(--echo-text-muted)', lineHeight: '1.7', marginBottom: '1.5rem' }}>
-                Connect with a community that understands. Share your stories anonymously and find strength in the shared human experience of healing. No one walks this path alone.
+                Step into a sanctuary of shared experiences. Read anonymous stories, share your own struggles, and find immense strength in a community that truly understands the weight you carry.
               </p>
               <div style={{ color: 'var(--echo-primary-light)', fontWeight: '700', fontSize: '0.875rem' }}>Community • Anonymity • Support</div>
             </div>
 
             <div className="echo-card glass-panel" style={{ padding: '3rem' }}>
               <div style={{ fontSize: '2.5rem', marginBottom: '1.5rem' }}>📊</div>
-              <h3 style={{ fontSize: '1.5rem', fontWeight: '800', marginBottom: '1rem' }}>Personal Mood Analytics</h3>
+              <h3 style={{ fontSize: '1.5rem', fontWeight: '800', marginBottom: '1rem' }}>Insightful Mood Analytics</h3>
               <p style={{ color: 'var(--echo-text-muted)', lineHeight: '1.7', marginBottom: '1.5rem' }}>
-                Visualize your emotional journey. Our intuitive tracking tools help you identify patterns, set goals, and celebrate small victories on your road to mental wellness.
+                Visualize the trajectory of your emotional well-being. Our intuitive analytics help you identify hidden emotional patterns, set achievable goals, and celebrate every victory on your road to recovery.
               </p>
               <div style={{ color: 'var(--echo-primary-light)', fontWeight: '700', fontSize: '0.875rem' }}>Insightful • Private Tracking • Progress</div>
             </div>
