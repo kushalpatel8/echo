@@ -33,28 +33,28 @@
 }
 
 [data-theme='light'] {
-  /* Vibrant Indigo Palette (Light Mode) */
-  --echo-bg: #F8FAFC; /* Soft Frost White */
-  --echo-surface: #FFFFFF; /* Pure White */
-  --echo-surface-2: #F1F5F9; 
-  --echo-border: rgba(15, 23, 42, 0.1); /* Subtle dark border */
-  --echo-text: #0F172A; /* Deep Slate for high contrast */
-  --echo-text-muted: #475569; /* Darker Slate for better readability */
-  --echo-nav-bg: rgba(255, 255, 255, 0.85);
+  /* Aura Color Palette (Light Mode) */
+  --echo-bg: #FDF7EC; /* Clarity Cream - gentle off-white */
+  --echo-surface: #FFFFFF; /* Pure White for elevated panels */
+  --echo-surface-2: #FDF7EC; 
+  --echo-border: rgba(58, 80, 67, 0.15); /* Deep Pine with opacity */
+  --echo-text: #3A5043; /* Deep Pine - grounding text */
+  --echo-text-muted: #7B8F7F; /* Earthen Sage - for muted text/icons */
+  --echo-nav-bg: rgba(253, 247, 236, 0.85); /* Clarity Cream transparent */
   --echo-glass-bg: rgba(255, 255, 255, 0.7);
 
-  /* Deep Indigo & Pink gradient */
-  --echo-primary: #6366F1; /* Indigo 500 */
-  --echo-primary-rgb: 99, 102, 241;
-  --echo-primary-light: #818CF8; /* Indigo 400 */
-  --echo-primary-low: rgba(99, 102, 241, 0.12);
+  /* Gradients and Brand Colors */
+  --echo-primary: #7B8F7F; /* Earthen Sage */
+  --echo-primary-rgb: 123, 143, 127;
+  --echo-primary-light: #98AAB7; /* Serene Sky */
+  --echo-primary-low: rgba(123, 143, 127, 0.15);
   
-  --echo-secondary: #EC4899; /* Pink 500 for stunning gradient */
+  --echo-secondary: #E6A78E; /* Compassionate Peach */
   
-  --echo-danger-low: rgba(239, 68, 68, 0.08);
-  --echo-success-low: rgba(34, 197, 94, 0.08);
-  --echo-warning-low: rgba(245, 158, 11, 0.08);
-  --echo-orb-opacity: 0.06;
+  --echo-danger-low: rgba(230, 167, 142, 0.15); /* Soft peach for warning/danger backgrounds */
+  --echo-success-low: rgba(123, 143, 127, 0.15);
+  --echo-warning-low: rgba(230, 167, 142, 0.15);
+  --echo-orb-opacity: 0.15;
 }
 
 * {
