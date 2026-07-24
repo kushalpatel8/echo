@@ -33,28 +33,37 @@
 }
 
 [data-theme='light'] {
-  /* Aura Color Palette (Light Mode) */
-  --echo-bg: #FDF7EC; /* Clarity Cream - gentle off-white */
-  --echo-surface: #FFFFFF; /* Pure White for elevated panels */
-  --echo-surface-2: #FDF7EC; 
-  --echo-border: rgba(58, 80, 67, 0.15); /* Deep Pine with opacity */
-  --echo-text: #3A5043; /* Deep Pine - grounding text */
-  --echo-text-muted: #7B8F7F; /* Earthen Sage - for muted text/icons */
-  --echo-nav-bg: rgba(253, 247, 236, 0.85); /* Clarity Cream transparent */
-  --echo-glass-bg: rgba(255, 255, 255, 0.7);
+  /* ── Nature-Inspired Mental Health Palette (Light Mode) ── */
+  --echo-bg: #F5F0E8; /* Warm Parchment - soft warm cream */
+  --echo-surface: #FFFFFF; /* Clean White - elevated panels */
+  --echo-surface-2: #EEE9DF; /* Linen - secondary surface, subtle warmth */
+  --echo-border: rgba(58, 80, 67, 0.12); /* Deep Pine border, very soft */
+  --echo-text: #2D4A3E; /* Forest Depth - rich readable text */
+  --echo-text-muted: #6B8F7B; /* Fern - muted text and icons */
+  --echo-nav-bg: rgba(58, 80, 67, 0.92); /* Deep Pine nav - dark green header */
+  --echo-glass-bg: rgba(255, 255, 255, 0.75);
 
-  /* Gradients and Brand Colors */
-  --echo-primary: #7B8F7F; /* Earthen Sage */
-  --echo-primary-rgb: 123, 143, 127;
-  --echo-primary-light: #98AAB7; /* Serene Sky */
-  --echo-primary-low: rgba(123, 143, 127, 0.15);
-  
-  --echo-secondary: #E6A78E; /* Compassionate Peach */
-  
-  --echo-danger-low: rgba(230, 167, 142, 0.15); /* Soft peach for warning/danger backgrounds */
-  --echo-success-low: rgba(123, 143, 127, 0.15);
-  --echo-warning-low: rgba(230, 167, 142, 0.15);
-  --echo-orb-opacity: 0.15;
+  /* Primary - Deep Forest Green (hero color for buttons, nav, headings) */
+  --echo-primary: #3A5043; /* Deep Pine */
+  --echo-primary-rgb: 58, 80, 67;
+  --echo-primary-light: #5A7A68; /* Moss - lighter shade for hover/accents */
+  --echo-primary-low: rgba(58, 80, 67, 0.10);
+
+  /* Secondary - Warm Coral/Peach (for CTAs, warmth accents) */
+  --echo-secondary: #D4886E; /* Terracotta Rose */
+
+  /* Accent palette for category cards & variety */
+  --echo-accent-sage: #A8C5A0; /* Soft Sage - wellness/meditation cards */
+  --echo-accent-peach: #F2C4A4; /* Peach Blossom - mood/warmth cards */
+  --echo-accent-sky: #A3C4D9; /* Clear Sky - calm/relaxation cards */
+  --echo-accent-blush: #E8B4B8; /* Dusty Rose - community/support cards */
+  --echo-accent-mint: #B5D8C7; /* Fresh Mint - success/health cards */
+
+  /* Semantic low-opacity backgrounds */
+  --echo-danger-low: rgba(212, 136, 110, 0.15); /* Terracotta tinted */
+  --echo-success-low: rgba(168, 197, 160, 0.25); /* Sage tinted */
+  --echo-warning-low: rgba(242, 196, 164, 0.25); /* Peach tinted */
+  --echo-orb-opacity: 0.10;
 }
 
 * {
@@ -125,12 +134,12 @@ body::after {
 }
 
 [data-theme='light'] .glass {
-  background: rgba(255, 255, 255, 0.7);
-  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+  background: rgba(255, 255, 255, 0.72);
+  box-shadow: 0 8px 32px 0 rgba(58, 80, 67, 0.06);
 }
 
 [data-theme='light'] .glass-light {
-  background: rgba(255, 255, 255, 0.4);
+  background: rgba(168, 197, 160, 0.12);
 }
 
 .glass-panel {
@@ -146,10 +155,10 @@ body::after {
 }
 
 [data-theme='light'] .glass-panel {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.8) 0%, rgba(255, 255, 255, 0.5) 100%);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.85) 0%, rgba(168, 197, 160, 0.08) 100%);
   box-shadow: 
-    0 10px 30px -10px rgba(0, 0, 0, 0.1),
-    inset 0 1px 1px rgba(255, 255, 255, 0.5);
+    0 10px 30px -10px rgba(58, 80, 67, 0.08),
+    inset 0 1px 1px rgba(255, 255, 255, 0.6);
 }
 
 .glass-panel:hover {
@@ -163,10 +172,10 @@ body::after {
 }
 
 [data-theme='light'] .glass-panel:hover {
-  background: linear-gradient(135deg, white 0%, var(--echo-primary-low) 100%);
+  background: linear-gradient(135deg, white 0%, rgba(168, 197, 160, 0.15) 100%);
   box-shadow: 
-    0 20px 40px -15px rgba(0, 0, 0, 0.1),
-    0 0 20px var(--echo-primary-low);
+    0 20px 40px -15px rgba(58, 80, 67, 0.10),
+    0 0 20px rgba(58, 80, 67, 0.06);
 }
 
 /* Mouse following glow */
@@ -441,6 +450,14 @@ body::after {
 .badge-red { background: rgba(239, 68, 68, 0.2); color: #fca5a5; }
 .badge-yellow { background: rgba(234, 179, 8, 0.2); color: #fde047; }
 
+/* Light mode badge overrides - earthy tones */
+[data-theme='light'] .badge-purple { background: rgba(58, 80, 67, 0.12); color: #3A5043; }
+[data-theme='light'] .badge-cyan { background: rgba(168, 197, 160, 0.25); color: #4A7A5A; }
+[data-theme='light'] .badge-pink { background: rgba(232, 180, 184, 0.25); color: #A0616A; }
+[data-theme='light'] .badge-green { background: rgba(168, 197, 160, 0.25); color: #3A7A4A; }
+[data-theme='light'] .badge-red { background: rgba(212, 136, 110, 0.2); color: #A0524A; }
+[data-theme='light'] .badge-yellow { background: rgba(242, 196, 164, 0.3); color: #8A6A3A; }
+
 /* Animations */
 @keyframes float {
   0%, 100% { transform: translateY(0px); }
@@ -476,6 +493,10 @@ body::after {
   align-self: flex-end;
 }
 
+[data-theme='light'] .message-sent {
+  background: linear-gradient(135deg, #3A5043, #5A7A68);
+}
+
 .message-received {
   background: var(--echo-surface-2);
   color: var(--echo-text);
@@ -484,6 +505,11 @@ body::after {
   max-width: 70%;
   align-self: flex-start;
   border: 1px solid var(--echo-border);
+}
+
+[data-theme='light'] .message-received {
+  background: rgba(168, 197, 160, 0.10);
+  border-color: rgba(58, 80, 67, 0.10);
 }
 
 /* Stars rating */
@@ -502,6 +528,14 @@ body::after {
 .mood-uneasy { color: #fdba74; }
 .mood-distressed { color: #fca5a5; }
 .mood-critical { color: #f87171; }
+
+/* Light mode mood colors - deeper tones for visibility on light bg */
+[data-theme='light'] .mood-radiant { color: #CA8A04; }
+[data-theme='light'] .mood-calm { color: #16A34A; }
+[data-theme='light'] .mood-neutral { color: #6B8F7B; }
+[data-theme='light'] .mood-uneasy { color: #D4886E; }
+[data-theme='light'] .mood-distressed { color: #DC6B5A; }
+[data-theme='light'] .mood-critical { color: #C0392B; }
 
 /* Page container */
 .page-container {

@@ -254,7 +254,7 @@ export default function HomePage() {
         borderTop: '1px solid var(--echo-border)',
         color: 'var(--echo-text-muted)',
         width: '100%',
-        background: 'var(--echo-nav-bg)',
+        background: 'var(--echo-surface-2)',
         backdropFilter: 'blur(10px)'
       }}>
         {role !== 'admin' && (

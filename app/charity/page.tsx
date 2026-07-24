@@ -178,7 +178,7 @@ export default function CharityPage() {
         textAlign: 'center',
         color: 'var(--echo-text-muted)',
         fontSize: '0.875rem',
-        background: 'var(--echo-nav-bg)',
+        background: 'var(--echo-surface-2)',
         backdropFilter: 'blur(10px)'
       }}>
         <p>© 2026 ECHO Mental Health Platform. Supporting global wellbeing. 💜</p>
