@@ -68,9 +68,20 @@ export default function MoodHistoryPage() {
   if (!isLoaded) return <div style={{ minHeight: '100vh', background: 'var(--echo-bg)' }} />;
 
   return (
-    <div style={{ minHeight: '100vh', background: 'var(--echo-bg)', display: 'flex', flexDirection: 'column' }}>
+    <div style={{ minHeight: '100vh', background: 'var(--echo-bg)', display: 'flex', flexDirection: 'column', position: 'relative', overflowX: 'hidden' }}>
+      {/* Dynamic Ambient Background Glow */}
+      <div
+        style={{
+          position: 'fixed',
+          inset: 0,
+          background: 'radial-gradient(ellipse at top right, rgba(124, 58, 237, 0.12) 0%, transparent 60%), radial-gradient(ellipse at bottom left, rgba(6, 182, 212, 0.1) 0%, transparent 60%)',
+          pointerEvents: 'none',
+          zIndex: 0,
+        }}
+      />
+
       {/* Header */}
-      <header style={{ padding: '1rem 1.5rem', borderBottom: '1px solid var(--echo-border)', background: 'var(--echo-surface)', display: 'flex', alignItems: 'center', gap: '1rem' }}>
+      <header style={{ padding: '1rem 1.5rem', borderBottom: '1px solid var(--echo-border)', background: 'var(--echo-surface)', display: 'flex', alignItems: 'center', gap: '1rem', position: 'relative', zIndex: 10 }}>
         <Link href="/mood-tracker" style={{ textDecoration: 'none', color: 'var(--echo-text-muted)', fontSize: '0.875rem' }}>← Back</Link>
         <div style={{ fontWeight: '700', flex: 1 }}>🕒 Mood History</div>
         {logs.length > 0 && (
@@ -91,7 +102,7 @@ export default function MoodHistoryPage() {
         )}
       </header>
 
-      <div className="page-container" style={{ maxWidth: '700px' }}>
+      <div className="page-container" style={{ maxWidth: '700px', position: 'relative', zIndex: 1 }}>
         <div style={{ marginBottom: '2.5rem' }}>
           <h1 className="gradient-text" style={{ fontSize: '2rem', fontWeight: '900', marginBottom: '0.5rem' }}>Your Journey</h1>
           <p style={{ color: 'var(--echo-text-muted)' }}>Reflect on your emotional trends over the past few assessments.</p>

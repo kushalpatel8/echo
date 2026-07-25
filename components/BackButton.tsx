@@ -1,7 +1,8 @@
 'use client';
 
 import { useRouter, usePathname } from 'next/navigation';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, LayoutDashboard } from 'lucide-react';
+import Link from 'next/link';
 
 // Pages where a back button makes no sense
 const NO_BACK_PAGES = ['/', '/sign-in', '/sign-up', '/role-selection'];
@@ -13,14 +14,32 @@ export default function BackButton() {
   // Hide on root-level pages
   if (NO_BACK_PAGES.includes(pathname)) return null;
 
+  const isDashboardPage = pathname.startsWith('/dashboard');
+
   return (
-    <button
-      onClick={() => router.back()}
-      aria-label="Go back"
-      className="back-btn"
-    >
-      <ArrowLeft size={16} strokeWidth={2.5} />
-      <span className="back-btn-label">Back</span>
+    <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem' }}>
+      <button
+        onClick={() => router.back()}
+        aria-label="Go back"
+        className="back-btn"
+      >
+        <ArrowLeft size={16} strokeWidth={2.5} />
+        <span className="back-btn-label">Back</span>
+      </button>
+
+      {!isDashboardPage && (
+        <Link href="/dashboard" style={{ textDecoration: 'none' }}>
+          <button
+            type="button"
+            aria-label="Dashboard"
+            className="back-btn"
+            style={{ gap: '0.3rem' }}
+          >
+            <LayoutDashboard size={14} strokeWidth={2.2} />
+            <span className="back-btn-label">Dashboard</span>
+          </button>
+        </Link>
+      )}
 
       <style>{`
         .back-btn {
@@ -49,11 +68,11 @@ export default function BackButton() {
           color: var(--echo-text);
           border-color: var(--echo-primary);
           background: var(--echo-primary-low);
-          transform: translateX(-2px);
+          transform: translateY(-1px);
         }
 
         .back-btn:active {
-          transform: translateX(-4px) scale(0.97);
+          transform: translateY(1px) scale(0.97);
         }
 
         /* Hide label on very small screens to save space */
@@ -61,6 +80,6 @@ export default function BackButton() {
           .back-btn-label { display: none; }
         }
       `}</style>
-    </button>
+    </div>
   );
 }

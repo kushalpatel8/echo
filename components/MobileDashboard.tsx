@@ -106,7 +106,7 @@ export default function MobileDashboard() {
 
       {/* ── Featured "AI Companion" wide card ── */}
       <Link href="/companion" className="mdb-featured-link">
-        <div className="mdb-featured-card">
+        <div className="mdb-featured-card mdb-card-companion">
           <div className="mdb-featured-orb" />
           <div className="mdb-featured-content">
             <span className="mdb-tag" style={{ background: 'rgba(153,246,228,0.18)', color: '#99f6e4', borderColor: 'rgba(153,246,228,0.35)' }}>24/7 Available</span>
@@ -130,7 +130,7 @@ export default function MobileDashboard() {
             style={{ '--delay': `${i * 60}ms` } as React.CSSProperties}
           >
             <div
-              className="mdb-card"
+              className={`mdb-card mdb-card-${action.href.replace(/\//g, '')}`}
               style={{
                 '--card-glow':   action.glow,
                 '--card-grad':   action.grad,
@@ -191,9 +191,8 @@ export default function MobileDashboard() {
           border-radius: 1.75rem;
           padding: 2rem 1.5rem 1.75rem;
           overflow: hidden;
-          background: var(--echo-glass-bg);
+          background: var(--echo-surface);
           border: 1px solid var(--echo-border);
-          backdrop-filter: blur(20px);
         }
 
         .mdb-hero-orb {
@@ -259,9 +258,8 @@ export default function MobileDashboard() {
           border-radius: 1.5rem;
           padding: 1.375rem 1.375rem 1.375rem 1.5rem;
           overflow: hidden;
-          background: linear-gradient(135deg, rgba(153,246,228,0.12) 0%, rgba(153,246,228,0.03) 100%);
-          border: 1px solid rgba(153,246,228,0.28);
-          backdrop-filter: blur(20px);
+          background: var(--echo-surface);
+          border: 1px solid var(--echo-border);
           display: flex;
           align-items: center;
           gap: 1rem;
@@ -373,9 +371,8 @@ export default function MobileDashboard() {
           align-items: flex-start;
           gap: 0.75rem;
           cursor: pointer;
-          background: var(--echo-glass-bg);
+          background: var(--echo-surface);
           border: 1px solid var(--card-border, var(--echo-border));
-          backdrop-filter: blur(20px);
           transition: transform 0.28s cubic-bezier(0.23,1,0.32,1),
                       box-shadow 0.28s ease,
                       border-color 0.2s;
@@ -475,9 +472,49 @@ export default function MobileDashboard() {
           transition: transform 0.3s ease, opacity 0.3s;
         }
 
-        .mdb-card:hover .mdb-card-line {
+         .mdb-card:hover .mdb-card-line {
           transform: scaleX(1);
           opacity: 1;
+        }
+
+        /* Light mode tag overrides for high contrast readability */
+        [data-theme='light'] .mdb-tag {
+          font-weight: 800;
+        }
+        [data-theme='light'] .mdb-card-doctors .mdb-tag {
+          color: #0f766e !important;
+          background: rgba(15, 118, 110, 0.1) !important;
+          border-color: rgba(15, 118, 110, 0.2) !important;
+        }
+        [data-theme='light'] .mdb-card-volunteers .mdb-tag {
+          color: #15803d !important;
+          background: rgba(21, 128, 61, 0.1) !important;
+          border-color: rgba(21, 128, 61, 0.2) !important;
+        }
+        [data-theme='light'] .mdb-card-mood-tracker .mdb-tag {
+          color: #be185d !important;
+          background: rgba(190, 24, 93, 0.1) !important;
+          border-color: rgba(190, 24, 93, 0.2) !important;
+        }
+        [data-theme='light'] .mdb-card-relaxation .mdb-tag {
+          color: #b45309 !important;
+          background: rgba(180, 83, 9, 0.1) !important;
+          border-color: rgba(180, 83, 9, 0.2) !important;
+        }
+        [data-theme='light'] .mdb-card-companion .mdb-tag {
+          color: #0f766e !important;
+          background: rgba(15, 118, 110, 0.1) !important;
+          border-color: rgba(15, 118, 110, 0.2) !important;
+        }
+        [data-theme='light'] .mdb-card-games .mdb-tag {
+          color: #6d28d9 !important;
+          background: rgba(109, 40, 217, 0.1) !important;
+          border-color: rgba(109, 40, 217, 0.2) !important;
+        }
+        [data-theme='light'] .mdb-card-relaxationbooks .mdb-tag {
+          color: #b45309 !important;
+          background: rgba(180, 83, 9, 0.1) !important;
+          border-color: rgba(180, 83, 9, 0.2) !important;
         }
       `}</style>
     </div>

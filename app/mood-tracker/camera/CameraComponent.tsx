@@ -236,8 +236,19 @@ export default function CameraMoodTrackerPage() {
   };
 
   return (
-    <div style={{ minHeight: '100vh', background: 'var(--echo-bg)', display: 'flex', flexDirection: 'column', alignItems: 'center', paddingTop: '4rem', paddingBottom: '4rem', paddingLeft: '1.5rem', paddingRight: '1.5rem', fontFamily: 'var(--font-inter)' }}>
-      <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
+    <div style={{ minHeight: '100vh', background: 'var(--echo-bg)', display: 'flex', flexDirection: 'column', alignItems: 'center', paddingTop: '4rem', paddingBottom: '4rem', paddingLeft: '1.5rem', paddingRight: '1.5rem', fontFamily: 'var(--font-inter)', position: 'relative', overflowX: 'hidden' }}>
+      {/* Dynamic Ambient Background Glow */}
+      <div
+        style={{
+          position: 'fixed',
+          inset: 0,
+          background: 'radial-gradient(ellipse at top right, rgba(124, 58, 237, 0.12) 0%, transparent 60%), radial-gradient(ellipse at bottom left, rgba(6, 182, 212, 0.1) 0%, transparent 60%)',
+          pointerEvents: 'none',
+          zIndex: 0,
+        }}
+      />
+
+      <div style={{ textAlign: 'center', marginBottom: '3rem', position: 'relative', zIndex: 10 }}>
         <h1 style={{ fontSize: '2.25rem', fontWeight: '800', color: 'var(--echo-text)', marginBottom: '0.75rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>
           Let your face tell the story 🎭
         </h1>
