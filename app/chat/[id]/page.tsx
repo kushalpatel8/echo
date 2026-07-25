@@ -5,6 +5,8 @@ import { useUser } from '@clerk/nextjs';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import BackButton from '@/components/BackButton';
+import { useVoice } from '@/hooks/useVoice';
+import { VoiceHeaderControls, VoiceMessageButton, VoiceInputButton } from '@/components/VoiceControls';
 
 interface Message {
   senderId: string;
@@ -39,6 +41,34 @@ export default function ChatPage() {
   const [rating, setRating] = useState(0);
   const [rated, setRated] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
+  const prevMsgCountRef = useRef(0);
+
+  const {
+    voices,
+    settings,
+    updateSettings,
+    speakingId,
+    speak,
+    stopSpeaking,
+    isListening,
+    startListening,
+    stopListening,
+    hasSpeechSupport,
+    hasSynthesisSupport,
+  } = useVoice();
+
+  useEffect(() => {
+    if (!chat || !settings.autoSpeak) return;
+    if (chat.messages.length > prevMsgCountRef.current) {
+      if (prevMsgCountRef.current > 0) {
+        const latestMsg = chat.messages[chat.messages.length - 1];
+        if (latestMsg && latestMsg.senderId !== user?.id) {
+          speak(`${latestMsg.senderName} says: ${latestMsg.content}`, `chat-msg-${chat.messages.length - 1}`);
+        }
+      }
+    }
+    prevMsgCountRef.current = chat.messages.length;
+  }, [chat, settings.autoSpeak, speak, user?.id]);
 
   useEffect(() => {
     if (!id) return;
@@ -201,6 +231,16 @@ export default function ChatPage() {
             </div>
           )}
           
+          <VoiceHeaderControls
+            voices={voices}
+            settings={settings}
+            updateSettings={updateSettings}
+            speak={speak}
+            stopSpeaking={stopSpeaking}
+            speakingId={speakingId}
+            hasSynthesisSupport={hasSynthesisSupport}
+          />
+
           <button 
             onClick={handleDelete}
             className="btn-secondary"
@@ -226,7 +266,7 @@ export default function ChatPage() {
         {chat.messages.map((msg, i) => {
           const isMe = msg.senderId === user?.id;
           return (
-              <div style={{ 
+              <div key={i} style={{ 
                 display: 'flex', 
                 flexDirection: 'column', 
                 alignItems: isMe ? 'flex-end' : 'flex-start',
@@ -243,6 +283,15 @@ export default function ChatPage() {
                 }}>
                   {msg.content}
                 </div>
+                <VoiceMessageButton
+                  text={msg.content}
+                  messageId={`chat-msg-${i}`}
+                  speakingId={speakingId}
+                  speak={speak}
+                  stopSpeaking={stopSpeaking}
+                  hasSynthesisSupport={hasSynthesisSupport}
+                  label="Listen"
+                />
               </div>
           );
         })}
@@ -257,9 +306,18 @@ export default function ChatPage() {
         gap: '0.75rem',
         alignItems: 'center'
       }}>
+        <VoiceInputButton
+          isListening={isListening}
+          onStart={() => {
+            const baseText = input.trim();
+            startListening((text) => setInput(baseText ? `${baseText} ${text}` : text));
+          }}
+          onStop={stopListening}
+          hasSpeechSupport={hasSpeechSupport}
+        />
         <input
           className="echo-input"
-          placeholder="Type your message..."
+          placeholder="Type or speak your message..."
           value={input}
           onChange={e => setInput(e.target.value)}
           onKeyDown={e => e.key === 'Enter' && sendMessage()}

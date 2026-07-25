@@ -3,6 +3,8 @@ import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { useUser } from '@clerk/nextjs';
 import BackButton from '@/components/BackButton';
+import { useVoice } from '@/hooks/useVoice';
+import { VoiceHeaderControls, VoiceMessageButton, VoiceInputButton } from '@/components/VoiceControls';
 
 interface Message {
   role: 'user' | 'assistant';
@@ -17,6 +19,20 @@ export default function AICompanionPage() {
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
+
+  const {
+    voices,
+    settings,
+    updateSettings,
+    speakingId,
+    speak,
+    stopSpeaking,
+    isListening,
+    startListening,
+    stopListening,
+    hasSpeechSupport,
+    hasSynthesisSupport,
+  } = useVoice();
 
   useEffect(() => {
     fetch('/api/users/me')
@@ -55,9 +71,17 @@ export default function AICompanionPage() {
         body: JSON.stringify({ messages: [...messages, userMsg] }),
       });
       const data = await res.json();
-      setMessages(prev => [...prev, { role: 'assistant', content: data.message || 'I\'m here for you. 💜' }]);
+      const replyText = data.message || 'I\'m here for you. 💜';
+      setMessages(prev => [...prev, { role: 'assistant', content: replyText }]);
+      if (settings.autoSpeak) {
+        speak(replyText, `msg-${messages.length + 1}`);
+      }
     } catch {
-      setMessages(prev => [...prev, { role: 'assistant', content: 'I\'m having trouble connecting right now. Please try again in a moment. 💜' }]);
+      const errorText = 'I\'m having trouble connecting right now. Please try again in a moment. 💜';
+      setMessages(prev => [...prev, { role: 'assistant', content: errorText }]);
+      if (settings.autoSpeak) {
+        speak(errorText, `msg-${messages.length + 1}`);
+      }
     }
     setLoading(false);
   };
@@ -65,9 +89,9 @@ export default function AICompanionPage() {
   return (
     <div style={{ minHeight: '100vh', background: 'var(--echo-bg)', display: 'flex', flexDirection: 'column' }}>
       {/* Header */}
-      <header style={{ padding: '1rem 1.5rem', borderBottom: '1px solid var(--echo-border)', display: 'flex', alignItems: 'center', gap: '1rem', background: 'var(--echo-surface)' }}>
+      <header style={{ padding: '1rem 1.5rem', borderBottom: '1px solid var(--echo-border)', display: 'flex', alignItems: 'center', gap: '1rem', background: 'var(--echo-surface)', flexWrap: 'wrap' }}>
         <BackButton />
-        <div style={{ flex: 1, display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+        <div style={{ flex: 1, display: 'flex', alignItems: 'center', gap: '0.75rem', minWidth: 'fit-content' }}>
           <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: 'linear-gradient(135deg, #7c3aed, #06b6d4)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.25rem' }} className="animate-pulse-glow">🤖</div>
           <div>
             <div style={{ fontWeight: '700' }}>ECHO AI Companion</div>
@@ -76,6 +100,17 @@ export default function AICompanionPage() {
               Always here for you
             </div>
           </div>
+        </div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginLeft: 'auto' }}>
+          <VoiceHeaderControls
+            voices={voices}
+            settings={settings}
+            updateSettings={updateSettings}
+            speak={speak}
+            stopSpeaking={stopSpeaking}
+            speakingId={speakingId}
+            hasSynthesisSupport={hasSynthesisSupport}
+          />
         </div>
       </header>
 
@@ -92,6 +127,17 @@ export default function AICompanionPage() {
             <div className={msg.role === 'user' ? 'message-sent' : 'message-received'} style={{ lineHeight: '1.6', fontSize: '0.9375rem' }}>
               {msg.content}
             </div>
+            {msg.role === 'assistant' && (
+              <VoiceMessageButton
+                text={msg.content}
+                messageId={`msg-${i}`}
+                speakingId={speakingId}
+                speak={speak}
+                stopSpeaking={stopSpeaking}
+                hasSynthesisSupport={hasSynthesisSupport}
+                label="Listen"
+              />
+            )}
           </div>
         ))}
 
@@ -121,9 +167,18 @@ export default function AICompanionPage() {
 
       {/* Input */}
       <div style={{ padding: '1rem 1.5rem', borderTop: '1px solid var(--echo-border)', background: 'var(--echo-surface)', display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
+        <VoiceInputButton
+          isListening={isListening}
+          onStart={() => {
+            const baseText = input.trim();
+            startListening((text) => setInput(baseText ? `${baseText} ${text}` : text));
+          }}
+          onStop={stopListening}
+          hasSpeechSupport={hasSpeechSupport}
+        />
         <input
           className="echo-input"
-          placeholder="Type your message... I'm here to listen 💜"
+          placeholder="Type or speak your message... I'm here to listen 💜"
           value={input}
           onChange={e => setInput(e.target.value)}
           onKeyDown={e => e.key === 'Enter' && !e.shiftKey && sendMessage()}

@@ -37,7 +37,8 @@ export async function POST(req: NextRequest) {
 - Gently suggest professional help when needed
 - Never diagnose or treat mental health conditions
 - Keep responses warm, calm, and supportive
-- Use a gentle, caring tone always`,
+- Use a gentle, caring tone always
+- Keep your phrasing conversational, natural, and rhythmic so that it flows smoothly and soothingly when read aloud by our voice synthesizer`,
         },
         ...sanitizedMessages,
       ],
