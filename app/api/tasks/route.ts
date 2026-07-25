@@ -27,7 +27,7 @@ export async function POST(req: NextRequest) {
 
   await connectDB();
   const user = await User.findOne({ clerkId: userId });
-  if (!['volunteer', 'doctor'].includes(user?.role)) {
+  if (!user || !['volunteer', 'doctor'].includes(user.role)) {
     return NextResponse.json({ error: 'Only volunteers/doctors can assign tasks' }, { status: 403 });
   }
 

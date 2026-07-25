@@ -5,6 +5,7 @@ import { useUser, SignOutButton } from '@clerk/nextjs';
 import Link from 'next/link';
 import ThemeToggle from '@/components/ThemeToggle';
 import BackButton from '@/components/BackButton';
+import BanAppealBanner from '@/components/BanAppealBanner';
 
 type Tab = 'overview' | 'patients' | 'requests' | 'profile';
 
@@ -174,7 +175,7 @@ export default function DoctorDashboard() {
             <ThemeToggle />
           </div>
 
-          <div style={{ fontWeight: '700', fontSize: '1rem', marginBottom: '0.25rem' }}>{dbUser?.name as string || clerkUser?.firstName}</div>
+          <div style={{ fontWeight: '700', fontSize: '1rem', marginBottom: '0.25rem' }}>{dbUser?.name as string || clerkUser?.username || 'Doctor'}</div>
           <span className={`badge badge-${appStatus === 'approved' ? 'cyan' : 'yellow'}`}>
             Doctor · {appStatus as string || 'Pending'}
           </span>
@@ -279,11 +280,14 @@ export default function DoctorDashboard() {
               )}
             </button>
           </div>
-        {appStatus === 'pending' && (
-          <div style={{ padding: '1rem 1.5rem', borderRadius: '0.75rem', background: 'var(--echo-warning-low)', border: '1px solid var(--echo-border)', marginBottom: '1.5rem' }}>
-            <span style={{ color: 'var(--echo-text)', fontSize: '0.875rem' }}>⏳ Your doctor application is under review by admin.</span>
-          </div>
-        )}
+        <BanAppealBanner dbUser={dbUser} />
+        {!dbUser?.isBanned && (
+          <>
+            {appStatus === 'pending' && (
+              <div style={{ padding: '1rem 1.5rem', borderRadius: '0.75rem', background: 'var(--echo-warning-low)', border: '1px solid var(--echo-border)', marginBottom: '1.5rem' }}>
+                <span style={{ color: 'var(--echo-text)', fontSize: '0.875rem' }}>⏳ Your doctor application is under review by admin.</span>
+              </div>
+            )}
 
         {/* Navigation Grid (Visible on all sizes) */}
         <div className="animate-fade-in-up" style={{ marginBottom: '2rem' }}>
@@ -521,6 +525,8 @@ export default function DoctorDashboard() {
               </div>
             </div>
           </div>
+        )}
+        </>
         )}
         </main>
       </div>

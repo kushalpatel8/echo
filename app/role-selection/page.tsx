@@ -99,7 +99,7 @@ export default function RoleSelectionPage() {
             boxShadow: '0 0 30px rgba(124,58,237,0.4)',
           }}>E</div>
           <h1 style={{ fontSize: '2rem', fontWeight: '800', marginBottom: '0.5rem' }}>
-            Who are you, {user?.firstName || 'friend'}?
+            Who are you, {user?.username || 'friend'}?
           </h1>
           <p style={{ color: 'var(--echo-text-muted)' }}>
             Choose your role to personalize your ECHO experience

@@ -17,6 +17,13 @@ interface Chat {
   _id: string;
   participants: string[];
   participantNames: string[];
+  userId?: string;
+  userName?: string;
+  helperId?: string;
+  helperName?: string;
+  helperRole?: 'doctor' | 'volunteer';
+  doctorId?: string;
+  volunteerId?: string;
   messages: Message[];
   isActive: boolean;
 }
@@ -73,6 +80,16 @@ export default function ChatPage() {
         setInput('');
         const data = await res.json();
         setChat(data.chat);
+      } else {
+        const data = await res.json().catch(() => ({}));
+        if (data.error) {
+          alert(data.error);
+          if (data.isBanned) {
+            router.push('/dashboard');
+          }
+        } else {
+          alert('Failed to send message');
+        }
       }
     } catch {
       alert('Failed to send message');
@@ -83,7 +100,7 @@ export default function ChatPage() {
 
   const handleRate = async (val: number) => {
     setRating(val);
-    const volunteerId = chat?.participants.find(p => p !== user?.id);
+    const volunteerId = chat?.volunteerId || chat?.doctorId || chat?.helperId || chat?.participants.find(p => p !== user?.id);
     if (!volunteerId) return;
 
     try {
@@ -114,8 +131,9 @@ export default function ChatPage() {
   if (loading) return <div style={{ minHeight: '100vh', background: 'var(--echo-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><p>Joining session...</p></div>;
   if (!chat) return null;
 
-  const otherName = chat.participantNames.find(n => n !== user?.fullName && n !== `${user?.firstName} ${user?.lastName}`) || 'Participant';
-  const otherId = chat.participants.find(p => p !== user?.id);
+  const isHelper = user?.id === chat.helperId || user?.id === chat.doctorId || user?.id === chat.volunteerId;
+  const otherName = isHelper ? (chat.userName || 'Patient') : (chat.helperName || chat.participantNames.find(n => n !== user?.username && n !== user?.fullName && n !== `${user?.firstName} ${user?.lastName}`) || 'Participant');
+  const otherId = isHelper ? chat.userId : (chat.helperId || chat.doctorId || chat.volunteerId || chat.participants.find(p => p !== user?.id));
 
   return (
     <div style={{ minHeight: '100vh', background: 'var(--echo-bg)', display: 'flex', flexDirection: 'column' }}>
@@ -155,7 +173,7 @@ export default function ChatPage() {
         
         <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
           {/* Rating component for users only */}
-          {user?.id !== otherId && (
+          {!isHelper && user?.id !== otherId && (
             <div className="glass-light" style={{ 
               display: 'flex', 
               alignItems: 'center', 

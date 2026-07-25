@@ -148,7 +148,7 @@ export default function UserDashboard() {
           }}>
             <div style={{ fontSize: '0.6875rem', color: 'var(--echo-text-muted)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '0.2rem' }}>Signed in as</div>
             <div style={{ fontWeight: '700', fontSize: '0.9375rem', color: 'var(--echo-text)' }}>
-              {(dbUser?.name as string) || clerkUser?.firstName || 'User'}
+              {(dbUser?.name as string) || clerkUser?.username || 'User'}
             </div>
           </div>
         </div>

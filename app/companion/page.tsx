@@ -12,11 +12,30 @@ interface Message {
 export default function AICompanionPage() {
   const { user } = useUser();
   const [messages, setMessages] = useState<Message[]>([
-    { role: 'assistant', content: `Hello, ${user?.firstName || 'friend'} 💜 I'm ECHO, your mental health companion. I'm here to listen, support, and journey with you. How are you feeling today?` }
+    { role: 'assistant', content: `Hello, ${user?.username || 'friend'} 💜 I'm ECHO, your mental health companion. I'm here to listen, support, and journey with you. How are you feeling today?` }
   ]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    fetch('/api/users/me')
+      .then(r => r.json())
+      .then(d => {
+        if (d.user?.name) {
+          setMessages(prev => {
+            if (prev.length === 1 && prev[0].role === 'assistant') {
+              return [{
+                ...prev[0],
+                content: `Hello, ${d.user.name} 💜 I'm ECHO, your mental health companion. I'm here to listen, support, and journey with you. How are you feeling today?`
+              }];
+            }
+            return prev;
+          });
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });

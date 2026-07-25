@@ -6,7 +6,7 @@ import Link from 'next/link';
 import ThemeToggle from '@/components/ThemeToggle';
 import BackButton from '@/components/BackButton';
 
-type Tab = 'applications' | 'users' | 'volunteers' | 'doctors' | 'suggestions';
+type Tab = 'applications' | 'users' | 'volunteers' | 'doctors' | 'suggestions' | 'appeals';
 
 export default function AdminDashboard() {
   const router = useRouter();
@@ -15,6 +15,8 @@ export default function AdminDashboard() {
   const [applications, setApplications] = useState<any[]>([]);
   const [users, setUsers] = useState<any[]>([]);
   const [suggestions, setSuggestions] = useState<any[]>([]);
+  const [appeals, setAppeals] = useState<any[]>([]);
+  const [replyInput, setReplyInput] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
@@ -24,6 +26,7 @@ export default function AdminDashboard() {
       setDbUser(d.user);
     });
     loadApplications();
+    loadAppeals();
   }, [router]);
 
   const loadApplications = () => {
@@ -37,6 +40,10 @@ export default function AdminDashboard() {
 
   const loadSuggestions = () => {
     fetch('/api/suggestions').then(r => r.json()).then(d => setSuggestions(d.suggestions || []));
+  };
+
+  const loadAppeals = () => {
+    fetch('/api/appeals').then(r => r.json()).then(d => setAppeals(d.appeals || []));
   };
 
   const deleteSuggestion = async (id: string) => {
@@ -57,6 +64,7 @@ export default function AdminDashboard() {
     else if (tab === 'volunteers') loadUsers('volunteer');
     else if (tab === 'doctors') loadUsers('doctor');
     else if (tab === 'suggestions') loadSuggestions();
+    else if (tab === 'appeals') loadAppeals();
     else loadApplications();
   }, [tab]);
 
@@ -81,6 +89,7 @@ export default function AdminDashboard() {
     { id: 'volunteers', icon: '🤝', label: 'Volunteers' },
     { id: 'doctors', icon: '👨‍⚕️', label: 'Doctors' },
     { id: 'suggestions', icon: '💡', label: 'Suggestions' },
+    { id: 'appeals', icon: '📬', label: 'Ban Appeals', badge: appeals.filter(a => a.status === 'pending').length },
   ];
 
   return (
@@ -457,6 +466,114 @@ export default function AdminDashboard() {
                       </button>
                     </div>
                     <p style={{ color: 'var(--echo-text)', lineHeight: '1.6', whiteSpace: 'pre-wrap' }}>{s.text}</p>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
+        {tab === 'appeals' && (
+          <div className="animate-fade-in-up">
+            <h1 className="section-heading hide-mobile">📬 Ban Appeals & Support</h1>
+            {appeals.length === 0 ? (
+              <div className="echo-card" style={{ textAlign: 'center', padding: '3rem' }}>
+                <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>✅</div>
+                <p style={{ color: 'var(--echo-text-muted)' }}>No ban appeals at this moment.</p>
+              </div>
+            ) : (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+                {appeals.map((a: any) => (
+                  <div key={a._id} className="echo-card" style={{ border: a.status === 'pending' ? '2px solid #f59e0b' : '1px solid var(--echo-border)' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '1rem', borderBottom: '1px solid var(--echo-border)', paddingBottom: '1rem', marginBottom: '1rem' }}>
+                      <div>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.375rem' }}>
+                          <span style={{ fontWeight: '700', fontSize: '1.125rem' }}>{a.userName}</span>
+                          <span className={`badge badge-${a.userRole === 'doctor' ? 'cyan' : 'purple'}`}>{a.userRole}</span>
+                          <span className={`badge badge-${a.status === 'resolved' ? 'green' : a.status === 'rejected' ? 'red' : 'yellow'}`}>{a.status.toUpperCase()}</span>
+                        </div>
+                        <div style={{ fontSize: '0.8125rem', color: 'var(--echo-text-muted)' }}>{a.userEmail} • Clerk ID: {a.userId}</div>
+                      </div>
+                      <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+                        {a.status === 'pending' && (
+                          <>
+                            <button
+                              onClick={async () => {
+                                if (!confirm(`Revoke ban and restore account for ${a.userName}?`)) return;
+                                setLoading(true);
+                                await fetch('/api/appeals', {
+                                  method: 'POST',
+                                  headers: { 'Content-Type': 'application/json' },
+                                  body: JSON.stringify({ action: 'resolve', appealId: a._id, content: replyInput[a._id] || '' }),
+                                });
+                                setReplyInput(prev => ({ ...prev, [a._id]: '' }));
+                                loadAppeals();
+                                setLoading(false);
+                              }}
+                              disabled={loading}
+                              style={{ background: '#22c55e', color: 'white', border: 'none', padding: '0.5rem 1rem', borderRadius: '8px', fontWeight: '700', fontSize: '0.8125rem', cursor: 'pointer' }}
+                            >
+                              ✅ Revoke Ban & Restore
+                            </button>
+                            <button
+                              onClick={async () => {
+                                if (!confirm(`Reject appeal for ${a.userName}? Account will remain banned.`)) return;
+                                setLoading(true);
+                                await fetch('/api/appeals', {
+                                  method: 'POST',
+                                  headers: { 'Content-Type': 'application/json' },
+                                  body: JSON.stringify({ action: 'reject', appealId: a._id, content: replyInput[a._id] || '' }),
+                                });
+                                setReplyInput(prev => ({ ...prev, [a._id]: '' }));
+                                loadAppeals();
+                                setLoading(false);
+                              }}
+                              disabled={loading}
+                              style={{ background: '#ef4444', color: 'white', border: 'none', padding: '0.5rem 1rem', borderRadius: '8px', fontWeight: '700', fontSize: '0.8125rem', cursor: 'pointer' }}
+                            >
+                              ❌ Reject Appeal
+                            </button>
+                          </>
+                        )}
+                      </div>
+                    </div>
+
+                    <div style={{ maxHeight: '300px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '0.75rem', padding: '1rem', background: 'var(--echo-bg)', borderRadius: '10px', marginBottom: '1rem', border: '1px solid var(--echo-border)' }}>
+                      {a.messages.map((m: any, idx: number) => (
+                        <div key={idx} style={{ alignSelf: m.isAdmin ? 'flex-end' : 'flex-start', maxWidth: '80%', background: m.isAdmin ? 'linear-gradient(135deg, #4f46e5, #4338ca)' : 'var(--echo-surface-2)', color: m.isAdmin ? 'white' : 'var(--echo-text)', padding: '0.75rem 1rem', borderRadius: m.isAdmin ? '12px 12px 2px 12px' : '12px 12px 12px 2px', border: m.isAdmin ? 'none' : '1px solid var(--echo-border)' }}>
+                          <div style={{ fontSize: '0.7rem', fontWeight: '700', marginBottom: '0.25rem', opacity: 0.85 }}>{m.senderName} • {new Date(m.timestamp).toLocaleString()}</div>
+                          <div style={{ fontSize: '0.875rem', whiteSpace: 'pre-wrap', lineHeight: 1.4 }}>{m.content}</div>
+                        </div>
+                      ))}
+                    </div>
+
+                    <div style={{ display: 'flex', gap: '0.75rem' }}>
+                      <input
+                        type="text"
+                        placeholder="Write a reply message to this helper..."
+                        value={replyInput[a._id] || ''}
+                        onChange={e => setReplyInput(prev => ({ ...prev, [a._id]: e.target.value }))}
+                        style={{ flex: 1, padding: '0.75rem 1rem', borderRadius: '8px', border: '1px solid var(--echo-border)', background: 'var(--echo-bg)', color: 'var(--echo-text)', fontSize: '0.875rem' }}
+                      />
+                      <button
+                        onClick={async () => {
+                          if (!replyInput[a._id]?.trim()) return;
+                          setLoading(true);
+                          await fetch('/api/appeals', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ action: 'send', appealId: a._id, content: replyInput[a._id].trim() }),
+                          });
+                          setReplyInput(prev => ({ ...prev, [a._id]: '' }));
+                          loadAppeals();
+                          setLoading(false);
+                        }}
+                        disabled={loading || !replyInput[a._id]?.trim()}
+                        style={{ background: 'var(--echo-primary)', color: 'white', border: 'none', padding: '0 1.25rem', borderRadius: '8px', fontWeight: '700', cursor: 'pointer' }}
+                      >
+                        Reply 📤
+                      </button>
+                    </div>
                   </div>
                 ))}
               </div>

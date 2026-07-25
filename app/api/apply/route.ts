@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { auth, currentUser } from '@clerk/nextjs/server';
 import connectDB from '@/lib/mongodb';
 import User from '@/lib/models/User';
+import { getUniqueUsername } from '@/lib/username';
 
 export async function POST(req: NextRequest) {
   const { userId } = await auth();
@@ -15,13 +16,20 @@ export async function POST(req: NextRequest) {
   let dbUser = await User.findOne({ clerkId: userId });
 
   if (!dbUser) {
+    const uniqueName = await getUniqueUsername(clerkUser);
     dbUser = await User.create({
       clerkId: userId,
       email: clerkUser?.emailAddresses[0]?.emailAddress || '',
-      name: `${clerkUser?.firstName || ''} ${clerkUser?.lastName || ''}`.trim(),
+      name: uniqueName,
       imageUrl: clerkUser?.imageUrl || '',
       role: type,
     });
+  } else {
+    const realName = `${clerkUser?.firstName || ''} ${clerkUser?.lastName || ''}`.trim();
+    if (dbUser.name === realName || (clerkUser?.firstName && dbUser.name === clerkUser.firstName)) {
+      dbUser.name = await getUniqueUsername(clerkUser);
+      await dbUser.save();
+    }
   }
 
   if (type === 'volunteer') {

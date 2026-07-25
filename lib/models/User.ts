@@ -10,6 +10,7 @@ export interface IUser extends Document {
   imageUrl: string;
   role: UserRole;
   isBanned: boolean;
+  warningCount?: number;
   applicationStatus?: ApplicationStatus;
   volunteerProfile?: {
     phoneNo: string;
@@ -37,6 +38,7 @@ const UserSchema = new Schema<IUser>({
   imageUrl: { type: String, default: '' },
   role: { type: String, enum: ['user', 'volunteer', 'doctor', 'admin'], default: 'user' },
   isBanned: { type: Boolean, default: false },
+  warningCount: { type: Number, default: 0 },
   applicationStatus: { type: String, enum: ['pending', 'approved', 'rejected'] },
   volunteerProfile: {
     phoneNo: String,
@@ -56,4 +58,7 @@ const UserSchema = new Schema<IUser>({
   },
 }, { timestamps: true });
 
-export default models.User || model<IUser>('User', UserSchema);
+if (models.User) {
+  delete models.User;
+}
+export default model<IUser>('User', UserSchema);

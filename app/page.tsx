@@ -275,28 +275,30 @@ export default function HomePage() {
             </div>
             
             {/* Suggestion Box */}
-            <div style={{ flex: '1 1 400px' }}>
-              <h3 style={{ color: 'var(--echo-text)', fontSize: '1.25rem', fontWeight: '800', marginBottom: '1.5rem' }}>Suggestions</h3>
-              {suggestionSent ? (
-                <div style={{ padding: '1.5rem', background: 'var(--echo-success-low)', color: 'var(--echo-text)', borderRadius: '12px', border: '1px solid rgba(34, 197, 94, 0.2)' }}>
-                  ✅ Thank you! Your suggestion has been sent.
-                </div>
-              ) : (
-                <form style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }} onSubmit={handleSuggestionSubmit}>
-                  <textarea 
-                    className="echo-input" 
-                    placeholder="Share your thoughts or suggestions to help us improve..." 
-                    style={{ minHeight: '100px', resize: 'vertical' }}
-                    value={suggestionText}
-                    onChange={(e) => setSuggestionText(e.target.value)}
-                    required
-                  />
-                  <button type="submit" className="btn-primary" style={{ alignSelf: 'flex-start', padding: '0.6rem 1.5rem', fontSize: '0.875rem' }} disabled={isSubmittingSuggestion}>
-                    {isSubmittingSuggestion ? 'Sending...' : 'Send Suggestion'}
-                  </button>
-                </form>
-              )}
-            </div>
+            {user && (
+              <div style={{ flex: '1 1 400px' }}>
+                <h3 style={{ color: 'var(--echo-text)', fontSize: '1.25rem', fontWeight: '800', marginBottom: '1.5rem' }}>Suggestions</h3>
+                {suggestionSent ? (
+                  <div style={{ padding: '1.5rem', background: 'var(--echo-success-low)', color: 'var(--echo-text)', borderRadius: '12px', border: '1px solid rgba(34, 197, 94, 0.2)' }}>
+                    ✅ Thank you! Your suggestion has been sent.
+                  </div>
+                ) : (
+                  <form style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }} onSubmit={handleSuggestionSubmit}>
+                    <textarea 
+                      className="echo-input" 
+                      placeholder="Share your thoughts or suggestions to help us improve..." 
+                      style={{ minHeight: '100px', resize: 'vertical' }}
+                      value={suggestionText}
+                      onChange={(e) => setSuggestionText(e.target.value)}
+                      required
+                    />
+                    <button type="submit" className="btn-primary" style={{ alignSelf: 'flex-start', padding: '0.6rem 1.5rem', fontSize: '0.875rem' }} disabled={isSubmittingSuggestion}>
+                      {isSubmittingSuggestion ? 'Sending...' : 'Send Suggestion'}
+                    </button>
+                  </form>
+                )}
+              </div>
+            )}
           </div>
         )}
 

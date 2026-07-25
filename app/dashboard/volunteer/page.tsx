@@ -5,6 +5,7 @@ import { useUser, SignOutButton } from '@clerk/nextjs';
 import Link from 'next/link';
 import ThemeToggle from '@/components/ThemeToggle';
 import BackButton from '@/components/BackButton';
+import BanAppealBanner from '@/components/BanAppealBanner';
 
 type Tab = 'overview' | 'chats' | 'tasks' | 'profile';
 
@@ -157,7 +158,7 @@ export default function VolunteerDashboard() {
             <ThemeToggle />
           </div>
 
-          <div style={{ fontWeight: '700', fontSize: '1rem', marginBottom: '0.25rem' }}>{dbUser?.name as string || clerkUser?.firstName}</div>
+          <div style={{ fontWeight: '700', fontSize: '1rem', marginBottom: '0.25rem' }}>{dbUser?.name as string || clerkUser?.username || 'Volunteer'}</div>
           <span className={`badge badge-${appStatus === 'approved' ? 'green' : appStatus === 'pending' ? 'yellow' : 'red'}`}>
             {dbUser?.role === 'doctor' ? '👨‍⚕️ Doctor' : '🤝 Volunteer'} · {appStatus as string || 'pending'}
           </span>
@@ -252,13 +253,16 @@ export default function VolunteerDashboard() {
               )}
             </button>
           </div>
-        {/* Pending Application Banner */}
-        {appStatus === 'pending' && (
-          <div style={{ padding: '1rem 1.5rem', borderRadius: '0.75rem', background: 'rgba(245,158,11,0.1)', border: '1px solid rgba(245,158,11,0.3)', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-            <span>⏳</span>
-            <span style={{ color: '#fde047', fontSize: '0.875rem' }}>Your application is under review. You'll be able to help users once approved by admin.</span>
-          </div>
-        )}
+        <BanAppealBanner dbUser={dbUser} />
+        {!dbUser?.isBanned && (
+          <>
+            {/* Pending Application Banner */}
+            {appStatus === 'pending' && (
+              <div style={{ padding: '1rem 1.5rem', borderRadius: '0.75rem', background: 'rgba(245,158,11,0.1)', border: '1px solid rgba(245,158,11,0.3)', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                <span>⏳</span>
+                <span style={{ color: '#fde047', fontSize: '0.875rem' }}>Your application is under review. You'll be able to help users once approved by admin.</span>
+              </div>
+            )}
 
         {/* Navigation Grid (Visible on all sizes) */}
         <div className="animate-fade-in-up" style={{ marginBottom: '2rem' }}>
@@ -450,6 +454,8 @@ export default function VolunteerDashboard() {
               </div>
             </div>
           </div>
+        )}
+        </>
         )}
         </main>
       </div>

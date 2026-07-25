@@ -16,11 +16,18 @@ export default function VolunteerApplyPage() {
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [agreed, setAgreed] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError('');
+
+    if (!agreed) {
+      setError('You must agree to the Terms & Conditions and Code of Conduct to apply.');
+      setLoading(false);
+      return;
+    }
 
     try {
       const res = await fetch('/api/apply', {
@@ -105,6 +112,34 @@ export default function VolunteerApplyPage() {
               value={formData.experience}
               onChange={e => setFormData(p => ({ ...p, experience: e.target.value }))}
             />
+          </div>
+
+          <div style={{ 
+            background: 'rgba(255, 255, 255, 0.03)', 
+            border: '1px solid var(--echo-border)', 
+            borderRadius: '0.75rem', 
+            padding: '1.25rem', 
+            marginBottom: '1.5rem' 
+          }}>
+            <h3 style={{ fontSize: '0.9375rem', fontWeight: '700', color: 'var(--echo-text)', marginBottom: '0.75rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <span>📜</span> Helper Terms & Code of Conduct
+            </h3>
+            <ul style={{ fontSize: '0.8125rem', color: 'var(--echo-text-muted)', paddingLeft: '1.25rem', marginBottom: '1rem', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+              <li><strong>Zero Tolerance for Abuse:</strong> You agree to communicate with empathy and respect. Using profanity, slurs, or emotionally harmful language is strictly prohibited.</li>
+              <li><strong>3-Strike Policy:</strong> Our automated AI moderation actively screens all chat sessions. Violating communication standards results in: 1st Warning, 2nd Strong Warning, and on the 3rd offense, an immediate automatic account ban.</li>
+              <li><strong>Confidentiality:</strong> You agree to maintain strict confidentiality regarding all patient and user conversations.</li>
+              <li><strong>Professional Integrity:</strong> You understand that providing misleading advice or harassment will lead to immediate revocation of your helper status by admin.</li>
+            </ul>
+            <label style={{ display: 'flex', alignItems: 'flex-start', gap: '0.75rem', cursor: 'pointer', fontSize: '0.875rem', color: 'var(--echo-text)', fontWeight: '600' }}>
+              <input 
+                type="checkbox" 
+                required 
+                checked={agreed} 
+                onChange={e => setAgreed(e.target.checked)}
+                style={{ marginTop: '0.2rem', width: '1rem', height: '1rem', accentColor: 'var(--echo-primary)', cursor: 'pointer' }}
+              />
+              <span>I have read and agree to the Helper Terms, Code of Conduct, and the 3-Strike Ban Policy.</span>
+            </label>
           </div>
 
           {error && <div className="badge badge-red" style={{ marginBottom: '1.5rem', width: '100%', padding: '0.75rem', borderRadius: '0.5rem' }}>{error}</div>}
