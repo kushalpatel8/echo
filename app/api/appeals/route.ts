@@ -32,6 +32,13 @@ export async function POST(req: NextRequest) {
   const currentUser = await User.findOne({ clerkId: userId });
   if (!currentUser) return NextResponse.json({ error: 'User not found' }, { status: 404 });
 
+  if (currentUser.isBanned && (currentUser.role === 'volunteer' || currentUser.role === 'doctor')) {
+    const banCount = currentUser.banCount || 0;
+    if (banCount > 1) {
+      return NextResponse.json({ error: 'Due to repeated violations of our community guidelines, you are no longer eligible to submit an appeal. The administration team will take final action on your account.' }, { status: 403 });
+    }
+  }
+
   if (action === 'create') {
     if (!content || !content.trim()) {
       return NextResponse.json({ error: 'Message content required' }, { status: 400 });
@@ -103,29 +110,13 @@ export async function POST(req: NextRequest) {
     const appeal = await Appeal.findById(appealId);
     if (!appeal) return NextResponse.json({ error: 'Appeal not found' }, { status: 404 });
 
-    appeal.status = 'resolved';
-    if (content && content.trim()) {
-      appeal.messages.push({
-        senderId: userId,
-        senderName: `${currentUser.name} (Admin)`,
-        isAdmin: true,
-        content: content.trim(),
-        timestamp: new Date(),
-      });
-    } else {
-      appeal.messages.push({
-        senderId: userId,
-        senderName: 'System Admin',
-        isAdmin: true,
-        content: '✅ Your ban has been revoked. Please adhere strictly to our communication guidelines moving forward.',
-        timestamp: new Date(),
-      });
-    }
-    await appeal.save();
-
+    // Revoke ban on the user
     await User.findOneAndUpdate({ clerkId: appeal.userId }, { isBanned: false, warningCount: 0 });
 
-    return NextResponse.json({ success: true, appeal });
+    // Delete the appeal document and its chat history
+    await Appeal.findByIdAndDelete(appealId);
+
+    return NextResponse.json({ success: true });
   }
 
   if (action === 'reject') {

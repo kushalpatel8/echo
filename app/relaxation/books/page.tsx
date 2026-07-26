@@ -236,7 +236,7 @@ export default function RelaxationBooksPage() {
           <div className="library-back-container">
             <BackButton />
           </div>
-          <div className="library-logo-wrapper">
+          <div className="library-logo-wrapper hide-desktop">
             <div
               style={{
                 width: '36px',

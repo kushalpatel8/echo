@@ -91,7 +91,7 @@ export default function AICompanionPage() {
       {/* Header */}
       <header style={{ padding: '1rem 1.5rem', borderBottom: '1px solid var(--echo-border)', display: 'flex', alignItems: 'center', gap: '1rem', background: 'var(--echo-surface)', flexWrap: 'wrap' }}>
         <BackButton />
-        <div style={{ flex: 1, display: 'flex', alignItems: 'center', gap: '0.75rem', minWidth: 'fit-content' }}>
+        <div className="hide-desktop" style={{ flex: 1, display: 'flex', alignItems: 'center', gap: '0.75rem', minWidth: 'fit-content' }}>
           <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: 'linear-gradient(135deg, #7c3aed, #06b6d4)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.25rem' }} className="animate-pulse-glow">🤖</div>
           <div>
             <div style={{ fontWeight: '700' }}>ECHO AI Companion</div>

@@ -1,7 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import Navbar from '@/components/Navbar';
+import BubbleLoader from '@/components/BubbleLoader';
 
 export default function DashboardPage() {
   const router = useRouter();
@@ -34,19 +34,5 @@ export default function DashboardPage() {
       .finally(() => setLoading(false));
   }, [router]);
 
-  return (
-    <main style={{ minHeight: '100vh', background: 'transparent', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-      <div style={{ textAlign: 'center' }}>
-        <div style={{
-          width: '64px', height: '64px', borderRadius: '50%',
-          border: '3px solid var(--echo-primary)',
-          borderTopColor: 'transparent',
-          animation: 'spin 0.8s linear infinite',
-          margin: '0 auto 1rem',
-        }} />
-        <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
-        <p style={{ color: 'var(--echo-text-muted)' }}>Loading your dashboard...</p>
-      </div>
-    </main>
-  );
+  return <BubbleLoader message="Loading your dashboard..." />;
 }

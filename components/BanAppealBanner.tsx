@@ -34,6 +34,29 @@ export default function BanAppealBanner({ dbUser }: BanAppealBannerProps) {
 
   if (!dbUser?.isBanned) return null;
 
+  const isMultiBannedStaff = (dbUser?.role === 'volunteer' || dbUser?.role === 'doctor') && (dbUser?.banCount || 0) > 1;
+
+  if (isMultiBannedStaff) {
+    return (
+      <div style={{
+        background: 'linear-gradient(135deg, rgba(239, 68, 68, 0.2), rgba(220, 38, 38, 0.3))',
+        border: '2px solid #ef4444',
+        borderRadius: '16px',
+        padding: '2rem 1.5rem',
+        marginBottom: '2rem',
+        boxShadow: '0 8px 24px rgba(239, 68, 68, 0.2)',
+        color: 'var(--echo-text)',
+        textAlign: 'center'
+      }}>
+        <div style={{ fontSize: '3rem', marginBottom: '0.75rem' }}>🚫</div>
+        <h3 style={{ fontSize: '1.35rem', fontWeight: '800', color: '#f87171', marginBottom: '0.5rem' }}>Account Suspended</h3>
+        <p style={{ fontSize: '1rem', fontWeight: '700', color: '#ef4444', margin: 0 }}>
+          Due to repeated violations of our community guidelines, you are no longer eligible to submit an appeal. The administration team will take final action on your account.
+        </p>
+      </div>
+    );
+  }
+
   const currentAppeal = appeals[0]; // most recent appeal
 
   const handleSend = async () => {

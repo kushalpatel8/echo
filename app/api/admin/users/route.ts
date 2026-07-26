@@ -14,9 +14,11 @@ export async function GET(req: NextRequest) {
 
   const { searchParams } = new URL(req.url);
   const role = searchParams.get('role');
+  const isBanned = searchParams.get('isBanned');
 
   const filter: Record<string, unknown> = {};
   if (role) filter.role = role;
+  if (isBanned === 'true') filter.isBanned = true;
 
   const users = await User.find(filter).select('-__v').sort({ createdAt: -1 });
   

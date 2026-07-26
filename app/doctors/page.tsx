@@ -273,7 +273,7 @@ export default function DoctorsListPage() {
           <div className="doctors-back-container">
             <BackButton />
           </div>
-          <div className="doctors-logo-wrapper">
+          <div className="doctors-logo-wrapper hide-desktop">
             <Stethoscope size={24} style={{ color: currentTheme.primary }} />
             <span style={{ fontWeight: '800', fontSize: '1.25rem', color: 'var(--echo-text)' }}>
               Clinical Support

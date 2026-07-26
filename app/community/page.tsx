@@ -6,6 +6,7 @@ import Link from 'next/link';
 import ThemeToggle from '@/components/ThemeToggle';
 import BackButton from '@/components/BackButton';
 import { Sparkles, Users, Trash2, Paperclip, Lock, Check, X, Image as ImageIcon, Film } from 'lucide-react';
+import { isContentHarmful } from '@/lib/moderation';
 
 type RoomTheme = 'celestial' | 'forest' | 'sunset' | 'ocean' | 'aurora';
 
@@ -135,6 +136,14 @@ export default function CommunityPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!content.trim() && !file) return;
+
+    const hasHarmfulText = isContentHarmful(content);
+    const hasHarmfulImage = file && isContentHarmful(file.name);
+
+    if (hasHarmfulText || hasHarmfulImage) {
+      alert("your text image contain abusive and harmful content your not able to post");
+      return;
+    }
 
     setIsSubmitting(true);
 
@@ -266,7 +275,7 @@ export default function CommunityPage() {
           <div className="community-back-container">
             <BackButton />
           </div>
-          <Link href="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '0.625rem' }}>
+          <Link href="/" className="hide-desktop" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '0.625rem' }}>
             <div
               style={{
                 width: '36px',

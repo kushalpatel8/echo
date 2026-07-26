@@ -240,7 +240,7 @@ export default function GamesPage() {
           <div className="games-back-container">
             <BackButton />
           </div>
-          <div className="games-logo-wrapper">
+          <div className="games-logo-wrapper hide-desktop">
             <Gamepad2 size={24} style={{ color: currentTheme.primary }} />
             <span style={{ fontWeight: '800', fontSize: '1.25rem', color: 'var(--echo-text)' }}>
               Games Room

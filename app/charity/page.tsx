@@ -146,7 +146,7 @@ export default function CharityPage() {
           <div className="charity-back-container">
             <BackButton />
           </div>
-          <Link href="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '0.625rem' }}>
+          <Link href="/" className="hide-desktop" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '0.625rem' }}>
             <div
               style={{
                 width: '36px',

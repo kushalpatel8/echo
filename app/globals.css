@@ -565,6 +565,12 @@ body::after {
   display: none;
 }
 
+@media (min-width: 769px) {
+  .hide-desktop {
+    display: none !important;
+  }
+}
+
 @media (max-width: 768px) {
   .hide-mobile {
     display: none !important;

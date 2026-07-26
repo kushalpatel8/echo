@@ -269,7 +269,7 @@ export default function RelaxationPage() {
           <div className="relaxation-back-container">
             <BackButton />
           </div>
-          <div className="relaxation-logo-wrapper">
+          <div className="relaxation-logo-wrapper hide-desktop">
             <div
               style={{
                 width: '36px',

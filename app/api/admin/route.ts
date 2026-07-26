@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { auth, clerkClient } from '@clerk/nextjs/server';
 import connectDB from '@/lib/mongodb';
 import User from '@/lib/models/User';
+import Appeal from '@/lib/models/Appeal';
 
 export async function GET() {
   const { userId } = await auth();
@@ -51,9 +52,12 @@ export async function POST(req: NextRequest) {
   } else if (action === 'reject') {
     await User.findByIdAndUpdate(targetUserId, { applicationStatus: 'rejected' });
   } else if (action === 'ban') {
-    await User.findByIdAndUpdate(targetUserId, { isBanned: true });
+    await User.findByIdAndUpdate(targetUserId, { isBanned: true, $inc: { banCount: 1 } });
   } else if (action === 'unban') {
-    await User.findByIdAndUpdate(targetUserId, { isBanned: false });
+    const unbannedUser = await User.findByIdAndUpdate(targetUserId, { isBanned: false, warningCount: 0 });
+    if (unbannedUser) {
+      await Appeal.deleteMany({ userId: unbannedUser.clerkId });
+    }
   } else if (action === 'delete') {
     const userToDelete = await User.findById(targetUserId);
     if (userToDelete) {

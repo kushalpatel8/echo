@@ -211,7 +211,7 @@ export default function VolunteersListPage() {
           <div className="volunteers-back-container">
             <BackButton />
           </div>
-          <div className="volunteers-logo-wrapper">
+          <div className="volunteers-logo-wrapper hide-desktop">
             <Heart size={24} style={{ color: currentTheme.primary }} />
             <span style={{ fontWeight: '800', fontSize: '1.25rem', color: 'var(--echo-text)' }}>
               Peer Support

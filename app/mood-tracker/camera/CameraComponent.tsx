@@ -327,7 +327,7 @@ export default function CameraMoodTrackerPage() {
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
           <BackButton />
-          <span style={{ fontWeight: '800', fontSize: '1.25rem', color: 'var(--echo-text)', marginLeft: '0.25rem' }}>
+          <span className="hide-desktop" style={{ fontWeight: '800', fontSize: '1.25rem', color: 'var(--echo-text)', marginLeft: '0.25rem' }}>
             Face Mood Tracker
           </span>
         </div>

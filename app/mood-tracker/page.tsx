@@ -224,7 +224,7 @@ export default function MoodTrackerPage() {
           <div className="mood-back-container">
             <BackButton />
           </div>
-          <div className="mood-logo-wrapper">
+          <div className="mood-logo-wrapper hide-desktop">
             <Brain size={24} style={{ color: currentTheme.primary }} />
             <span style={{ fontWeight: '800', fontSize: '1.25rem', color: 'var(--echo-text)' }}>Mood Tracker</span>
             {step > 0 && step <= 20 && (
@@ -245,42 +245,65 @@ export default function MoodTrackerPage() {
 
         {/* ── INTRO ── */}
         {step === 0 && (
-          <div className="animate-fade-in-up" style={{ maxWidth: '680px', margin: '0 auto' }}>
-            {/* Hero Banner */}
-            <div style={{
+          <>
+            {/* Desktop Hero Banner */}
+            <div className="glass hide-mobile" style={{
               padding: '2.5rem', borderRadius: '28px',
-              background: 'var(--echo-surface)', border: '1px solid var(--echo-border)',
-              boxShadow: `0 25px 60px rgba(0,0,0,0.1), 0 0 40px ${currentTheme.glow}`,
-              marginBottom: '2rem', position: 'relative', overflow: 'hidden', textAlign: 'center',
+              border: '1px solid var(--echo-border)', background: 'var(--echo-surface)',
+              boxShadow: `0 25px 60px rgba(0,0,0,0.12), 0 0 40px ${currentTheme.glow}`,
+              marginBottom: '3rem', position: 'relative', overflow: 'hidden',
+              textAlign: 'center'
             }}>
-              <div style={{ position: 'absolute', top: '-40px', right: '-40px', width: '200px', height: '200px', background: `radial-gradient(circle, ${currentTheme.primary} 0%, transparent 70%)`, opacity: 0.1, filter: 'blur(30px)', pointerEvents: 'none' }} />
+              <div style={{ position: 'absolute', top: '-40px', right: '-40px', width: '220px', height: '220px', background: `radial-gradient(circle, ${currentTheme.primary} 0%, transparent 70%)`, opacity: 0.12, filter: 'blur(35px)', pointerEvents: 'none' }} />
               <div style={{ position: 'relative', zIndex: 2 }}>
-                <div style={{ fontSize: '4rem', marginBottom: '1rem' }}>🧠</div>
-                <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', padding: '0.3rem 0.875rem', borderRadius: '999px', background: 'var(--echo-surface-2)', color: 'var(--echo-primary)', fontSize: '0.75rem', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '1rem' }}>
-                  <Brain size={13} /><span>Mental Wellness</span>
+                <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', padding: '0.35rem 0.875rem', borderRadius: '999px', background: 'var(--echo-surface-2)', color: 'var(--echo-primary)', fontSize: '0.75rem', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '1rem' }}>
+                  <Brain size={14} /><span>Mindful Check</span>
                 </div>
-                <h1 style={{ fontSize: 'clamp(1.75rem, 4vw, 2.5rem)', fontWeight: '900', letterSpacing: '-0.03em', marginBottom: '0.75rem' }}>
-                  How are you feeling?
+                <h1 style={{ fontSize: 'clamp(1.75rem, 4vw, 2.5rem)', fontWeight: '900', letterSpacing: '-0.03em', color: 'var(--echo-text)', marginBottom: '0.5rem' }}>
+                  Mood Tracker
                 </h1>
-                <p style={{ color: 'var(--echo-text-muted)', lineHeight: '1.7', marginBottom: '2rem', fontSize: '1rem', maxWidth: '500px', margin: '0 auto 2rem' }}>
-                  This 20-question assessment takes about 3 minutes and helps us understand your emotional state so we can provide better support.
+                <p style={{ color: 'var(--echo-text-muted)', fontSize: '1.0625rem', lineHeight: '1.6', margin: '0 auto', maxWidth: '600px' }}>
+                  Track your emotional patterns, gain deep insights, and support your mental wellness journey.
                 </p>
-                <div style={{ display: 'flex', gap: '0.625rem', justifyContent: 'center', flexWrap: 'wrap', marginBottom: '2rem' }}>
-                  {['🔒 Confidential', '⏱ 3 minutes', '✨ Accurate insights'].map(f => (
-                    <span key={f} style={{ padding: '0.3rem 0.875rem', borderRadius: '999px', background: 'var(--echo-surface-2)', border: '1px solid var(--echo-border)', fontSize: '0.8125rem', fontWeight: '600', color: 'var(--echo-text-muted)' }}>{f}</span>
-                  ))}
-                </div>
-                <button className="btn-primary" onClick={() => setStep(1)} style={{ width: '100%', padding: '1.1rem', fontSize: '1.0625rem', borderRadius: '14px', marginBottom: '0.875rem' }}>
-                  Begin Assessment →
-                </button>
-                <Link href="/mood-tracker/camera" style={{ textDecoration: 'none', display: 'block' }}>
-                  <button className="btn-secondary" style={{ width: '100%', padding: '1rem', fontSize: '1rem', borderRadius: '14px', borderColor: currentTheme.primary, color: currentTheme.primary }}>
-                    <Camera size={16} style={{ display: 'inline', marginRight: '0.5rem', verticalAlign: 'middle' }} />
-                    Detect via Camera
-                  </button>
-                </Link>
               </div>
             </div>
+
+            <div className="animate-fade-in-up" style={{ maxWidth: '680px', margin: '0 auto' }}>
+              {/* Hero Assessment Card */}
+              <div style={{
+                padding: '2.5rem', borderRadius: '28px',
+                background: 'var(--echo-surface)', border: '1px solid var(--echo-border)',
+                boxShadow: `0 25px 60px rgba(0,0,0,0.1), 0 0 40px ${currentTheme.glow}`,
+                marginBottom: '2rem', position: 'relative', overflow: 'hidden', textAlign: 'center',
+              }}>
+                <div style={{ position: 'absolute', top: '-40px', right: '-40px', width: '200px', height: '200px', background: `radial-gradient(circle, ${currentTheme.primary} 0%, transparent 70%)`, opacity: 0.1, filter: 'blur(30px)', pointerEvents: 'none' }} />
+                <div style={{ position: 'relative', zIndex: 2 }}>
+                  <div style={{ fontSize: '4rem', marginBottom: '1rem' }}>🧠</div>
+                  <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', padding: '0.3rem 0.875rem', borderRadius: '999px', background: 'var(--echo-surface-2)', color: 'var(--echo-primary)', fontSize: '0.75rem', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '1rem' }}>
+                    <Brain size={13} /><span>Mental Wellness</span>
+                  </div>
+                  <h1 style={{ fontSize: 'clamp(1.75rem, 4vw, 2.5rem)', fontWeight: '900', letterSpacing: '-0.03em', marginBottom: '0.75rem' }}>
+                    How are you feeling?
+                  </h1>
+                  <p style={{ color: 'var(--echo-text-muted)', lineHeight: '1.7', marginBottom: '2rem', fontSize: '1rem', maxWidth: '500px', margin: '0 auto 2rem' }}>
+                    This 20-question assessment takes about 3 minutes and helps us understand your emotional state so we can provide better support.
+                  </p>
+                  <div style={{ display: 'flex', gap: '0.625rem', justifyContent: 'center', flexWrap: 'wrap', marginBottom: '2rem' }}>
+                    {['🔒 Confidential', '⏱ 3 minutes', '✨ Accurate insights'].map(f => (
+                      <span key={f} style={{ padding: '0.3rem 0.875rem', borderRadius: '999px', background: 'var(--echo-surface-2)', border: '1px solid var(--echo-border)', fontSize: '0.8125rem', fontWeight: '600', color: 'var(--echo-text-muted)' }}>{f}</span>
+                    ))}
+                  </div>
+                  <button className="btn-primary" onClick={() => setStep(1)} style={{ width: '100%', padding: '1.1rem', fontSize: '1.0625rem', borderRadius: '14px', marginBottom: '0.875rem' }}>
+                    Begin Assessment →
+                  </button>
+                  <Link href="/mood-tracker/camera" style={{ textDecoration: 'none', display: 'block' }}>
+                    <button className="btn-secondary" style={{ width: '100%', padding: '1rem', fontSize: '1rem', borderRadius: '14px', borderColor: currentTheme.primary, color: currentTheme.primary }}>
+                      <Camera size={16} style={{ display: 'inline', marginRight: '0.5rem', verticalAlign: 'middle' }} />
+                      Detect via Camera
+                    </button>
+                  </Link>
+                </div>
+              </div>
 
             {/* History card */}
             <Link href="/mood-tracker/history" style={{ textDecoration: 'none', display: 'block' }}>
@@ -305,6 +328,7 @@ export default function MoodTrackerPage() {
               </div>
             </Link>
           </div>
+          </>
         )}
 
         {/* ── QUESTIONS ── */}

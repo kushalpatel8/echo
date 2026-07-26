@@ -5,9 +5,9 @@ import { SignOutButton } from '@clerk/nextjs';
 import Link from 'next/link';
 import ThemeToggle from '@/components/ThemeToggle';
 import BackButton from '@/components/BackButton';
-import { ShieldCheck, ClipboardList, Users, Stethoscope, Lightbulb, Mailbox, Sparkles, LogOut, Menu } from 'lucide-react';
+import { ShieldCheck, ClipboardList, Users, Stethoscope, Lightbulb, Mailbox, Sparkles, LogOut, Menu, UserX } from 'lucide-react';
 
-type Tab = 'applications' | 'users' | 'volunteers' | 'doctors' | 'suggestions' | 'appeals';
+type Tab = 'applications' | 'users' | 'volunteers' | 'doctors' | 'suggestions' | 'appeals' | 'banned';
 type DashTheme = 'celestial' | 'forest' | 'sunset' | 'ocean' | 'aurora';
 
 const DASH_THEMES: Record<DashTheme, { name: string; primary: string; secondary: string; glow: string; bgGrad: string }> = {
@@ -25,6 +25,7 @@ const TABS: { id: Tab; label: string; icon: React.ReactNode }[] = [
   { id: 'doctors',      label: '🩺 Doctors',        icon: <Stethoscope size={15} /> },
   { id: 'suggestions',  label: '💡 Suggestions',   icon: <Lightbulb size={15} /> },
   { id: 'appeals',      label: '📬 Appeals',        icon: <Mailbox size={15} /> },
+  { id: 'banned',       label: '🚫 Banned Accounts', icon: <UserX size={15} /> },
 ];
 
 export default function AdminDashboard() {
@@ -53,6 +54,7 @@ export default function AdminDashboard() {
 
   const loadApplications = () => fetch('/api/admin').then(r => r.json()).then(d => setApplications(d.applications || []));
   const loadUsers = (role?: string) => { const url = role ? `/api/admin/users?role=${role}` : '/api/admin/users'; fetch(url).then(r => r.json()).then(d => setUsers(d.users || [])); };
+  const loadBannedUsers = () => fetch('/api/admin/users?isBanned=true').then(r => r.json()).then(d => setUsers(d.users || []));
   const loadSuggestions = () => fetch('/api/suggestions').then(r => r.json()).then(d => setSuggestions(d.suggestions || []));
   const loadAppeals = () => fetch('/api/appeals').then(r => r.json()).then(d => setAppeals(d.appeals || []));
 
@@ -60,6 +62,7 @@ export default function AdminDashboard() {
     if (tab === 'users') loadUsers('user');
     else if (tab === 'volunteers') loadUsers('volunteer');
     else if (tab === 'doctors') loadUsers('doctor');
+    else if (tab === 'banned') loadBannedUsers();
     else if (tab === 'suggestions') loadSuggestions();
     else if (tab === 'appeals') loadAppeals();
     else loadApplications();
@@ -72,6 +75,7 @@ export default function AdminDashboard() {
     else if (tab === 'users') loadUsers('user');
     else if (tab === 'volunteers') loadUsers('volunteer');
     else if (tab === 'doctors') loadUsers('doctor');
+    else if (tab === 'banned') loadBannedUsers();
     setLoading(false);
   };
 
@@ -345,6 +349,55 @@ export default function AdminDashboard() {
                           <div><div style={{ fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--echo-text-muted)', marginBottom: '0.25rem', fontWeight: '600' }}>💬 WhatsApp</div><div style={{ fontWeight: '500' }}>{u[tab === 'volunteers' ? 'volunteerProfile' : 'doctorProfile'].whatsappNumber || 'N/A'}</div></div>
                           <div><div style={{ fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--echo-text-muted)', marginBottom: '0.25rem', fontWeight: '600' }}>🎓 Degree</div><div style={{ fontWeight: '500' }}>{u[tab === 'volunteers' ? 'volunteerProfile' : 'doctorProfile'].degree || 'N/A'}</div></div>
                           <div><div style={{ fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--echo-text-muted)', marginBottom: '0.25rem', fontWeight: '600' }}>💼 Experience</div><div style={{ fontWeight: '500' }}>{u[tab === 'volunteers' ? 'volunteerProfile' : 'doctorProfile'].experience || 'None'}</div></div>
+                        </>) : <div style={{ gridColumn: '1/-1', textAlign: 'center', color: 'var(--echo-text-muted)', fontSize: '0.875rem' }}>Profile details not available.</div>}
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* ── BANNED ACCOUNTS ── */}
+        {tab === 'banned' && (
+          <div className="animate-fade-in-up" key={tab}>
+            <h2 className="section-heading">🚫 Banned Accounts</h2>
+            {users.length === 0 ? (
+              <div className="glass" style={{ padding: '4rem 2rem', textAlign: 'center', borderRadius: '24px', border: '1px solid var(--echo-border)', background: 'var(--echo-surface)' }}>
+                <p style={{ color: 'var(--echo-text-muted)' }}>No banned accounts found.</p>
+              </div>
+            ) : (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                {users.map((u: any) => (
+                  <div key={u._id} className="glass echo-card" style={{ padding: '1.5rem', borderRadius: '20px', border: '1px solid var(--echo-border)', background: 'var(--echo-surface)' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '1rem', marginBottom: (u.role === 'volunteer' || u.role === 'doctor') ? '1rem' : '0', flexWrap: 'wrap' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.875rem' }}>
+                        <div style={{ width: '44px', height: '44px', borderRadius: '12px', background: `linear-gradient(135deg, ${currentTheme.primary}, ${currentTheme.secondary})`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: '700', color: 'white', flexShrink: 0 }}>
+                          {u.name?.[0]}
+                        </div>
+                        <div>
+                          <div style={{ fontWeight: '700', display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.125rem', flexWrap: 'wrap' }}>
+                            {u.name}
+                            <span className="badge badge-purple">{u.role.toUpperCase()}</span>
+                            <span className="badge badge-red" style={{ background: 'rgba(239, 68, 68, 0.15)', color: '#f87171', border: '1px solid rgba(239, 68, 68, 0.3)' }}>Bans: {u.banCount || 0}</span>
+                            {u.warningCount > 0 && <span className="badge badge-yellow">Warnings: {u.warningCount}</span>}
+                          </div>
+                          <div style={{ fontSize: '0.8125rem', color: 'var(--echo-text-muted)' }}>{u.email}</div>
+                        </div>
+                      </div>
+                      <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+                        <button className="btn-secondary" style={{ padding: '0.4rem 0.875rem', fontSize: '0.75rem' }} onClick={() => adminAction(u._id, 'unban')} disabled={loading}>Unban</button>
+                        <button className="btn-danger" style={{ padding: '0.4rem 0.875rem', fontSize: '0.75rem' }} onClick={() => adminAction(u._id, 'delete')} disabled={loading}>Delete</button>
+                      </div>
+                    </div>
+                    {(u.role === 'volunteer' || u.role === 'doctor') && (
+                      <div style={{ background: 'var(--echo-surface-2)', borderRadius: '12px', padding: '1rem', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '1rem', border: '1px solid var(--echo-border)' }}>
+                        {u[u.role === 'volunteer' ? 'volunteerProfile' : 'doctorProfile'] ? (<>
+                          <div><div style={{ fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--echo-text-muted)', marginBottom: '0.25rem', fontWeight: '600' }}>📞 Phone</div><div style={{ fontWeight: '500' }}>{u[u.role === 'volunteer' ? 'volunteerProfile' : 'doctorProfile'].phoneNo || 'N/A'}</div></div>
+                          <div><div style={{ fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--echo-text-muted)', marginBottom: '0.25rem', fontWeight: '600' }}>💬 WhatsApp</div><div style={{ fontWeight: '500' }}>{u[u.role === 'volunteer' ? 'volunteerProfile' : 'doctorProfile'].whatsappNumber || 'N/A'}</div></div>
+                          <div><div style={{ fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--echo-text-muted)', marginBottom: '0.25rem', fontWeight: '600' }}>🎓 Degree</div><div style={{ fontWeight: '500' }}>{u[u.role === 'volunteer' ? 'volunteerProfile' : 'doctorProfile'].degree || 'N/A'}</div></div>
+                          <div><div style={{ fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--echo-text-muted)', marginBottom: '0.25rem', fontWeight: '600' }}>💼 Experience</div><div style={{ fontWeight: '500' }}>{u[u.role === 'volunteer' ? 'volunteerProfile' : 'doctorProfile'].experience || 'None'}</div></div>
                         </>) : <div style={{ gridColumn: '1/-1', textAlign: 'center', color: 'var(--echo-text-muted)', fontSize: '0.875rem' }}>Profile details not available.</div>}
                       </div>
                     )}

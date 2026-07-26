@@ -83,7 +83,8 @@ export default function MoodHistoryPage() {
       {/* Header */}
       <header style={{ padding: '1rem 1.5rem', borderBottom: '1px solid var(--echo-border)', background: 'var(--echo-surface)', display: 'flex', alignItems: 'center', gap: '1rem', position: 'relative', zIndex: 10 }}>
         <Link href="/mood-tracker" style={{ textDecoration: 'none', color: 'var(--echo-text-muted)', fontSize: '0.875rem' }}>← Back</Link>
-        <div style={{ fontWeight: '700', flex: 1 }}>🕒 Mood History</div>
+        <div className="hide-desktop" style={{ fontWeight: '700' }}>🕒 Mood History</div>
+        <div style={{ flex: 1 }} />
         {logs.length > 0 && (
           <button 
             onClick={() => clearAllHistory()}
