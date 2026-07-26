@@ -162,3 +162,25 @@ export async function POST(req: NextRequest) {
 
   return NextResponse.json({ error: 'Invalid action' }, { status: 400 });
 }
+
+export async function DELETE(req: NextRequest) {
+  const { userId } = await auth();
+  if (!userId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+
+  await connectDB();
+  const currentUser = await User.findOne({ clerkId: userId });
+  if (!currentUser) return NextResponse.json({ error: 'User not found' }, { status: 404 });
+
+  if (currentUser.role !== 'admin') {
+    return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+  }
+
+  const { searchParams } = new URL(req.url);
+  const appealId = searchParams.get('id');
+  if (!appealId) return NextResponse.json({ error: 'Appeal ID required' }, { status: 400 });
+
+  const appeal = await Appeal.findByIdAndDelete(appealId);
+  if (!appeal) return NextResponse.json({ error: 'Appeal not found' }, { status: 404 });
+
+  return NextResponse.json({ success: true, message: 'Appeal deleted' });
+}

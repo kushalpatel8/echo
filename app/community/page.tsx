@@ -310,12 +310,35 @@ export default function CommunityPage() {
       </header>
 
       <main style={{ flex: 1, padding: '2.5rem 1rem', maxWidth: '800px', margin: '0 auto', width: '100%', position: 'relative', zIndex: 1 }}>
-        <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
-          <h1 style={{ fontSize: '2.25rem', fontWeight: '900', marginBottom: '0.5rem', letterSpacing: '-0.02em', color: 'var(--echo-text)' }}>
+        {/* Hero Section - Desktop only */}
+        <div className="glass hide-mobile" style={{
+          padding: '2.5rem', borderRadius: '28px',
+          border: '1px solid var(--echo-border)', background: 'var(--echo-surface)',
+          boxShadow: `0 25px 60px rgba(0,0,0,0.12), 0 0 40px ${currentTheme.glow}`,
+          marginBottom: '2.5rem', position: 'relative', overflow: 'hidden',
+          textAlign: 'center'
+        }}>
+          <div style={{ position: 'absolute', top: '-40px', right: '-40px', width: '220px', height: '220px', background: `radial-gradient(circle, ${currentTheme.primary} 0%, transparent 70%)`, opacity: 0.12, filter: 'blur(35px)', pointerEvents: 'none' }} />
+          <div style={{ position: 'relative', zIndex: 2 }}>
+            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', padding: '0.35rem 0.875rem', borderRadius: '999px', background: 'var(--echo-surface-2)', color: 'var(--echo-primary)', fontSize: '0.75rem', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '1rem' }}>
+              <Users size={14} /><span>Safe Sanctuary</span>
+            </div>
+            <h1 style={{ fontSize: 'clamp(1.75rem, 4vw, 2.5rem)', fontWeight: '900', letterSpacing: '-0.03em', color: 'var(--echo-text)', marginBottom: '0.5rem' }}>
+              Community Feed
+            </h1>
+            <p style={{ color: 'var(--echo-text-muted)', fontSize: '1.0625rem', lineHeight: '1.6', margin: '0 auto', maxWidth: '600px' }}>
+              A safe space to share supportive thoughts, inspiring photos, and uplifting short videos.
+            </p>
+          </div>
+        </div>
+
+        {/* Mobile-only header block */}
+        <div className="show-mobile" style={{ textAlign: 'center', marginBottom: '2rem' }}>
+          <h1 style={{ fontSize: '2rem', fontWeight: '900', marginBottom: '0.5rem', letterSpacing: '-0.02em', color: 'var(--echo-text)' }}>
             Community Feed
           </h1>
-          <p style={{ color: 'var(--echo-text-muted)', fontSize: '1rem', maxWidth: '600px', margin: '0 auto' }}>
-            A premium, safe space to share supportive thoughts, inspiring photos, and uplifting short videos.
+          <p style={{ color: 'var(--echo-text-muted)', fontSize: '0.9rem', maxWidth: '600px', margin: '0 auto' }}>
+            A safe space to share supportive thoughts, inspiring photos, and uplifting short videos.
           </p>
         </div>
 

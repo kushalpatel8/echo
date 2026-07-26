@@ -284,7 +284,26 @@ export function RelaxationSoundscapes() {
       </div>
 
       {/* Soundscape Buttons Grid */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '1rem' }}>
+      <div className="soundscapes-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '1rem' }}>
+        <style>{`
+          @media (max-width: 640px) {
+            .soundscapes-grid {
+              grid-template-columns: repeat(2, 1fr) !important;
+              gap: 0.75rem !important;
+            }
+            .soundscapes-grid button {
+              padding: 1rem 0.75rem !important;
+              border-radius: 12px !important;
+            }
+            .soundscapes-grid button .soundscape-title {
+              font-size: 0.85rem !important;
+            }
+            .soundscapes-grid button .soundscape-desc {
+              font-size: 0.6875rem !important;
+              line-height: 1.3 !important;
+            }
+          }
+        `}</style>
         {SOUNDSCAPES.map(snd => {
           const isSelected = activeSound === snd.id && isPlaying;
           return (
@@ -332,10 +351,10 @@ export function RelaxationSoundscapes() {
                   </div>
                 )}
               </div>
-              <div style={{ fontWeight: '700', fontSize: '0.9375rem', color: 'var(--echo-text)', marginBottom: '0.25rem' }}>
+              <div className="soundscape-title" style={{ fontWeight: '700', fontSize: '0.9375rem', color: 'var(--echo-text)', marginBottom: '0.25rem' }}>
                 {snd.label}
               </div>
-              <div style={{ fontSize: '0.75rem', color: 'var(--echo-text-muted)', lineHeight: '1.4' }}>
+              <div className="soundscape-desc" style={{ fontSize: '0.75rem', color: 'var(--echo-text-muted)', lineHeight: '1.4' }}>
                 {snd.desc}
               </div>
             </button>

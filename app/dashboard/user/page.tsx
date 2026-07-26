@@ -201,10 +201,6 @@ export default function UserDashboard() {
           </button>
           
           <BackButton />
-          
-          <span style={{ fontWeight: '800', fontSize: '1.25rem', color: 'var(--echo-text)', marginLeft: '0.25rem' }}>
-            Dashboard
-          </span>
         </div>
 
         {/* Right Side (Theme Toggle + Avatar) */}
@@ -288,6 +284,7 @@ export default function UserDashboard() {
                 border: '1px solid var(--echo-border)', background: 'var(--echo-surface)',
                 boxShadow: `0 25px 60px rgba(0,0,0,0.12), 0 0 40px ${currentTheme.glow}`,
                 marginBottom: '2rem', position: 'relative', overflow: 'hidden',
+                textAlign: 'center'
               }}>
                 <div style={{ position: 'absolute', top: '-40px', right: '-40px', width: '220px', height: '220px', background: `radial-gradient(circle, ${currentTheme.primary} 0%, transparent 70%)`, opacity: 0.12, filter: 'blur(35px)', pointerEvents: 'none' }} />
                 <div style={{ position: 'relative', zIndex: 2 }}>
@@ -297,10 +294,10 @@ export default function UserDashboard() {
                   <h1 style={{ fontSize: 'clamp(1.75rem, 4vw, 2.75rem)', fontWeight: '900', letterSpacing: '-0.03em', color: 'var(--echo-text)', marginBottom: '0.5rem' }}>
                     Welcome back, <span style={{ color: currentTheme.primary }}>{(dbUser?.name as string)?.split(' ')[0] || 'Friend'}</span> 👋
                   </h1>
-                  <p style={{ color: 'var(--echo-text-muted)', fontSize: '1.0625rem', lineHeight: '1.6', marginBottom: '2rem', maxWidth: '600px' }}>
+                  <p style={{ color: 'var(--echo-text-muted)', fontSize: '1.0625rem', lineHeight: '1.6', marginBottom: '2rem', maxWidth: '600px', margin: '0 auto 2rem' }}>
                     You have <strong style={{ color: currentTheme.primary }}>{pendingTasks}</strong> pending task{pendingTasks !== 1 ? 's' : ''} today. Take a breath — you're doing great.
                   </p>
-                  <div style={{ display: 'flex', gap: '1.25rem', flexWrap: 'wrap' }}>
+                  <div style={{ display: 'flex', gap: '1.25rem', flexWrap: 'wrap', justifyContent: 'center' }}>
                     {[
                       { label: 'Pending', value: pendingTasks, icon: <Clock size={18} />, color: '#f59e0b', bg: 'rgba(245,158,11,0.12)', border: 'rgba(245,158,11,0.25)' },
                       { label: 'Completed', value: completedTasks, icon: <CheckSquare size={18} />, color: '#22c55e', bg: 'rgba(34,197,94,0.12)', border: 'rgba(34,197,94,0.25)' },

@@ -111,12 +111,78 @@ export default function VolunteersListPage() {
   return (
     <div style={{ minHeight: '100vh', background: 'var(--echo-bg)', color: 'var(--echo-text)', position: 'relative', overflowX: 'hidden' }}>
       <style>{`
-        .show-mobile-flex {
-          display: none !important;
+        .volunteers-header {
+          padding: 1rem 1.5rem;
+          border-bottom: 1px solid var(--echo-border);
+          background: var(--echo-surface);
+          backdrop-filter: blur(12px);
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          position: sticky;
+          top: 0;
+          z-index: 50;
+          flex-wrap: wrap;
+          gap: 1rem;
         }
-        @media (max-width: 768px) {
-          .show-mobile-flex {
-            display: flex !important;
+
+        .volunteers-header-left {
+          display: flex;
+          align-items: center;
+          gap: 0.75rem;
+          flex-wrap: wrap;
+        }
+
+        .volunteers-logo-wrapper {
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+        }
+
+        .volunteers-header-right {
+          display: flex;
+          align-items: center;
+          gap: 0.75rem;
+          flex-wrap: wrap;
+        }
+
+        @media (max-width: 640px) {
+          .volunteers-header {
+            flex-direction: column;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            gap: 0.75rem;
+          }
+
+          .volunteers-header-left {
+            width: 100%;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+          }
+
+          .volunteers-back-container {
+            display: none !important;
+          }
+
+          .volunteers-logo-wrapper {
+            justify-content: center;
+            width: 100%;
+          }
+
+          .volunteers-header-right {
+            width: 100%;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+          }
+
+          .volunteers-theme-selector {
+            width: 100%;
+            display: flex;
+            justify-content: center;
           }
         }
       `}</style>
@@ -125,27 +191,21 @@ export default function VolunteersListPage() {
       <div style={{ position: 'fixed', inset: 0, background: currentTheme.bgGrad, pointerEvents: 'none', zIndex: 0, transition: 'background 1s ease' }} />
 
       {/* Sticky Header */}
-      <header style={{
-        padding: '1rem 1.5rem',
-        borderBottom: '1px solid var(--echo-border)',
-        background: 'var(--echo-surface)',
-        backdropFilter: 'blur(12px)',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        position: 'sticky',
-        top: 0,
-        zIndex: 50,
-      }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-          <BackButton />
-          <span style={{ fontWeight: '800', fontSize: '1.25rem', color: 'var(--echo-text)', marginLeft: '0.25rem' }}>
-            Peer Support
-          </span>
+      <header className="volunteers-header">
+        <div className="volunteers-header-left">
+          <div className="volunteers-back-container">
+            <BackButton />
+          </div>
+          <div className="volunteers-logo-wrapper">
+            <Heart size={24} style={{ color: currentTheme.primary }} />
+            <span style={{ fontWeight: '800', fontSize: '1.25rem', color: 'var(--echo-text)' }}>
+              Peer Support
+            </span>
+          </div>
         </div>
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-          <div className="hide-mobile">
+        <div className="volunteers-header-right">
+          <div className="volunteers-theme-selector">
             <AmbientSelector activeTheme={activeTheme} setActiveTheme={setActiveTheme} />
           </div>
           <ThemeToggle />
@@ -154,14 +214,9 @@ export default function VolunteersListPage() {
 
       {/* Main Content */}
       <main className="page-container" style={{ position: 'relative', zIndex: 1, paddingBottom: '5rem' }}>
-        
-        {/* Mobile Ambient Mood Selector */}
-        <div className="show-mobile-flex" style={{ justifyContent: 'center', marginBottom: '1.5rem' }}>
-          <AmbientSelector activeTheme={activeTheme} setActiveTheme={setActiveTheme} />
-        </div>
 
         {/* Hero Welcome Banner */}
-        <div className="glass" style={{
+        <div className="glass hide-mobile" style={{
           padding: '2.5rem', borderRadius: '28px',
           border: '1px solid var(--echo-border)', background: 'var(--echo-surface)',
           boxShadow: `0 25px 60px rgba(0,0,0,0.12), 0 0 40px ${currentTheme.glow}`,

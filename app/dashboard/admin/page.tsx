@@ -189,7 +189,7 @@ export default function AdminDashboard() {
       <main className="page-container" style={{ position: 'relative', zIndex: 1, paddingBottom: '5rem' }}>
 
         {/* Hero Banner */}
-        <div className="glass" style={{ padding: '2rem 2.5rem', borderRadius: '28px', border: '1px solid var(--echo-border)', background: 'var(--echo-surface)', boxShadow: `0 20px 50px rgba(0,0,0,0.1), 0 0 30px ${currentTheme.glow}`, marginBottom: '2.5rem', position: 'relative', overflow: 'hidden' }}>
+        <div className="glass" style={{ padding: '2rem 2.5rem', borderRadius: '28px', border: '1px solid var(--echo-border)', background: 'var(--echo-surface)', boxShadow: `0 20px 50px rgba(0,0,0,0.1), 0 0 30px ${currentTheme.glow}`, marginBottom: '2.5rem', position: 'relative', overflow: 'hidden', textAlign: 'center' }}>
           <div style={{ position: 'absolute', top: '-50px', right: '-50px', width: '200px', height: '200px', background: `radial-gradient(circle, ${currentTheme.primary} 0%, transparent 70%)`, opacity: 0.12, filter: 'blur(35px)', pointerEvents: 'none' }} />
           <div style={{ position: 'relative', zIndex: 2 }}>
             <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', padding: '0.35rem 0.875rem', borderRadius: '999px', background: 'var(--echo-surface-2)', color: 'var(--echo-primary)', fontSize: '0.75rem', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '0.875rem' }}>
@@ -198,7 +198,7 @@ export default function AdminDashboard() {
             <h1 style={{ fontSize: 'clamp(1.5rem, 3vw, 2rem)', fontWeight: '900', letterSpacing: '-0.03em', color: 'var(--echo-text)', marginBottom: '0.375rem' }}>
               Welcome, <span style={{ color: currentTheme.primary }}>{dbUser?.name || 'Admin'}</span> 🛡️
             </h1>
-            <p style={{ color: 'var(--echo-text-muted)', fontSize: '0.9375rem' }}>
+            <p style={{ color: 'var(--echo-text-muted)', fontSize: '0.9375rem', margin: '0 auto', maxWidth: '600px' }}>
               {applications.length} pending application{applications.length !== 1 ? 's' : ''} · {pendingAppeals} pending appeal{pendingAppeals !== 1 ? 's' : ''}
             </p>
           </div>
@@ -402,12 +402,15 @@ export default function AdminDashboard() {
                         </div>
                         <div style={{ fontSize: '0.8125rem', color: 'var(--echo-text-muted)' }}>{a.userEmail}</div>
                       </div>
-                      {a.status === 'pending' && (
-                        <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-                          <button onClick={async () => { if (!confirm(`Revoke ban for ${a.userName}?`)) return; setLoading(true); await fetch('/api/appeals', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'resolve', appealId: a._id, content: replyInput[a._id] || '' }) }); setReplyInput(p => ({ ...p, [a._id]: '' })); loadAppeals(); setLoading(false); }} disabled={loading} style={{ background: '#22c55e', color: 'white', border: 'none', padding: '0.5rem 1rem', borderRadius: '8px', fontWeight: '700', fontSize: '0.8125rem', cursor: 'pointer' }}>✅ Revoke Ban</button>
-                          <button onClick={async () => { if (!confirm(`Reject appeal for ${a.userName}?`)) return; setLoading(true); await fetch('/api/appeals', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'reject', appealId: a._id, content: replyInput[a._id] || '' }) }); setReplyInput(p => ({ ...p, [a._id]: '' })); loadAppeals(); setLoading(false); }} disabled={loading} style={{ background: '#ef4444', color: 'white', border: 'none', padding: '0.5rem 1rem', borderRadius: '8px', fontWeight: '700', fontSize: '0.8125rem', cursor: 'pointer' }}>❌ Reject</button>
-                        </div>
-                      )}
+                      <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+                        {a.status === 'pending' && (
+                          <>
+                            <button onClick={async () => { if (!confirm(`Revoke ban for ${a.userName}?`)) return; setLoading(true); await fetch('/api/appeals', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'resolve', appealId: a._id, content: replyInput[a._id] || '' }) }); setReplyInput(p => ({ ...p, [a._id]: '' })); loadAppeals(); setLoading(false); }} disabled={loading} style={{ background: '#22c55e', color: 'white', border: 'none', padding: '0.5rem 1rem', borderRadius: '8px', fontWeight: '700', fontSize: '0.8125rem', cursor: 'pointer' }}>✅ Revoke Ban</button>
+                            <button onClick={async () => { if (!confirm(`Reject appeal for ${a.userName}?`)) return; setLoading(true); await fetch('/api/appeals', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'reject', appealId: a._id, content: replyInput[a._id] || '' }) }); setReplyInput(p => ({ ...p, [a._id]: '' })); loadAppeals(); setLoading(false); }} disabled={loading} style={{ background: '#ef4444', color: 'white', border: 'none', padding: '0.5rem 1rem', borderRadius: '8px', fontWeight: '700', fontSize: '0.8125rem', cursor: 'pointer' }}>❌ Reject</button>
+                          </>
+                        )}
+                        <button onClick={async () => { if (!confirm(`Delete appeal from ${a.userName}?`)) return; setLoading(true); await fetch(`/api/appeals?id=${a._id}`, { method: 'DELETE' }); loadAppeals(); setLoading(false); }} disabled={loading} style={{ background: '#ef4444', color: 'white', border: 'none', padding: '0.5rem 1rem', borderRadius: '8px', fontWeight: '700', fontSize: '0.8125rem', cursor: 'pointer' }}>🗑️ Delete</button>
+                      </div>
                     </div>
                     <div style={{ maxHeight: '260px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '0.75rem', padding: '1rem', background: 'var(--echo-bg)', borderRadius: '10px', marginBottom: '1rem', border: '1px solid var(--echo-border)' }}>
                       {a.messages.map((m: any, idx: number) => (

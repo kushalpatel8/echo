@@ -204,6 +204,7 @@ export default function RelaxationPage() {
           }
 
           .relaxation-theme-selector {
+            display: flex !important;
             width: 100%;
             justify-content: center;
           }
@@ -275,6 +276,28 @@ export default function RelaxationPage() {
 
       {/* Main Container */}
       <main className="page-container" style={{ position: 'relative', zIndex: 1, paddingBottom: '5rem' }}>
+        {/* Hero Welcome Banner */}
+        <div className="glass hide-mobile" style={{
+          padding: '2.5rem', borderRadius: '28px',
+          border: '1px solid var(--echo-border)', background: 'var(--echo-surface)',
+          boxShadow: `0 25px 60px rgba(0,0,0,0.12), 0 0 40px ${currentTheme.glow}`,
+          marginBottom: '3rem', position: 'relative', overflow: 'hidden',
+          textAlign: 'center'
+        }}>
+          <div style={{ position: 'absolute', top: '-40px', right: '-40px', width: '220px', height: '220px', background: `radial-gradient(circle, ${currentTheme.primary} 0%, transparent 70%)`, opacity: 0.12, filter: 'blur(35px)', pointerEvents: 'none' }} />
+          <div style={{ position: 'relative', zIndex: 2 }}>
+            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', padding: '0.35rem 0.875rem', borderRadius: '999px', background: 'var(--echo-surface-2)', color: 'var(--echo-primary)', fontSize: '0.75rem', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '1rem' }}>
+              <Wind size={14} /><span>Mindful Space</span>
+            </div>
+            <h1 style={{ fontSize: 'clamp(1.75rem, 4vw, 2.5rem)', fontWeight: '900', letterSpacing: '-0.03em', color: 'var(--echo-text)', marginBottom: '0.5rem' }}>
+              Mindful Sanctuary
+            </h1>
+            <p style={{ color: 'var(--echo-text-muted)', fontSize: '1.0625rem', lineHeight: '1.6', margin: '0 auto', maxWidth: '600px' }}>
+              Soothe your mind, practice mindful breathing, and immerse yourself in peaceful soundscapes.
+            </p>
+          </div>
+        </div>
+
         {/* Navigation Tabs (Desktop/Tablet) */}
         <div className="hide-mobile" style={{ display: 'flex', justifyContent: 'center', marginBottom: '2.5rem', width: '100%' }}>
           <div

@@ -243,7 +243,7 @@ export default function VolunteerDashboard() {
         {tab === 'overview' && (
           <div className="animate-fade-in-up">
             {/* Hero */}
-            <div className="glass" style={{ padding: '2.5rem', borderRadius: '28px', border: '1px solid var(--echo-border)', background: 'var(--echo-surface)', boxShadow: `0 20px 50px rgba(0,0,0,0.12), 0 0 30px ${currentTheme.glow}`, marginBottom: '2rem', position: 'relative', overflow: 'hidden' }}>
+            <div className="glass" style={{ padding: '2.5rem', borderRadius: '28px', border: '1px solid var(--echo-border)', background: 'var(--echo-surface)', boxShadow: `0 20px 50px rgba(0,0,0,0.12), 0 0 30px ${currentTheme.glow}`, marginBottom: '2rem', position: 'relative', overflow: 'hidden', textAlign: 'center' }}>
               <div style={{ position: 'absolute', top: '-40px', right: '-40px', width: '200px', height: '200px', background: `radial-gradient(circle, ${currentTheme.primary} 0%, transparent 70%)`, opacity: 0.12, filter: 'blur(35px)', pointerEvents: 'none' }} />
               <div style={{ position: 'relative', zIndex: 2 }}>
                 <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', padding: '0.35rem 0.875rem', borderRadius: '999px', background: 'var(--echo-surface-2)', color: 'var(--echo-primary)', fontSize: '0.75rem', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '1rem' }}>
@@ -252,10 +252,10 @@ export default function VolunteerDashboard() {
                 <h1 style={{ fontSize: 'clamp(1.5rem, 3vw, 2.25rem)', fontWeight: '900', letterSpacing: '-0.03em', color: 'var(--echo-text)', marginBottom: '0.5rem' }}>
                   Welcome back, <span style={{ color: currentTheme.primary }}>{(dbUser?.name as string)?.split(' ')[0] || 'Friend'}</span> 🤝
                 </h1>
-                <p style={{ color: 'var(--echo-text-muted)', fontSize: '1rem', marginBottom: '2rem' }}>
+                <p style={{ color: 'var(--echo-text-muted)', fontSize: '1rem', marginBottom: '2rem', margin: '0 auto 2rem', maxWidth: '600px' }}>
                   You are making a difference in people's lives every day.
                 </p>
-                <div style={{ display: 'flex', gap: '1.25rem', flexWrap: 'wrap' }}>
+                <div style={{ display: 'flex', gap: '1.25rem', flexWrap: 'wrap', justifyContent: 'center' }}>
                   {[
                     { label: 'Active Chats', value: activeChats, color: '#a78bfa', bg: 'rgba(167,139,250,0.12)', border: 'rgba(167,139,250,0.25)' },
                     { label: 'Tasks Created', value: tasks.length, color: '#22c55e', bg: 'rgba(34,197,94,0.12)', border: 'rgba(34,197,94,0.25)' },

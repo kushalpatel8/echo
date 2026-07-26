@@ -2,18 +2,22 @@
 
 import { useTheme } from 'next-themes';
 import { useEffect, useState } from 'react';
+import { usePathname } from 'next/navigation';
 
 export default function ThemeToggle() {
   const { theme, setTheme, resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
+  const pathname = usePathname();
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
+  const isHomePage = pathname === '/';
+
   if (!mounted) {
     return (
-      <div style={{ width: '40px', height: '40px' }} />
+      <div className="theme-toggle-btn" style={{ width: '40px', height: '40px' }} />
     );
   }
 
@@ -51,6 +55,13 @@ export default function ThemeToggle() {
         .theme-toggle-btn:active {
           transform: scale(0.95);
         }
+        ${!isHomePage ? `
+        @media (max-width: 640px) {
+          .theme-toggle-btn {
+            display: none !important;
+          }
+        }
+        ` : ''}
       `}</style>
     </button>
   );

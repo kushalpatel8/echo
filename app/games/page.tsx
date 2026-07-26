@@ -107,12 +107,103 @@ export default function GamesPage() {
   return (
     <div style={{ minHeight: '100vh', background: 'var(--echo-bg)', color: 'var(--echo-text)', position: 'relative', overflowX: 'hidden' }}>
       <style>{`
-        .show-mobile-flex {
-          display: none !important;
+        .games-header {
+          padding: 1rem 1.5rem;
+          border-bottom: 1px solid var(--echo-border);
+          background: var(--echo-surface);
+          backdrop-filter: blur(12px);
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          position: sticky;
+          top: 0;
+          z-index: 50;
+          flex-wrap: wrap;
+          gap: 1rem;
         }
-        @media (max-width: 768px) {
-          .show-mobile-flex {
-            display: flex !important;
+
+        .games-header-left {
+          display: flex;
+          align-items: center;
+          gap: 0.75rem;
+          flex-wrap: wrap;
+        }
+
+        .games-logo-wrapper {
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+        }
+
+        .games-header-right {
+          display: flex;
+          align-items: center;
+          gap: 0.75rem;
+          flex-wrap: wrap;
+        }
+
+        @media (max-width: 640px) {
+          .games-header {
+            flex-direction: column;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            gap: 0.75rem;
+          }
+
+          .games-header-left {
+            width: 100%;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+          }
+
+          .games-back-container {
+            display: none !important;
+          }
+
+          .games-logo-wrapper {
+            justify-content: center;
+            width: 100%;
+          }
+
+          .games-header-right {
+            width: 100%;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+          }
+
+          .games-theme-selector {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+          }
+
+          .games-grid {
+            grid-template-columns: repeat(2, 1fr) !important;
+            gap: 0.75rem !important;
+          }
+
+          .games-grid .echo-card {
+            padding: 1.25rem 0.75rem !important;
+            border-radius: 20px !important;
+          }
+
+          .games-grid .echo-card .game-icon {
+            font-size: 2.25rem !important;
+            margin-bottom: 0.5rem !important;
+          }
+
+          .games-grid .echo-card h2 {
+            font-size: 0.95rem !important;
+            margin-bottom: 0.25rem !important;
+          }
+
+          .games-grid .echo-card p {
+            font-size: 0.7rem !important;
+            line-height: 1.3 !important;
           }
         }
       `}</style>
@@ -129,27 +220,21 @@ export default function GamesPage() {
       />
 
       {/* Sticky Header */}
-      <header style={{
-        padding: '1rem 1.5rem',
-        borderBottom: '1px solid var(--echo-border)',
-        background: 'var(--echo-surface)',
-        backdropFilter: 'blur(12px)',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        position: 'sticky',
-        top: 0,
-        zIndex: 50,
-      }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-          <BackButton />
-          <span style={{ fontWeight: '800', fontSize: '1.25rem', color: 'var(--echo-text)', marginLeft: '0.25rem' }}>
-            Games Room
-          </span>
+      <header className="games-header">
+        <div className="games-header-left">
+          <div className="games-back-container">
+            <BackButton />
+          </div>
+          <div className="games-logo-wrapper">
+            <Gamepad2 size={24} style={{ color: currentTheme.primary }} />
+            <span style={{ fontWeight: '800', fontSize: '1.25rem', color: 'var(--echo-text)' }}>
+              Games Room
+            </span>
+          </div>
         </div>
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
-          <div className="hide-mobile">
+        <div className="games-header-right">
+          <div className="games-theme-selector">
             <AmbientSelector activeTheme={activeTheme} setActiveTheme={setActiveTheme} />
           </div>
 
@@ -169,30 +254,11 @@ export default function GamesPage() {
 
       {/* Main Content */}
       <main className="page-container" style={{ position: 'relative', zIndex: 1, paddingBottom: '5rem' }}>
-        {/* Mobile Ambient Mood Selector */}
-        <div className="show-mobile-flex" style={{ justifyContent: 'center', marginBottom: '2rem' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'var(--echo-surface-2)', padding: '0.35rem 0.5rem', borderRadius: '999px', border: '1px solid var(--echo-border)' }}>
-            <span style={{ fontSize: '0.7rem', fontWeight: '600', color: 'var(--echo-text-muted)', paddingLeft: '0.5rem' }}>Ambient:</span>
-            {(Object.keys(THEMES) as ThemeKey[]).map(key => {
-              const t = THEMES[key];
-              const isSel = activeTheme === key;
-              return (
-                <button key={key} onClick={() => setActiveTheme(key)} style={{
-                  padding: '0.35rem 0.75rem', borderRadius: '999px', border: 'none',
-                  background: isSel ? t.primary : 'transparent', color: isSel ? '#fff' : 'var(--echo-text-muted)',
-                  fontSize: '0.75rem', fontWeight: isSel ? '700' : '500', cursor: 'pointer', transition: 'all 0.2s ease',
-                }}>
-                  {t.name.split(' ')[0]} {key.charAt(0).toUpperCase() + key.slice(1)}
-                </button>
-              );
-            })}
-          </div>
-        </div>
 
         {!currentGame ? (
           <>
             {/* Hero Banner */}
-            <div className="glass" style={{
+            <div className="glass hide-mobile" style={{
               padding: '2.5rem', borderRadius: '28px',
               border: '1px solid var(--echo-border)', background: 'var(--echo-surface)',
               boxShadow: `0 25px 60px rgba(0,0,0,0.12), 0 0 40px ${currentTheme.glow}`,
@@ -214,7 +280,7 @@ export default function GamesPage() {
             </div>
 
             {/* Grid list */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '1.5rem' }}>
+            <div className="games-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '1.5rem' }}>
               {GAMES.map((game, i) => (
                 <div 
                   key={game.id} 
@@ -242,7 +308,7 @@ export default function GamesPage() {
                     (e.currentTarget as HTMLDivElement).style.borderColor = 'var(--echo-border)';
                   }}
                 >
-                  <div style={{ 
+                  <div className="game-icon" style={{ 
                     fontSize: '3.5rem', 
                     marginBottom: '1rem', 
                     filter: `drop-shadow(0 0 10px ${game.color}44)` 

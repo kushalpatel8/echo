@@ -210,6 +210,7 @@ export default function RelaxationBooksPage() {
           }
 
           .library-theme-selector {
+            display: flex !important;
             width: 100%;
             justify-content: center;
           }
@@ -281,6 +282,28 @@ export default function RelaxationBooksPage() {
 
       {/* Main Container */}
       <main className="page-container" style={{ position: 'relative', zIndex: 1, paddingBottom: '5rem' }}>
+        {/* Hero Welcome Banner */}
+        <div className="glass hide-mobile" style={{
+          padding: '2.5rem', borderRadius: '28px',
+          border: '1px solid var(--echo-border)', background: 'var(--echo-surface)',
+          boxShadow: `0 25px 60px rgba(0,0,0,0.12), 0 0 40px ${currentTheme.glow}`,
+          marginBottom: '3rem', position: 'relative', overflow: 'hidden',
+          textAlign: 'center'
+        }}>
+          <div style={{ position: 'absolute', top: '-40px', right: '-40px', width: '220px', height: '220px', background: `radial-gradient(circle, ${currentTheme.primary} 0%, transparent 70%)`, opacity: 0.12, filter: 'blur(35px)', pointerEvents: 'none' }} />
+          <div style={{ position: 'relative', zIndex: 2 }}>
+            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', padding: '0.35rem 0.875rem', borderRadius: '999px', background: 'var(--echo-surface-2)', color: 'var(--echo-primary)', fontSize: '0.75rem', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '1rem' }}>
+              <BookOpen size={14} /><span>Echo Library</span>
+            </div>
+            <h1 style={{ fontSize: 'clamp(1.75rem, 4vw, 2.5rem)', fontWeight: '900', letterSpacing: '-0.03em', color: 'var(--echo-text)', marginBottom: '0.5rem' }}>
+              The Echo Library
+            </h1>
+            <p style={{ color: 'var(--echo-text-muted)', fontSize: '1.0625rem', lineHeight: '1.6', margin: '0 auto', maxWidth: '600px' }}>
+              Explore our collection of curated books, audios, and spiritual guides to find inner peace and wisdom.
+            </p>
+          </div>
+        </div>
+
         {/* Hero Featured Wisdom Showcase */}
         <div
           className="glass"
@@ -407,6 +430,7 @@ export default function RelaxationBooksPage() {
 
             {/* Bookmarks Toggle Pill */}
             <button
+              className="hide-mobile"
               onClick={() => {
                 if (selectedCategory === 'Bookmarks') {
                   setSelectedCategory('All');
@@ -435,8 +459,43 @@ export default function RelaxationBooksPage() {
             </button>
           </div>
 
-          {/* Category Filter Pills */}
-          <div style={{ display: 'flex', gap: '0.625rem', flexWrap: 'wrap' }}>
+          {/* Category Dropdown (Mobile only) */}
+          <div className="show-mobile" style={{ marginBottom: '1.5rem', padding: '0' }}>
+            <div style={{ position: 'relative' }}>
+              <select
+                value={selectedCategory}
+                onChange={(e) => setSelectedCategory(e.target.value)}
+                style={{
+                  width: '100%',
+                  padding: '0.875rem 1.25rem',
+                  borderRadius: '14px',
+                  border: '1px solid var(--echo-border)',
+                  background: 'var(--echo-surface)',
+                  color: 'var(--echo-text)',
+                  fontWeight: '700',
+                  fontSize: '0.9rem',
+                  appearance: 'none',
+                  cursor: 'pointer',
+                  boxShadow: '0 8px 25px rgba(0,0,0,0.1)',
+                  outline: 'none',
+                  textAlign: 'center',
+                  textAlignLast: 'center',
+                }}
+              >
+                <option value="All">📚 All Categories</option>
+                <option value="Bookmarks">🔖 Saved Bookmarks ({bookmarks.length})</option>
+                {CATEGORIES.filter(cat => cat !== 'All').map(cat => (
+                  <option key={cat} value={cat}>{cat}</option>
+                ))}
+              </select>
+              <div style={{ position: 'absolute', right: '1.25rem', top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none', color: 'var(--echo-text-muted)', fontSize: '0.8rem' }}>
+                ▼
+              </div>
+            </div>
+          </div>
+
+          {/* Category Filter Pills (Desktop/Tablet) */}
+          <div className="hide-mobile" style={{ display: 'flex', gap: '0.625rem', flexWrap: 'wrap' }}>
             {CATEGORIES.map(cat => {
               const isSel = selectedCategory === cat;
               return (

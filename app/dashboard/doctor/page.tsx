@@ -259,7 +259,7 @@ export default function DoctorDashboard() {
             {tab === 'overview' && (
               <div className="animate-fade-in-up">
                 {/* Hero */}
-                <div className="glass" style={{ padding: '2.5rem', borderRadius: '28px', border: '1px solid var(--echo-border)', background: 'var(--echo-surface)', boxShadow: `0 20px 50px rgba(0,0,0,0.12), 0 0 30px ${currentTheme.glow}`, marginBottom: '2rem', position: 'relative', overflow: 'hidden' }}>
+                <div className="glass" style={{ padding: '2.5rem', borderRadius: '28px', border: '1px solid var(--echo-border)', background: 'var(--echo-surface)', boxShadow: `0 20px 50px rgba(0,0,0,0.12), 0 0 30px ${currentTheme.glow}`, marginBottom: '2rem', position: 'relative', overflow: 'hidden', textAlign: 'center' }}>
                   <div style={{ position: 'absolute', top: '-40px', right: '-40px', width: '200px', height: '200px', background: `radial-gradient(circle, ${currentTheme.primary} 0%, transparent 70%)`, opacity: 0.12, filter: 'blur(35px)', pointerEvents: 'none' }} />
                   <div style={{ position: 'relative', zIndex: 2 }}>
                     <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', padding: '0.35rem 0.875rem', borderRadius: '999px', background: 'var(--echo-surface-2)', color: 'var(--echo-primary)', fontSize: '0.75rem', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '1rem' }}>
@@ -268,8 +268,8 @@ export default function DoctorDashboard() {
                     <h1 style={{ fontSize: 'clamp(1.5rem, 3vw, 2.25rem)', fontWeight: '900', letterSpacing: '-0.03em', color: 'var(--echo-text)', marginBottom: '0.5rem' }}>
                       Welcome, Dr. <span style={{ color: currentTheme.primary }}>{(dbUser?.name as string)?.split(' ')[0] || 'Doctor'}</span> 👨‍⚕️
                     </h1>
-                    <p style={{ color: 'var(--echo-text-muted)', fontSize: '1rem', marginBottom: '2rem' }}>You are making a profound impact on mental health worldwide.</p>
-                    <div style={{ display: 'flex', gap: '1.25rem', flexWrap: 'wrap', marginBottom: '2rem' }}>
+                    <p style={{ color: 'var(--echo-text-muted)', fontSize: '1rem', marginBottom: '2rem', margin: '0 auto 2rem', maxWidth: '600px' }}>You are making a profound impact on mental health worldwide.</p>
+                    <div style={{ display: 'flex', gap: '1.25rem', flexWrap: 'wrap', marginBottom: '2rem', justifyContent: 'center' }}>
                       {[
                         { label: 'Active Patients', value: activePatients, color: '#67e8f9', bg: 'rgba(103,232,249,0.12)', border: 'rgba(103,232,249,0.25)' },
                         { label: 'Pending Requests', value: pendingRequests, color: '#fbbf24', bg: 'rgba(251,191,36,0.12)', border: 'rgba(251,191,36,0.25)' },

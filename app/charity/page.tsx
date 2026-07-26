@@ -119,6 +119,7 @@ export default function CharityPage() {
           }
 
           .charity-theme-selector {
+            display: flex !important;
             width: 100%;
             justify-content: center;
           }
@@ -192,60 +193,68 @@ export default function CharityPage() {
       <main style={{ flex: 1, padding: '3.5rem 1.5rem', maxWidth: '1200px', margin: '0 auto', width: '100%', position: 'relative', zIndex: 1 }}>
         
         {/* Hero Section */}
-        <div style={{ textAlign: 'center', marginBottom: '4rem' }} className="animate-fade-in-up">
-          <div 
-            style={{ 
-              display: 'inline-flex', 
-              alignItems: 'center', 
-              gap: '0.4rem', 
-              padding: '0.35rem 0.875rem', 
-              borderRadius: '999px', 
-              background: 'var(--echo-surface-2)', 
-              color: currentTheme.primary, 
-              fontSize: '0.75rem', 
-              fontWeight: '700', 
-              textTransform: 'uppercase', 
-              letterSpacing: '0.08em', 
-              marginBottom: '1.5rem',
-              border: `1px solid ${currentTheme.primary}30`
-            }}
-          >
-            <Sparkles size={13} />
-            <span>Global Impact Cause</span>
-          </div>
-
-          <h1 style={{
-            fontSize: 'clamp(2.25rem, 6vw, 3.5rem)',
-            fontWeight: '900',
-            lineHeight: '1.15',
-            letterSpacing: '-0.03em',
-            marginBottom: '1.5rem',
-            color: 'var(--echo-text)'
-          }}>
-            Our <span 
-              key={roomTheme}
-              style={{
-                background: `linear-gradient(135deg, ${currentTheme.primary}, ${currentTheme.secondary})`,
-                WebkitBackgroundClip: 'text',
-                backgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                color: 'transparent'
+        <div className="glass hide-mobile" style={{
+          padding: '2.5rem', borderRadius: '28px',
+          border: '1px solid var(--echo-border)', background: 'var(--echo-surface)',
+          boxShadow: `0 25px 60px rgba(0,0,0,0.12), 0 0 40px ${currentTheme.glow}`,
+          marginBottom: '4rem', position: 'relative', overflow: 'hidden',
+          textAlign: 'center'
+        }}>
+          <div style={{ position: 'absolute', top: '-40px', right: '-40px', width: '220px', height: '220px', background: `radial-gradient(circle, ${currentTheme.primary} 0%, transparent 70%)`, opacity: 0.12, filter: 'blur(35px)', pointerEvents: 'none' }} />
+          <div style={{ position: 'relative', zIndex: 2 }}>
+            <div 
+              style={{ 
+                display: 'inline-flex', 
+                alignItems: 'center', 
+                gap: '0.4rem', 
+                padding: '0.35rem 0.875rem', 
+                borderRadius: '999px', 
+                background: 'var(--echo-surface-2)', 
+                color: currentTheme.primary, 
+                fontSize: '0.75rem', 
+                fontWeight: '700', 
+                textTransform: 'uppercase', 
+                letterSpacing: '0.08em', 
+                marginBottom: '1rem',
+                border: `1px solid ${currentTheme.primary}30`
               }}
             >
-              Mission
-            </span> for a Better Tomorrow
-          </h1>
+              <Sparkles size={13} />
+              <span>Global Impact Cause</span>
+            </div>
 
-          <p style={{
-            fontSize: 'clamp(1rem, 3.5vw, 1.15rem)',
-            color: 'var(--echo-text-muted)',
-            lineHeight: '1.7',
-            maxWidth: '700px',
-            margin: '0 auto'
-          }}>
-            At ECHO, we believe mental health support is a basic human right. We bridge the gap between 
-            technology and human compassion to help everyone find their voice, completely cost-free.
-          </p>
+            <h1 style={{
+              fontSize: 'clamp(1.75rem, 4vw, 2.5rem)',
+              fontWeight: '900',
+              lineHeight: '1.15',
+              letterSpacing: '-0.03em',
+              marginBottom: '1rem',
+              color: 'var(--echo-text)'
+            }}>
+              Our <span 
+                key={roomTheme}
+                style={{
+                  background: `linear-gradient(135deg, ${currentTheme.primary}, ${currentTheme.secondary})`,
+                  WebkitBackgroundClip: 'text',
+                  backgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  color: 'transparent'
+                }}
+              >
+                Mission
+              </span> for a Better Tomorrow
+            </h1>
+
+            <p style={{
+              fontSize: 'clamp(1rem, 3.5vw, 1.15rem)',
+              color: 'var(--echo-text-muted)',
+              lineHeight: '1.7',
+              maxWidth: '700px',
+              margin: '0 auto'
+            }}>
+              At ECHO, we believe mental health support is a basic human right. We bridge the gap between technology and human compassion to help everyone find their voice, completely cost-free.
+            </p>
+          </div>
         </div>
 
         {/* Info Grid */}
