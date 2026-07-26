@@ -241,7 +241,8 @@ export default function CommunityPage() {
           }
 
           .community-theme-selector {
-            display: none !important;
+            width: 100%;
+            justify-content: center;
           }
         }
       `}</style>

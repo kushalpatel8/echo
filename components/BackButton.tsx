@@ -17,7 +17,7 @@ export default function BackButton() {
   const isDashboardPage = pathname.startsWith('/dashboard');
 
   return (
-    <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem' }}>
+    <div className={isDashboardPage ? 'dashboard-back-wrapper' : 'non-dashboard-back-wrapper'} style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem' }}>
       <button
         onClick={() => router.back()}
         aria-label="Go back"
@@ -73,6 +73,12 @@ export default function BackButton() {
 
         .back-btn:active {
           transform: translateY(1px) scale(0.97);
+        }
+
+        @media (max-width: 640px) {
+          .non-dashboard-back-wrapper {
+            display: none !important;
+          }
         }
 
         /* Hide label on very small screens to save space */

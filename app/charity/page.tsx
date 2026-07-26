@@ -119,7 +119,8 @@ export default function CharityPage() {
           }
 
           .charity-theme-selector {
-            display: none !important;
+            width: 100%;
+            justify-content: center;
           }
         }
       `}</style>

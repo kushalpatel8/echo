@@ -145,26 +145,83 @@ export default function RelaxationBooksPage() {
         }}
       />
 
-      {/* Header */}
-      <header
-        style={{
-          padding: '1rem 1.5rem',
-          borderBottom: '1px solid var(--echo-border)',
-          background: 'var(--echo-surface)',
-          backdropFilter: 'blur(12px)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          flexWrap: 'wrap',
-          gap: '1rem',
-          position: 'sticky',
-          top: 0,
-          zIndex: 50,
-        }}
-      >
-        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-          <BackButton />
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.625rem' }}>
+      <style>{`
+        .library-header {
+          padding: 1rem 1.5rem;
+          border-bottom: 1px solid var(--echo-border);
+          background: var(--echo-surface);
+          backdrop-filter: blur(12px);
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          flex-wrap: wrap;
+          gap: 1rem;
+          position: sticky;
+          top: 0;
+          z-index: 50;
+        }
+
+        .library-header-left {
+          display: flex;
+          align-items: center;
+          gap: 1rem;
+          flex-wrap: wrap;
+        }
+
+        .library-logo-wrapper {
+          display: flex;
+          align-items: center;
+          gap: 0.625rem;
+        }
+
+        .library-theme-selector {
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+          background: var(--echo-surface-2);
+          padding: 0.35rem 0.5rem;
+          border-radius: 999px;
+          border: 1px solid var(--echo-border);
+        }
+
+        @media (max-width: 640px) {
+          .library-header {
+            flex-direction: column;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            gap: 0.75rem;
+          }
+
+          .library-header-left {
+            width: 100%;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+          }
+
+          .library-back-container {
+            display: none !important;
+          }
+
+          .library-logo-wrapper {
+            justify-content: center;
+            width: 100%;
+          }
+
+          .library-theme-selector {
+            width: 100%;
+            justify-content: center;
+          }
+        }
+      `}</style>
+
+      <header className="library-header">
+        <div className="library-header-left">
+          <div className="library-back-container">
+            <BackButton />
+          </div>
+          <div className="library-logo-wrapper">
             <div
               style={{
                 width: '36px',
@@ -192,7 +249,7 @@ export default function RelaxationBooksPage() {
         </div>
 
         {/* Ambient Mood Selector */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'var(--echo-surface-2)', padding: '0.35rem 0.5rem', borderRadius: '999px', border: '1px solid var(--echo-border)' }}>
+        <div className="library-theme-selector">
           <span style={{ fontSize: '0.7rem', fontWeight: '600', color: 'var(--echo-text-muted)', paddingLeft: '0.5rem' }}>
             Ambient Mood:
           </span>
