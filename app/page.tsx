@@ -48,32 +48,23 @@ export default function HomePage() {
       <MouseGlow />
       <Navbar />
 
-      {/* Hero Section */}
+      {/* Dynamic Ambient Background Glows matching celestial theme */}
+      <div
+        style={{
+          position: 'fixed',
+          inset: 0,
+          background: 'radial-gradient(ellipse at top right, rgba(124, 58, 237, 0.12) 0%, transparent 60%), radial-gradient(ellipse at bottom left, rgba(6, 182, 212, 0.08) 0%, transparent 60%)',
+          pointerEvents: 'none',
+          zIndex: 0,
+        }}
+      />
+
       <section style={{
         position: 'relative',
         overflow: 'hidden',
         padding: 'clamp(2rem, 5vw, 4rem) 1.5rem 2rem',
         textAlign: 'center',
       }}>
-        {/* Background orbs - Responsive sizing */}
-        <div style={{
-          position: 'absolute', top: '-150px', left: '50%', transform: 'translateX(-50%)',
-          width: 'min(800px, 140vw)', height: 'min(800px, 140vw)', borderRadius: '50%',
-          background: 'radial-gradient(circle, rgba(0,255,153,0.08) 0%, transparent 70%)',
-          pointerEvents: 'none',
-        }} />
-        <div className="hide-mobile" style={{
-          position: 'absolute', top: '100px', left: '-50px',
-          width: '500px', height: '500px', borderRadius: '50%',
-          background: 'radial-gradient(circle, rgba(0,255,153,0.05) 0%, transparent 70%)',
-          pointerEvents: 'none',
-        }} />
-        <div className="hide-mobile" style={{
-          position: 'absolute', top: '100px', right: '-100px',
-          width: '350px', height: '350px', borderRadius: '50%',
-          background: 'radial-gradient(circle, rgba(244,114,182,0.1) 0%, transparent 70%)',
-          pointerEvents: 'none',
-        }} />
 
         <div style={{ position: 'relative', maxWidth: '900px', margin: '0 auto' }} className="animate-fade-in-up">
           <div className="glass-light" style={{ 

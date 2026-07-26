@@ -5,6 +5,33 @@ import { useUser } from '@clerk/nextjs';
 import Link from 'next/link';
 import ThemeToggle from '@/components/ThemeToggle';
 import BackButton from '@/components/BackButton';
+import { Sparkles, Users, Trash2, Paperclip, Lock, Check, X, Image as ImageIcon, Film } from 'lucide-react';
+
+type RoomTheme = 'celestial' | 'forest' | 'sunset';
+
+const ROOM_THEMES: Record<RoomTheme, { name: string; primary: string; secondary: string; glow: string; bgGrad: string }> = {
+  celestial: {
+    name: '🌌 Celestial Twilight',
+    primary: '#7c3aed',
+    secondary: '#06b6d4',
+    glow: 'rgba(124, 58, 237, 0.2)',
+    bgGrad: 'radial-gradient(ellipse at top right, rgba(124, 58, 237, 0.15) 0%, transparent 60%), radial-gradient(ellipse at bottom left, rgba(6, 182, 212, 0.12) 0%, transparent 60%)',
+  },
+  forest: {
+    name: '🌲 Deep Forest Sanctuary',
+    primary: '#059669',
+    secondary: '#10b981',
+    glow: 'rgba(5, 150, 105, 0.2)',
+    bgGrad: 'radial-gradient(ellipse at top right, rgba(5, 150, 105, 0.18) 0%, transparent 60%), radial-gradient(ellipse at bottom left, rgba(16, 185, 129, 0.12) 0%, transparent 60%)',
+  },
+  sunset: {
+    name: '🌅 Amber Serenity',
+    primary: '#f59e0b',
+    secondary: '#e11d48',
+    glow: 'rgba(245, 158, 11, 0.2)',
+    bgGrad: 'radial-gradient(ellipse at top right, rgba(245, 158, 11, 0.18) 0%, transparent 60%), radial-gradient(ellipse at bottom left, rgba(225, 29, 72, 0.12) 0%, transparent 60%)',
+  },
+};
 
 export default function CommunityPage() {
   const { user, isLoaded, isSignedIn } = useUser();
@@ -13,7 +40,10 @@ export default function CommunityPage() {
   const [file, setFile] = useState<File | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isDeleting, setIsDeleting] = useState<string | null>(null);
+  const [roomTheme, setRoomTheme] = useState<RoomTheme>('celestial');
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const currentTheme = ROOM_THEMES[roomTheme];
 
   useEffect(() => {
     fetchPosts();
@@ -47,18 +77,14 @@ export default function CommunityPage() {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const selectedFile = e.target.files[0];
-      // Basic validation: Check if it's an image or video
       if (!selectedFile.type.startsWith('image/') && !selectedFile.type.startsWith('video/')) {
         alert('Please upload a valid image or video file.');
         return;
       }
-      
-      // If video, check roughly size limit (e.g. ~15MB for 60 seconds depending on quality)
       if (selectedFile.type.startsWith('video/') && selectedFile.size > 20 * 1024 * 1024) {
         alert('Video file is too large. Please keep videos under 60 seconds / 20MB.');
         return;
       }
-
       setFile(selectedFile);
     }
   };
@@ -123,7 +149,6 @@ export default function CommunityPage() {
       setFile(null);
       if (fileInputRef.current) fileInputRef.current.value = '';
       
-      // Refresh feed
       fetchPosts();
     } catch (e: any) {
       console.error(e);
@@ -134,38 +159,206 @@ export default function CommunityPage() {
   };
 
   return (
-    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
-      <nav className="echo-nav" style={{ padding: '1rem 1.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-          <BackButton />
-          <Link href="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-            <img src="/favicon.ico" alt="Echo Logo" style={{ width: '40px', height: '40px', borderRadius: '12px' }} />
-            <span style={{ fontSize: '1.5rem', fontWeight: '800', letterSpacing: '-0.02em', color: 'var(--echo-text)' }}>ECHO <span style={{ fontWeight: '400', opacity: 0.7 }}>Community</span></span>
+    <div
+      style={{
+        minHeight: '100vh',
+        background: 'var(--echo-bg)',
+        color: 'var(--echo-text)',
+        position: 'relative',
+        overflowX: 'hidden',
+        transition: 'background-color 0.5s ease',
+        display: 'flex',
+        flexDirection: 'column',
+      }}
+    >
+      <div
+        style={{
+          position: 'fixed',
+          inset: 0,
+          background: currentTheme.bgGrad,
+          pointerEvents: 'none',
+          transition: 'background 1s ease',
+          zIndex: 0,
+        }}
+      />
+
+      <style>{`
+        .community-header {
+          padding: 1rem 1.5rem;
+          border-bottom: 1px solid var(--echo-border);
+          background: var(--echo-surface);
+          backdrop-filter: blur(12px);
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          flex-wrap: wrap;
+          gap: 1rem;
+          position: sticky;
+          top: 0;
+          z-index: 50;
+        }
+
+        .community-header-left {
+          display: flex;
+          align-items: center;
+          gap: 1rem;
+          flex-wrap: wrap;
+        }
+
+        .community-theme-selector {
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+          background: var(--echo-surface-2);
+          padding: 0.35rem 0.5rem;
+          borderRadius: 999px;
+          border: 1px solid var(--echo-border);
+        }
+
+        @media (max-width: 640px) {
+          .community-header {
+            flex-direction: column;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            gap: 0.75rem;
+          }
+
+          .community-header-left {
+            width: 100%;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+          }
+
+          .community-back-container {
+            display: none !important;
+          }
+
+          .community-header-left a {
+            justify-content: center;
+            width: 100%;
+          }
+
+          .community-theme-selector {
+            display: none !important;
+          }
+        }
+      `}</style>
+
+      <header className="community-header">
+        <div className="community-header-left">
+          <div className="community-back-container">
+            <BackButton />
+          </div>
+          <Link href="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '0.625rem' }}>
+            <div
+              style={{
+                width: '36px',
+                height: '36px',
+                borderRadius: '10px',
+                background: `linear-gradient(135deg, ${currentTheme.primary}, ${currentTheme.secondary})`,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                boxShadow: `0 4px 15px ${currentTheme.glow}`,
+              }}
+            >
+              <Users size={18} style={{ color: '#fff' }} />
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+              <div style={{ fontWeight: '800', fontSize: '1.125rem', letterSpacing: '-0.01em', color: 'var(--echo-text)', lineHeight: '1.2' }}>
+                ECHO Community
+              </div>
+              <div style={{ fontSize: '0.7rem', color: 'var(--echo-text-muted)', display: 'flex', alignItems: 'center', gap: '0.35rem', lineHeight: '1.2', marginTop: '0.15rem' }}>
+                <span className="status-dot online" style={{ width: '6px', height: '6px' }} />
+                <span>Safe Support Space</span>
+              </div>
+            </div>
           </Link>
         </div>
-        <ThemeToggle />
-      </nav>
 
-      <main style={{ flex: 1, padding: '2rem 1rem', maxWidth: '800px', margin: '0 auto', width: '100%' }}>
-        <h1 className="section-heading" style={{ marginBottom: '0.5rem' }}>Community Feed</h1>
-        <p style={{ color: 'var(--echo-text-muted)', marginBottom: '2rem' }}>A safe space to share thoughts, photos, and short videos.</p>
+        <div className="community-theme-selector" style={{ borderRadius: '999px' }}>
+          <span style={{ fontSize: '0.7rem', fontWeight: '600', color: 'var(--echo-text-muted)', paddingLeft: '0.5rem' }} className="hide-mobile">
+            Ambient Mood:
+          </span>
+          {(Object.keys(ROOM_THEMES) as RoomTheme[]).map(key => {
+            const t = ROOM_THEMES[key];
+            const isSelected = roomTheme === key;
+            return (
+              <button
+                key={key}
+                onClick={() => setRoomTheme(key)}
+                style={{
+                  padding: '0.35rem 0.75rem',
+                  borderRadius: '999px',
+                  border: 'none',
+                  background: isSelected ? t.primary : 'transparent',
+                  color: isSelected ? '#fff' : 'var(--echo-text-muted)',
+                  fontSize: '0.75rem',
+                  fontWeight: isSelected ? '700' : '500',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s ease',
+                }}
+              >
+                {t.name.split(' ')[0]} {key.charAt(0).toUpperCase() + key.slice(1)}
+              </button>
+            );
+          })}
+        </div>
+      </header>
 
-        {/* Create Post Section */}
+      <main style={{ flex: 1, padding: '2.5rem 1rem', maxWidth: '800px', margin: '0 auto', width: '100%', position: 'relative', zIndex: 1 }}>
+        <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
+          <h1 style={{ fontSize: '2.25rem', fontWeight: '900', marginBottom: '0.5rem', letterSpacing: '-0.02em', color: 'var(--echo-text)' }}>
+            Community Feed
+          </h1>
+          <p style={{ color: 'var(--echo-text-muted)', fontSize: '1rem', maxWidth: '600px', margin: '0 auto' }}>
+            A premium, safe space to share supportive thoughts, inspiring photos, and uplifting short videos.
+          </p>
+        </div>
+
         {isLoaded ? (
           isSignedIn ? (
-            <div className="glass-panel animate-fade-in-up" style={{ padding: '1.5rem', marginBottom: '2rem', border: '1px solid var(--echo-primary)' }}>
-              <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+            <div 
+              className="glass" 
+              style={{ 
+                padding: '1.75rem', 
+                marginBottom: '2.5rem', 
+                borderRadius: '24px',
+                border: '1px solid var(--echo-border)',
+                background: 'var(--echo-surface)',
+                boxShadow: `0 15px 35px rgba(0, 0, 0, 0.1), 0 0 20px ${currentTheme.glow}`,
+                position: 'relative',
+                overflow: 'hidden'
+              }}
+            >
+              <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '4px', background: `linear-gradient(90deg, ${currentTheme.primary}, ${currentTheme.secondary})` }} />
+
+              <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
                 <textarea
                   className="echo-input"
-                  placeholder="Share a supportive thought..."
-                  style={{ minHeight: '100px', resize: 'vertical' }}
+                  placeholder="Share a supportive thought, realization, or moment of gratitude..."
+                  style={{ 
+                    minHeight: '120px', 
+                    resize: 'vertical',
+                    background: 'var(--echo-surface-2)',
+                    border: '1px solid var(--echo-border)',
+                    borderRadius: '16px',
+                    padding: '1rem',
+                    color: 'var(--echo-text)',
+                    fontSize: '0.95rem',
+                    outline: 'none',
+                    transition: 'border-color 0.2s ease',
+                    textAlign: 'center',
+                  }}
                   value={content}
                   onChange={e => setContent(e.target.value)}
                   disabled={isSubmitting}
                 />
                 
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
                     <input 
                       type="file" 
                       accept="image/*,video/*" 
@@ -179,92 +372,290 @@ export default function CommunityPage() {
                       className="btn-secondary" 
                       onClick={() => fileInputRef.current?.click()}
                       disabled={isSubmitting}
+                      style={{
+                        padding: '0.5rem 1rem',
+                        fontSize: '0.85rem',
+                        borderRadius: '12px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        textAlign: 'center',
+                        gap: '0.5rem',
+                        width: '100%',
+                      }}
                     >
-                      📎 Attach Photo / Video (up to 60s)
+                      <Paperclip size={14} />
+                      <span>Attach Photo / Video</span>
                     </button>
+
                     {file && (
-                      <span style={{ fontSize: '0.875rem', color: 'var(--echo-primary)', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                        ✓ {file.name}
-                        <button type="button" onClick={() => { setFile(null); if(fileInputRef.current) fileInputRef.current.value = ''; }} style={{ background: 'none', border: 'none', color: 'var(--echo-text-muted)', cursor: 'pointer' }}>✕</button>
+                      <span style={{ 
+                        fontSize: '0.8125rem', 
+                        color: currentTheme.primary, 
+                        display: 'flex', 
+                        alignItems: 'center', 
+                        gap: '0.35rem',
+                        background: `${currentTheme.primary}15`,
+                        padding: '0.35rem 0.75rem',
+                        borderRadius: '8px',
+                        fontWeight: '600'
+                      }}>
+                        {file.type.startsWith('video/') ? <Film size={12} /> : <ImageIcon size={12} />}
+                        <span style={{ maxWidth: '150px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                          {file.name}
+                        </span>
+                        <button 
+                          type="button" 
+                          onClick={() => { setFile(null); if(fileInputRef.current) fileInputRef.current.value = ''; }} 
+                          style={{ background: 'none', border: 'none', color: 'var(--echo-text-muted)', cursor: 'pointer', display: 'flex', alignItems: 'center', padding: '0 2px' }}
+                        >
+                          <X size={14} />
+                        </button>
                       </span>
                     )}
                   </div>
                   
-                  <button type="submit" className="btn-primary" disabled={isSubmitting || (!content.trim() && !file)}>
+                  <button 
+                    type="submit" 
+                    className="btn-primary" 
+                    disabled={isSubmitting || (!content.trim() && !file)}
+                    style={{
+                      padding: '0.625rem 1.5rem',
+                      borderRadius: '12px',
+                      fontSize: '0.9rem',
+                      fontWeight: '700',
+                      background: `linear-gradient(135deg, ${currentTheme.primary}, ${currentTheme.secondary})`,
+                      border: 'none',
+                      color: '#fff',
+                      boxShadow: `0 4px 15px ${currentTheme.glow}`,
+                      cursor: 'pointer',
+                      transition: 'all 0.2s ease',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      textAlign: 'center',
+                      width: '100%',
+                    }}
+                  >
                     {isSubmitting ? 'Posting...' : 'Post to Community'}
                   </button>
                 </div>
               </form>
             </div>
           ) : (
-            <div className="echo-card" style={{ marginBottom: '2rem', textAlign: 'center', padding: '2rem' }}>
-              <div style={{ fontSize: '2rem', marginBottom: '1rem' }}>🔒</div>
-              <h3 style={{ fontSize: '1.25rem', fontWeight: '700', marginBottom: '0.5rem' }}>Join the Conversation</h3>
-              <p style={{ color: 'var(--echo-text-muted)', marginBottom: '1.5rem' }}>Sign in to share your own thoughts, photos, and videos with the community.</p>
+            <div 
+              className="glass" 
+              style={{ 
+                marginBottom: '2.5rem', 
+                textAlign: 'center', 
+                padding: '3rem 2rem',
+                borderRadius: '24px',
+                border: '1px solid var(--echo-border)',
+                background: 'var(--echo-surface)',
+                boxShadow: '0 15px 35px rgba(0, 0, 0, 0.05)',
+              }}
+            >
+              <div style={{ 
+                width: '64px', 
+                height: '64px', 
+                borderRadius: '20px', 
+                background: 'var(--echo-surface-2)', 
+                display: 'flex', 
+                alignItems: 'center', 
+                justifyContent: 'center', 
+                margin: '0 auto 1.5rem' 
+              }}>
+                <Lock size={32} style={{ color: 'var(--echo-text-muted)' }} />
+              </div>
+              <h3 style={{ fontSize: '1.25rem', fontWeight: '800', marginBottom: '0.5rem', color: 'var(--echo-text)' }}>Join the Conversation</h3>
+              <p style={{ color: 'var(--echo-text-muted)', marginBottom: '1.5rem', fontSize: '0.9rem', maxWidth: '400px', margin: '0 auto 1.5rem' }}>
+                Sign in to share your own thoughts, photos, and videos with the community.
+              </p>
               <Link href="/sign-in?redirect_url=/community">
-                <button className="btn-primary">Sign In</button>
+                <button 
+                  className="btn-primary"
+                  style={{
+                    padding: '0.625rem 1.75rem',
+                    borderRadius: '12px',
+                    fontWeight: '700',
+                    fontSize: '0.9rem',
+                    cursor: 'pointer'
+                  }}
+                >
+                  Sign In
+                </button>
               </Link>
             </div>
           )
         ) : (
           <div style={{ height: '150px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <span style={{ color: 'var(--echo-text-muted)' }}>Loading...</span>
+            <span style={{ color: 'var(--echo-text-muted)', fontWeight: '600' }} className="animate-pulse">Loading feed options...</span>
           </div>
         )}
 
-        {/* Feed */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
           {posts.length === 0 ? (
-            <div className="echo-card" style={{ textAlign: 'center', padding: '3rem' }}>
-              <p style={{ color: 'var(--echo-text-muted)' }}>No posts yet. Be the first to share something positive!</p>
+            <div 
+              className="glass" 
+              style={{ 
+                textAlign: 'center', 
+                padding: '4rem 2rem', 
+                borderRadius: '24px',
+                border: '1px solid var(--echo-border)',
+                background: 'var(--echo-surface)',
+              }}
+            >
+              <div style={{ fontSize: '2.5rem', marginBottom: '1rem' }}>✨</div>
+              <h4 style={{ fontSize: '1.125rem', fontWeight: '700', marginBottom: '0.25rem' }}>The feed is quiet</h4>
+              <p style={{ color: 'var(--echo-text-muted)', fontSize: '0.9rem' }}>Be the first to share something positive!</p>
             </div>
           ) : (
-            posts.map(post => (
-              <div key={post._id} className="echo-card animate-fade-in-up">
-                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1rem' }}>
-                  <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: 'linear-gradient(135deg, var(--echo-primary), #06b6d4)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: '700', color: 'white', fontSize: '1.25rem' }}>
-                    {post.authorName[0]}
-                  </div>
-                  <div style={{ flex: 1 }}>
-                    <div style={{ fontWeight: '700', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                      {post.authorName}
-                      <span className={`badge badge-${post.authorRole === 'doctor' ? 'cyan' : post.authorRole === 'volunteer' ? 'purple' : 'gray'}`}>
-                        {post.authorRole}
-                      </span>
-                    </div>
-                    <div style={{ fontSize: '0.8125rem', color: 'var(--echo-text-muted)' }}>
-                      {new Date(post.createdAt).toLocaleString()}
-                    </div>
-                  </div>
-                  {user?.id === post.authorId && (
-                    <button 
-                      onClick={() => handleDeletePost(post._id)}
-                      disabled={isDeleting === post._id}
-                      style={{ background: 'none', border: 'none', color: 'var(--echo-text-muted)', cursor: 'pointer', fontSize: '1.25rem', opacity: 0.7 }}
-                      title="Delete Post"
+            posts.map(post => {
+              let badgeColor = 'var(--echo-text-muted)';
+              let badgeBg = 'var(--echo-surface-2)';
+              if (post.authorRole === 'doctor') {
+                badgeColor = '#06b6d4';
+                badgeBg = 'rgba(6, 182, 212, 0.1)';
+              } else if (post.authorRole === 'volunteer') {
+                badgeColor = '#a78bfa';
+                badgeBg = 'rgba(167, 139, 250, 0.1)';
+              }
+
+              return (
+                <div 
+                  key={post._id} 
+                  className="glass animate-fade-in-up"
+                  style={{
+                    padding: '1.75rem',
+                    borderRadius: '24px',
+                    border: '1px solid var(--echo-border)',
+                    background: 'var(--echo-surface)',
+                    boxShadow: '0 10px 30px rgba(0, 0, 0, 0.05)',
+                    transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+                    position: 'relative'
+                  }}
+                >
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1.25rem' }}>
+                    <div 
+                      style={{ 
+                        width: '44px', 
+                        height: '44px', 
+                        borderRadius: '12px', 
+                        background: `linear-gradient(135deg, ${currentTheme.primary}, ${currentTheme.secondary})`, 
+                        display: 'flex', 
+                        alignItems: 'center', 
+                        justifyContent: 'center', 
+                        fontWeight: '800', 
+                        color: '#fff',
+                        textShadow: '0 1px 2px rgba(0,0,0,0.2)',
+                        fontSize: '1.25rem',
+                        boxShadow: `0 4px 10px ${currentTheme.glow}`
+                      }}
                     >
-                      {isDeleting === post._id ? '⏳' : '🗑️'}
-                    </button>
+                      {post.authorName[0]?.toUpperCase()}
+                    </div>
+                    
+                    <div style={{ flex: 1 }}>
+                      <div style={{ fontWeight: '800', display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--echo-text)' }}>
+                        {post.authorName}
+                        <span style={{ 
+                          fontSize: '0.65rem',
+                          fontWeight: '700',
+                          textTransform: 'uppercase',
+                          letterSpacing: '0.05em',
+                          padding: '0.2rem 0.6rem',
+                          borderRadius: '6px',
+                          color: badgeColor,
+                          background: badgeBg,
+                          border: `1px solid ${badgeColor}25`
+                        }}>
+                          {post.authorRole}
+                        </span>
+                      </div>
+                      <div style={{ fontSize: '0.75rem', color: 'var(--echo-text-muted)', marginTop: '0.15rem' }}>
+                        {new Date(post.createdAt).toLocaleString()}
+                      </div>
+                    </div>
+
+                    {user?.id === post.authorId && (
+                      <button 
+                        onClick={() => handleDeletePost(post._id)}
+                        disabled={isDeleting === post._id}
+                        style={{ 
+                          background: 'none', 
+                          border: 'none', 
+                          color: '#ef4444', 
+                          cursor: 'pointer', 
+                          opacity: 0.7,
+                          transition: 'opacity 0.2s ease',
+                          padding: '0.5rem',
+                          borderRadius: '8px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center'
+                        }}
+                        title="Delete Post"
+                        onMouseEnter={(e) => e.currentTarget.style.opacity = '1'}
+                        onMouseLeave={(e) => e.currentTarget.style.opacity = '0.7'}
+                      >
+                        {isDeleting === post._id ? (
+                          <span style={{ fontSize: '0.8rem' }} className="animate-spin">⏳</span>
+                        ) : (
+                          <Trash2 size={16} />
+                        )}
+                      </button>
+                    )}
+                  </div>
+
+                  <p style={{ 
+                    color: 'var(--echo-text)', 
+                    lineHeight: '1.7', 
+                    fontSize: '1rem',
+                    whiteSpace: 'pre-wrap', 
+                    marginBottom: post.mediaUrl ? '1.25rem' : '0' 
+                  }}>
+                    {post.content}
+                  </p>
+
+                  {post.mediaUrl && post.mediaType === 'image' && (
+                    <div 
+                      style={{ 
+                        borderRadius: '16px', 
+                        overflow: 'hidden', 
+                        marginTop: '1.25rem',
+                        border: '1px solid var(--echo-border)',
+                        boxShadow: '0 8px 24px rgba(0,0,0,0.1)'
+                      }}
+                    >
+                      <img 
+                        src={post.mediaUrl} 
+                        alt="Post attachment" 
+                        style={{ width: '100%', maxHeight: '500px', objectFit: 'cover', display: 'block' }} 
+                      />
+                    </div>
+                  )}
+
+                  {post.mediaUrl && post.mediaType === 'video' && (
+                    <div 
+                      style={{ 
+                        borderRadius: '16px', 
+                        overflow: 'hidden', 
+                        marginTop: '1.25rem', 
+                        background: 'black',
+                        border: '1px solid var(--echo-border)',
+                        boxShadow: '0 8px 24px rgba(0,0,0,0.1)'
+                      }}
+                    >
+                      <video 
+                        src={post.mediaUrl} 
+                        controls 
+                        style={{ width: '100%', maxHeight: '500px', display: 'block' }} 
+                      />
+                    </div>
                   )}
                 </div>
-
-                <p style={{ color: 'var(--echo-text)', lineHeight: '1.6', whiteSpace: 'pre-wrap', marginBottom: post.mediaUrl ? '1rem' : '0' }}>
-                  {post.content}
-                </p>
-
-                {post.mediaUrl && post.mediaType === 'image' && (
-                  <div style={{ borderRadius: '12px', overflow: 'hidden', marginTop: '1rem' }}>
-                    <img src={post.mediaUrl} alt="Post attachment" style={{ width: '100%', maxHeight: '500px', objectFit: 'cover' }} />
-                  </div>
-                )}
-
-                {post.mediaUrl && post.mediaType === 'video' && (
-                  <div style={{ borderRadius: '12px', overflow: 'hidden', marginTop: '1rem', background: 'black' }}>
-                    <video src={post.mediaUrl} controls style={{ width: '100%', maxHeight: '500px' }} />
-                  </div>
-                )}
-              </div>
-            ))
+              );
+            })
           )}
         </div>
       </main>
