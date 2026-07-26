@@ -151,56 +151,56 @@ export default function HomePage() {
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '2.5rem' }}>
             <div className="echo-card glass-panel" style={{ padding: '3rem', position: 'relative', overflow: 'hidden' }}>
               <div style={{ fontSize: '2.5rem', marginBottom: '1.5rem' }}>🤖</div>
-              <h3 style={{ fontSize: '1.5rem', fontWeight: '800', marginBottom: '1rem' }}>Always-On AI Companionship</h3>
+              <h3 style={{ fontSize: '1.5rem', fontWeight: '800', marginBottom: '1rem' }}>24/7 AI Companion</h3>
               <p style={{ color: 'var(--echo-text-muted)', lineHeight: '1.7', marginBottom: '1.5rem' }}>
-                Meet Echo, your proprietary AI companion trained in deep, empathetic communication. Whether it's a 3 AM panic attack or a midday moment of isolation, Echo provides instant, non-judgmental support 24/7.
+                Connect with Echo, your compassionate AI companion trained in mindful communication. Access instant, private, and non-judgmental comfort whenever you need it, night or day.
               </p>
-              <div style={{ color: 'var(--echo-primary-light)', fontWeight: '700', fontSize: '0.875rem' }}>Available 24/7 • Private • Empathetic</div>
+              <div style={{ color: 'var(--echo-primary-light)', fontWeight: '700', fontSize: '0.875rem' }}>Always Available • Non-Judgmental • Immediate Support</div>
             </div>
 
             <div className="echo-card glass-panel" style={{ padding: '3rem' }}>
               <div style={{ fontSize: '2.5rem', marginBottom: '1.5rem' }}>🤝</div>
-              <h3 style={{ fontSize: '1.5rem', fontWeight: '800', marginBottom: '1rem' }}>A Global Network of Care</h3>
+              <h3 style={{ fontSize: '1.5rem', fontWeight: '800', marginBottom: '1rem' }}>Professional & Peer Network</h3>
               <p style={{ color: 'var(--echo-text-muted)', lineHeight: '1.7', marginBottom: '1.5rem' }}>
-                Access a worldwide ecosystem of certified mental health professionals and dedicated, trained volunteers. We bridge the gap between human compassion and those in need, ensuring you never have to walk alone.
+                Bridge the gap with human empathy. Consult verified medical practitioners or connect with dedicated peer volunteers who are ready to listen, share, and support you on your path.
               </p>
-              <div style={{ color: 'var(--echo-primary-light)', fontWeight: '700', fontSize: '0.875rem' }}>Professional Doctors • Verified Volunteers</div>
+              <div style={{ color: 'var(--echo-primary-light)', fontWeight: '700', fontSize: '0.875rem' }}>Verified Doctors • Peer Volunteers • Active Support</div>
             </div>
 
             <div className="echo-card glass-panel" style={{ padding: '3rem' }}>
               <div style={{ fontSize: '2.5rem', marginBottom: '1.5rem' }}>🧘</div>
               <h3 style={{ fontSize: '1.5rem', fontWeight: '800', marginBottom: '1rem' }}>The Serenity Sanctuary</h3>
               <p style={{ color: 'var(--echo-text-muted)', lineHeight: '1.7', marginBottom: '1.5rem' }}>
-                Escape into a curated digital oasis designed to ground your mind. From interactive sensory exercises and guided breathing techniques to a library of calming wisdom, find the peace you deserve.
+                Reclaim your inner calm inside our digital oasis. Experience interactive sensory games, customized deep breathing guides, calming audio soundscapes, and our custom AI Personal Exercise Trainer.
               </p>
-              <div style={{ color: 'var(--echo-primary-light)', fontWeight: '700', fontSize: '0.875rem' }}>Interactive Games • Curated Library</div>
+              <div style={{ color: 'var(--echo-primary-light)', fontWeight: '700', fontSize: '0.875rem' }}>AI Workout Trainer • Soundscapes • Guided Breathing</div>
             </div>
 
             <div className="echo-card glass-panel" style={{ padding: '3rem' }}>
               <div style={{ fontSize: '2.5rem', marginBottom: '1.5rem' }}>🛡️</div>
-              <h3 style={{ fontSize: '1.5rem', fontWeight: '800', marginBottom: '1rem' }}>Absolute Anonymity & Privacy</h3>
+              <h3 style={{ fontSize: '1.5rem', fontWeight: '800', marginBottom: '1rem' }}>Complete Anonymity & Security</h3>
               <p style={{ color: 'var(--echo-text-muted)', lineHeight: '1.7', marginBottom: '1.5rem' }}>
-                Your healing journey is profoundly personal. We employ uncompromising, bank-grade encryption and strictly anonymous support channels to guarantee your safety. You can speak your truth without fear.
+                Your healing journey is secure. We use advanced client-side processing and secure data standards so you can speak your truth and track your mental health with complete peace of mind.
               </p>
-              <div style={{ color: 'var(--echo-primary-light)', fontWeight: '700', fontSize: '0.875rem' }}>Encrypted • Secure • Safe Space</div>
+              <div style={{ color: 'var(--echo-primary-light)', fontWeight: '700', fontSize: '0.875rem' }}>100% Private • Local Processing • Secure Data</div>
             </div>
 
             <div className="echo-card glass-panel" style={{ padding: '3rem' }}>
-              <div style={{ fontSize: '2.5rem', marginBottom: '1.5rem' }}>🌟</div>
-              <h3 style={{ fontSize: '1.5rem', fontWeight: '800', marginBottom: '1rem' }}>A Community That Understands</h3>
+              <div style={{ fontSize: '2.5rem', marginBottom: '1.5rem' }}>🌍</div>
+              <h3 style={{ fontSize: '1.5rem', fontWeight: '800', marginBottom: '1rem' }}>Global Support Community</h3>
               <p style={{ color: 'var(--echo-text-muted)', lineHeight: '1.7', marginBottom: '1.5rem' }}>
-                Step into a sanctuary of shared experiences. Read anonymous stories, share your own struggles, and find immense strength in a community that truly understands the weight you carry.
+                Step into a sanctuary of shared stories. Browse anonymous community posts, write down your thoughts, and find strength in a supportive community that understands your daily weight.
               </p>
-              <div style={{ color: 'var(--echo-primary-light)', fontWeight: '700', fontSize: '0.875rem' }}>Community • Anonymity • Support</div>
+              <div style={{ color: 'var(--echo-primary-light)', fontWeight: '700', fontSize: '0.875rem' }}>Anonymous Sharing • Shared Wisdom • Peer Connections</div>
             </div>
 
             <div className="echo-card glass-panel" style={{ padding: '3rem' }}>
-              <div style={{ fontSize: '2.5rem', marginBottom: '1.5rem' }}>📊</div>
-              <h3 style={{ fontSize: '1.5rem', fontWeight: '800', marginBottom: '1rem' }}>Insightful Mood Analytics</h3>
+              <div style={{ fontSize: '2.5rem', marginBottom: '1.5rem' }}>📸</div>
+              <h3 style={{ fontSize: '1.5rem', fontWeight: '800', marginBottom: '1rem' }}>AI Face Scan & Mood Analytics</h3>
               <p style={{ color: 'var(--echo-text-muted)', lineHeight: '1.7', marginBottom: '1.5rem' }}>
-                Visualize the trajectory of your emotional well-being. Our intuitive analytics help you identify hidden emotional patterns, set achievable goals, and celebrate every victory on your road to recovery.
+                Track your emotional growth. Scan your facial expressions in real-time with browser-run AI, log daily questionnaires, and view detailed progress trends to recognize your healing patterns.
               </p>
-              <div style={{ color: 'var(--echo-primary-light)', fontWeight: '700', fontSize: '0.875rem' }}>Insightful • Private Tracking • Progress</div>
+              <div style={{ color: 'var(--echo-primary-light)', fontWeight: '700', fontSize: '0.875rem' }}>Real-Time Face Scan • Guided Assessments • Visual Trends</div>
             </div>
           </div>
         </div>

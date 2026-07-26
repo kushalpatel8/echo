@@ -206,7 +206,14 @@ export default function MobileDashboard() {
           pointer-events: none;
         }
 
-        .mdb-hero-inner { position: relative; z-index: 1; }
+        .mdb-hero-inner {
+          position: relative;
+          z-index: 1;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          text-align: center;
+        }
 
         .mdb-hero-badge {
           display: inline-flex;

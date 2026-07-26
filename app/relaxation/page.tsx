@@ -6,10 +6,10 @@ import { GuidedBreathing } from '@/components/GuidedBreathing';
 import { RelaxationSoundscapes } from '@/components/RelaxationSoundscapes';
 import { VoiceMessageButton } from '@/components/VoiceControls';
 import { useVoice } from '@/hooks/useVoice';
-import { Sparkles, Wind, BookOpen, Copy, Check, ArrowRight } from 'lucide-react';
+import { Sparkles, Wind, BookOpen, Copy, Check, ArrowRight, Dumbbell } from 'lucide-react';
 
-type RoomTheme = 'celestial' | 'forest' | 'sunset';
-type TabType = 'breathing' | 'affirmations' | 'library';
+type RoomTheme = 'celestial' | 'forest' | 'sunset' | 'ocean' | 'aurora';
+type TabType = 'breathing' | 'affirmations' | 'library' | 'trainer';
 
 interface QuoteItem {
   text: string;
@@ -62,6 +62,20 @@ const ROOM_THEMES: Record<RoomTheme, { name: string; primary: string; secondary:
     glow: 'rgba(245, 158, 11, 0.2)',
     bgGrad: 'radial-gradient(ellipse at top right, rgba(245, 158, 11, 0.18) 0%, transparent 60%), radial-gradient(ellipse at bottom left, rgba(225, 29, 72, 0.12) 0%, transparent 60%)',
   },
+  ocean: {
+    name: '🌊 Deep Ocean Calm',
+    primary: '#3b82f6',
+    secondary: '#0ea5e9',
+    glow: 'rgba(59, 130, 246, 0.2)',
+    bgGrad: 'radial-gradient(ellipse at top right, rgba(59, 130, 246, 0.18) 0%, transparent 60%), radial-gradient(ellipse at bottom left, rgba(14, 165, 233, 0.12) 0%, transparent 60%)',
+  },
+  aurora: {
+    name: '✨ Northern Lights',
+    primary: '#a855f7',
+    secondary: '#10b981',
+    glow: 'rgba(168, 85, 247, 0.2)',
+    bgGrad: 'radial-gradient(ellipse at top right, rgba(168, 85, 247, 0.18) 0%, transparent 60%), radial-gradient(ellipse at bottom left, rgba(10, 200, 120, 0.12) 0%, transparent 60%)',
+  },
 };
 
 export default function RelaxationPage() {
@@ -71,6 +85,45 @@ export default function RelaxationPage() {
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
   const [fade, setFade] = useState(true);
   const [copied, setCopied] = useState(false);
+
+  const [trainerAge, setTrainerAge] = useState('');
+  const [trainerGender, setTrainerGender] = useState('Prefer not to say');
+  const [trainerProfession, setTrainerProfession] = useState('Student');
+  const [trainerExercises, setTrainerExercises] = useState<any[]>([]);
+  const [trainerLoading, setTrainerLoading] = useState(false);
+  const [trainerError, setTrainerError] = useState<string | null>(null);
+
+  const handleTrainerSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!trainerAge.trim() || !trainerProfession.trim()) {
+      setTrainerError('Please enter your age and profession.');
+      return;
+    }
+    setTrainerLoading(true);
+    setTrainerError(null);
+    setTrainerExercises([]);
+    try {
+      const res = await fetch('/api/exercise-trainer', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          age: trainerAge,
+          gender: trainerGender,
+          profession: trainerProfession
+        })
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.error || 'Failed to generate exercises');
+      }
+      setTrainerExercises(data.exercises || []);
+    } catch (err: any) {
+      console.error(err);
+      setTrainerError(err.message || 'An error occurred while calling the trainer.');
+    } finally {
+      setTrainerLoading(false);
+    }
+  };
 
   const { speak, stopSpeaking, speakingId, hasSynthesisSupport } = useVoice();
   const currentTheme = ROOM_THEMES[roomTheme];
@@ -246,15 +299,17 @@ export default function RelaxationPage() {
         {/* Ambient Room Theme Selector */}
         <div className="relaxation-theme-selector">
           <span style={{ fontSize: '0.7rem', fontWeight: '600', color: 'var(--echo-text-muted)', paddingLeft: '0.5rem' }}>
-            Ambient Mood:
+            Mood:
           </span>
           {(Object.keys(ROOM_THEMES) as RoomTheme[]).map(key => {
             const t = ROOM_THEMES[key];
             const isSelected = roomTheme === key;
+            const isExtra = key === 'ocean' || key === 'aurora';
             return (
               <button
                 key={key}
                 onClick={() => setRoomTheme(key)}
+                className={isExtra ? 'hide-mobile' : ''}
                 style={{
                   padding: '0.35rem 0.75rem',
                   borderRadius: '999px',
@@ -319,6 +374,7 @@ export default function RelaxationPage() {
               { id: 'breathing', label: 'Breathing & Sounds', icon: <Wind size={16} /> },
               { id: 'affirmations', label: 'Wisdom & Affirmations', icon: <Sparkles size={16} /> },
               { id: 'library', label: 'Curated Library', icon: <BookOpen size={16} /> },
+              { id: 'trainer', label: 'AI Personal Trainer', icon: <Dumbbell size={16} /> },
             ].map(tab => {
               const selected = activeTab === tab.id;
               return (
@@ -374,6 +430,7 @@ export default function RelaxationPage() {
               <option value="breathing">🧘 Guided Breathing & Sounds</option>
               <option value="affirmations">✨ Wisdom & Affirmations</option>
               <option value="library">📚 Curated Library</option>
+              <option value="trainer">💪 AI Personal Trainer</option>
             </select>
             <div style={{ position: 'absolute', right: '1.25rem', top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none', color: 'var(--echo-text-muted)', fontSize: '0.8rem' }}>
               ▼
@@ -627,6 +684,193 @@ export default function RelaxationPage() {
                 </div>
               ))}
             </div>
+          </div>
+        )}
+
+        {/* TAB 4: PERSONAL AI EXERCISE TRAINER */}
+        {activeTab === 'trainer' && (
+          <div className="animate-fade-in-up">
+            <div
+              className="glass"
+              style={{
+                padding: '2.5rem',
+                borderRadius: '28px',
+                border: '1px solid var(--echo-border)',
+                background: 'var(--echo-surface)',
+                boxShadow: `0 25px 60px rgba(0, 0, 0, 0.15), 0 0 40px ${currentTheme.glow}`,
+                marginBottom: '3rem',
+                position: 'relative',
+                overflow: 'hidden',
+              }}
+            >
+              <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '4px', background: `linear-gradient(90deg, ${currentTheme.primary}, ${currentTheme.secondary})` }} />
+              
+              <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
+                <h3 style={{ fontSize: '1.75rem', fontWeight: '900', color: 'var(--echo-text)', marginBottom: '0.5rem', letterSpacing: '-0.02em' }}>
+                  AI Personal Exercise Trainer
+                </h3>
+                <p style={{ color: 'var(--echo-text-muted)', fontSize: '0.95rem', maxWidth: '500px', margin: '0 auto' }}>
+                  Receive custom physical exercises, stretches, and mindfulness alignments generated for your age, gender, and daily lifestyle routine.
+                </p>
+              </div>
+
+              <form onSubmit={handleTrainerSubmit} style={{ maxWidth: '600px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+                
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '1rem' }}>
+                  {/* Age */}
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.375rem' }}>
+                    <label style={{ fontSize: '0.8125rem', fontWeight: '700', color: 'var(--echo-text-muted)' }}>Age</label>
+                    <input 
+                      type="number"
+                      placeholder="e.g. 25"
+                      value={trainerAge}
+                      onChange={e => setTrainerAge(e.target.value)}
+                      disabled={trainerLoading}
+                      style={{
+                        padding: '0.75rem 1rem',
+                        borderRadius: '12px',
+                        border: '1px solid var(--echo-border)',
+                        background: 'var(--echo-surface-2)',
+                        color: 'var(--echo-text)',
+                        fontSize: '0.9rem',
+                        outline: 'none'
+                      }}
+                      required
+                    />
+                  </div>
+
+                  {/* Gender */}
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.375rem' }}>
+                    <label style={{ fontSize: '0.8125rem', fontWeight: '700', color: 'var(--echo-text-muted)' }}>Gender</label>
+                    <select
+                      value={trainerGender}
+                      onChange={e => setTrainerGender(e.target.value)}
+                      disabled={trainerLoading}
+                      style={{
+                        padding: '0.75rem 1rem',
+                        borderRadius: '12px',
+                        border: '1px solid var(--echo-border)',
+                        background: 'var(--echo-surface-2)',
+                        color: 'var(--echo-text)',
+                        fontSize: '0.9rem',
+                        outline: 'none',
+                        height: '100%',
+                      }}
+                    >
+                      <option value="Prefer not to say">Prefer not to say</option>
+                      <option value="Male">Male</option>
+                      <option value="Female">Female</option>
+                      <option value="Non-Binary">Non-Binary</option>
+                    </select>
+                  </div>
+                </div>
+
+                {/* Profession */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.375rem' }}>
+                  <label style={{ fontSize: '0.8125rem', fontWeight: '700', color: 'var(--echo-text-muted)' }}>Profession / Lifestyle</label>
+                  <input 
+                    type="text"
+                    placeholder="e.g. Student, Software Engineer, Teacher, Desk Worker"
+                    value={trainerProfession}
+                    onChange={e => setTrainerProfession(e.target.value)}
+                    disabled={trainerLoading}
+                    style={{
+                      padding: '0.75rem 1rem',
+                      borderRadius: '12px',
+                      border: '1px solid var(--echo-border)',
+                      background: 'var(--echo-surface-2)',
+                      color: 'var(--echo-text)',
+                      fontSize: '0.9rem',
+                      outline: 'none'
+                    }}
+                    required
+                  />
+                </div>
+
+                {trainerError && (
+                  <div style={{ color: '#ef4444', fontSize: '0.85rem', textAlign: 'center', background: 'rgba(239, 68, 68, 0.1)', padding: '0.5rem', borderRadius: '8px' }}>
+                    ⚠️ {trainerError}
+                  </div>
+                )}
+
+                <button
+                  type="submit"
+                  disabled={trainerLoading}
+                  className="btn-primary"
+                  style={{
+                    padding: '0.875rem',
+                    borderRadius: '14px',
+                    fontWeight: '800',
+                    fontSize: '0.95rem',
+                    cursor: trainerLoading ? 'not-allowed' : 'pointer',
+                    background: `linear-gradient(135deg, ${currentTheme.primary}, ${currentTheme.secondary})`,
+                    boxShadow: `0 8px 25px ${currentTheme.glow}`,
+                    border: 'none',
+                    color: '#fff',
+                    marginTop: '0.5rem',
+                    transition: 'all 0.2s',
+                    opacity: trainerLoading ? 0.7 : 1
+                  }}
+                >
+                  {trainerLoading ? 'Generating Custom Exercises...' : 'Generate Workout Suggestions'}
+                </button>
+              </form>
+            </div>
+
+            {/* Generated Exercises Output */}
+            {trainerExercises.length > 0 && (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+                <h4 style={{ fontSize: '1.25rem', fontWeight: '800', textAlign: 'center', color: 'var(--echo-text)', marginBottom: '0.5rem' }}>
+                  Your Personalized Exercises
+                </h4>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.5rem' }}>
+                  {trainerExercises.map((exercise, index) => (
+                    <div
+                      key={index}
+                      className="glass"
+                      style={{
+                        padding: '2rem',
+                        borderRadius: '24px',
+                        border: '1px solid var(--echo-border)',
+                        background: 'var(--echo-surface)',
+                        boxShadow: '0 10px 30px rgba(0,0,0,0.05)',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        justifyContent: 'space-between',
+                      }}
+                    >
+                      <div>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '0.5rem', marginBottom: '1rem' }}>
+                          <span style={{ fontSize: '1.25rem', fontWeight: '800', color: currentTheme.primary }}>
+                            {exercise.title}
+                          </span>
+                          <span style={{ fontSize: '0.75rem', padding: '0.25rem 0.5rem', background: 'var(--echo-surface-2)', borderRadius: '8px', color: 'var(--echo-text-muted)', fontWeight: '700', flexShrink: 0 }}>
+                            ⏱️ {exercise.duration}
+                          </span>
+                        </div>
+
+                        <div style={{ marginBottom: '1.25rem' }}>
+                          <div style={{ fontSize: '0.8125rem', fontWeight: '800', color: 'var(--echo-text-muted)', marginBottom: '0.5rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                            Instructions
+                          </div>
+                          <ol style={{ paddingLeft: '1.1rem', margin: 0, fontSize: '0.875rem', color: 'var(--echo-text)', display: 'flex', flexDirection: 'column', gap: '0.35rem' }}>
+                            {exercise.instructions?.map((step: string, sIdx: number) => (
+                              <li key={sIdx}>{step}</li>
+                            ))}
+                          </ol>
+                        </div>
+                      </div>
+
+                      <div style={{ borderTop: '1px solid var(--echo-border)', paddingTop: '1rem', marginTop: 'auto' }}>
+                        <div style={{ fontSize: '0.75rem', color: 'var(--echo-text-muted)', fontStyle: 'italic' }}>
+                          <strong>💡 Benefit:</strong> {exercise.benefit}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         )}
       </main>

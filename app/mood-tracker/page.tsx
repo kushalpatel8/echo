@@ -36,7 +36,7 @@ const MOOD_COLORS: Record<string, string> = {
   Radiant: '#fde047', Calm: '#86efac', Neutral: '#93c5fd', Uneasy: '#fdba74', Distressed: '#fca5a5', Critical: '#f87171'
 };
 
-type ThemeKey = 'celestial' | 'forest' | 'sunset';
+type ThemeKey = 'celestial' | 'forest' | 'sunset' | 'ocean' | 'aurora';
 
 const THEMES: Record<ThemeKey, { name: string; primary: string; secondary: string; glow: string; bgGrad: string }> = {
   celestial: {
@@ -60,17 +60,32 @@ const THEMES: Record<ThemeKey, { name: string; primary: string; secondary: strin
     glow: 'rgba(245, 158, 11, 0.25)',
     bgGrad: 'radial-gradient(ellipse at top right, rgba(245, 158, 11, 0.18) 0%, transparent 60%), radial-gradient(ellipse at bottom left, rgba(225, 29, 72, 0.12) 0%, transparent 60%)',
   },
+  ocean: {
+    name: '🌊 Ocean',
+    primary: '#3b82f6',
+    secondary: '#0ea5e9',
+    glow: 'rgba(59, 130, 246, 0.25)',
+    bgGrad: 'radial-gradient(ellipse at top right, rgba(59, 130, 246, 0.18) 0%, transparent 60%), radial-gradient(ellipse at bottom left, rgba(14, 165, 233, 0.12) 0%, transparent 60%)',
+  },
+  aurora: {
+    name: '✨ Aurora',
+    primary: '#a855f7',
+    secondary: '#10b981',
+    glow: 'rgba(168, 85, 247, 0.25)',
+    bgGrad: 'radial-gradient(ellipse at top right, rgba(168, 85, 247, 0.18) 0%, transparent 60%), radial-gradient(ellipse at bottom left, rgba(10, 200, 120, 0.12) 0%, transparent 60%)',
+  },
 };
 
 function AmbientSelector({ activeTheme, setActiveTheme }: { activeTheme: ThemeKey; setActiveTheme: (k: ThemeKey) => void }) {
   return (
     <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'var(--echo-surface-2)', padding: '0.35rem 0.5rem', borderRadius: '999px', border: '1px solid var(--echo-border)' }}>
-      <span style={{ fontSize: '0.7rem', fontWeight: '600', color: 'var(--echo-text-muted)', paddingLeft: '0.5rem' }}>Ambient:</span>
+      <span style={{ fontSize: '0.7rem', fontWeight: '600', color: 'var(--echo-text-muted)', paddingLeft: '0.5rem' }}>Mood:</span>
       {(Object.keys(THEMES) as ThemeKey[]).map(key => {
         const t = THEMES[key];
         const isSel = activeTheme === key;
+        const isExtra = key === 'ocean' || key === 'aurora';
         return (
-          <button key={key} onClick={() => setActiveTheme(key)} style={{
+          <button key={key} onClick={() => setActiveTheme(key)} className={isExtra ? 'hide-mobile' : ''} style={{
             padding: '0.35rem 0.75rem', borderRadius: '999px', border: 'none',
             background: isSel ? t.primary : 'transparent', color: isSel ? '#fff' : 'var(--echo-text-muted)',
             fontSize: '0.75rem', fontWeight: isSel ? '700' : '500', cursor: 'pointer', transition: 'all 0.2s ease',

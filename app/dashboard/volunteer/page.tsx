@@ -9,12 +9,14 @@ import BanAppealBanner from '@/components/BanAppealBanner';
 import { HandHeart, MessageSquare, ClipboardList, User, LogOut, Sparkles, Star, Activity, Menu } from 'lucide-react';
 
 type Tab = 'overview' | 'chats' | 'tasks' | 'profile';
-type DashTheme = 'celestial' | 'forest' | 'sunset';
+type DashTheme = 'celestial' | 'forest' | 'sunset' | 'ocean' | 'aurora';
 
 const DASH_THEMES: Record<DashTheme, { name: string; primary: string; secondary: string; glow: string; bgGrad: string }> = {
-  celestial: { name: '🌌 Celestial', primary: '#7c3aed', secondary: '#06b6d4', glow: 'rgba(124,58,237,0.25)', bgGrad: 'radial-gradient(ellipse at top right, rgba(124,58,237,0.15) 0%, transparent 60%), radial-gradient(ellipse at bottom left, rgba(6,182,212,0.12) 0%, transparent 60%)' },
-  forest:    { name: '🌲 Forest',    primary: '#059669', secondary: '#10b981', glow: 'rgba(5,150,105,0.25)',  bgGrad: 'radial-gradient(ellipse at top right, rgba(5,150,105,0.18) 0%, transparent 60%), radial-gradient(ellipse at bottom left, rgba(16,185,129,0.12) 0%, transparent 60%)' },
-  sunset:    { name: '🌅 Sunset',    primary: '#f59e0b', secondary: '#e11d48', glow: 'rgba(245,158,11,0.25)', bgGrad: 'radial-gradient(ellipse at top right, rgba(245,158,11,0.18) 0%, transparent 60%), radial-gradient(ellipse at bottom left, rgba(225,29,72,0.12) 0%, transparent 60%)' },
+  celestial: { name: '🌌 Celestial', primary: '#7c3aed', secondary: '#06b6d4', glow: 'rgba(124,58,237,0.25)', bgGrad: 'radial-gradient(ellipse at top right, rgba(124,58,237,0.15) 0%, transparent 60%), radial-gradient(ellipse at bottom left, rgba(6, 182, 212, 0.12) 0%, transparent 60%)' },
+  forest:    { name: '🌲 Forest',    primary: '#059669', secondary: '#10b981', glow: 'rgba(5,150,105,0.25)',  bgGrad: 'radial-gradient(ellipse at top right, rgba(5,150,105,0.18) 0%, transparent 60%), radial-gradient(ellipse at bottom left, rgba(16, 185, 129, 0.12) 0%, transparent 60%)' },
+  sunset:    { name: '🌅 Sunset',    primary: '#f59e0b', secondary: '#e11d48', glow: 'rgba(245,158,11,0.25)', bgGrad: 'radial-gradient(ellipse at top right, rgba(245,158,11,0.18) 0%, transparent 60%), radial-gradient(ellipse at bottom left, rgba(225, 29, 72, 0.12) 0%, transparent 60%)' },
+  ocean:     { name: '🌊 Ocean',     primary: '#3b82f6', secondary: '#0ea5e9', glow: 'rgba(59,130,246,0.25)', bgGrad: 'radial-gradient(ellipse at top right, rgba(59, 130, 246, 0.18) 0%, transparent 60%), radial-gradient(ellipse at bottom left, rgba(14, 165, 233, 0.12) 0%, transparent 60%)' },
+  aurora:    { name: '✨ Aurora',    primary: '#a855f7', secondary: '#10b981', glow: 'rgba(168,85,247,0.25)', bgGrad: 'radial-gradient(ellipse at top right, rgba(168, 85, 247, 0.18) 0%, transparent 60%), radial-gradient(ellipse at bottom left, rgba(10, 200, 120, 0.12) 0%, transparent 60%)' },
 };
 
 const TABS: { id: Tab; label: string; icon: React.ReactNode }[] = [
@@ -226,12 +228,13 @@ export default function VolunteerDashboard() {
         {/* Ambient Mood Selector */}
         <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '2.5rem' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'var(--echo-surface-2)', padding: '0.35rem 0.5rem', borderRadius: '999px', border: '1px solid var(--echo-border)' }}>
-            <span style={{ fontSize: '0.7rem', fontWeight: '600', color: 'var(--echo-text-muted)', paddingLeft: '0.5rem' }}>Ambient:</span>
+            <span style={{ fontSize: '0.7rem', fontWeight: '600', color: 'var(--echo-text-muted)', paddingLeft: '0.5rem' }}>Mood:</span>
             {(Object.keys(DASH_THEMES) as DashTheme[]).map(key => {
               const t = DASH_THEMES[key];
               const isSel = dashTheme === key;
+              const isExtra = key === 'ocean' || key === 'aurora';
               return (
-                <button key={key} onClick={() => setDashTheme(key)} style={{ padding: '0.35rem 0.75rem', borderRadius: '999px', border: 'none', background: isSel ? t.primary : 'transparent', color: isSel ? '#fff' : 'var(--echo-text-muted)', fontSize: '0.75rem', fontWeight: isSel ? '700' : '500', cursor: 'pointer', transition: 'all 0.2s ease' }}>
+                <button key={key} onClick={() => setDashTheme(key)} className={isExtra ? 'hide-mobile' : ''} style={{ padding: '0.35rem 0.75rem', borderRadius: '999px', border: 'none', background: isSel ? t.primary : 'transparent', color: isSel ? '#fff' : 'var(--echo-text-muted)', fontSize: '0.75rem', fontWeight: isSel ? '700' : '500', cursor: 'pointer', transition: 'all 0.2s ease' }}>
                   {t.name.split(' ')[0]} {key.charAt(0).toUpperCase() + key.slice(1)}
                 </button>
               );

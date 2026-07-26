@@ -33,24 +33,24 @@
 }
 
 [data-theme='light'] {
-  /* ── Nature-Inspired Mental Health Palette (Light Mode) ── */
-  --echo-bg: #F5F0E8; /* Warm Parchment - soft warm cream */
-  --echo-surface: #FFFFFF; /* Clean White - elevated panels */
-  --echo-surface-2: #EEE9DF; /* Linen - secondary surface, subtle warmth */
-  --echo-border: rgba(58, 80, 67, 0.12); /* Deep Pine border, very soft */
-  --echo-text: #2D4A3E; /* Forest Depth - rich readable text */
-  --echo-text-muted: #6B8F7B; /* Fern - muted text and icons */
-  --echo-nav-bg: rgba(58, 80, 67, 0.92); /* Deep Pine nav - dark green header */
+  /* ── Sunset Palette (Light Mode) ── */
+  --echo-bg: #fff7ed; /* Soft sunset peach/orange tint */
+  --echo-surface: #FFFFFF; 
+  --echo-surface-2: #ffedd5; /* Warm peach-orange linen accent */
+  --echo-border: rgba(225, 29, 72, 0.12); /* Sunset rose border, soft */
+  --echo-text: #431407; /* Dark burnt orange/brown for excellent readability */
+  --echo-text-muted: #9a3412; /* Rich amber-brown for muted text */
+  --echo-nav-bg: rgba(67, 20, 7, 0.92); /* Dark burnt orange header */
   --echo-glass-bg: rgba(255, 255, 255, 0.75);
 
-  /* Primary - Deep Forest Green (hero color for buttons, nav, headings) */
-  --echo-primary: #3A5043; /* Deep Pine */
-  --echo-primary-rgb: 58, 80, 67;
-  --echo-primary-light: #5A7A68; /* Moss - lighter shade for hover/accents */
-  --echo-primary-low: rgba(58, 80, 67, 0.10);
+  /* Primary - Sunset Amber (hero color for buttons, nav, headings) */
+  --echo-primary: #d97706; /* Sunset Amber */
+  --echo-primary-rgb: 217, 119, 6;
+  --echo-primary-light: #f59e0b; /* Amber */
+  --echo-primary-low: rgba(217, 119, 6, 0.10);
 
-  /* Secondary - Warm Coral/Peach (for CTAs, warmth accents) */
-  --echo-secondary: #D4886E; /* Terracotta Rose */
+  /* Secondary - Sunset Rose */
+  --echo-secondary: #e11d48; /* Sunset Rose */
 
   /* Accent palette for category cards & variety */
   --echo-accent-sage: #A8C5A0; /* Soft Sage - wellness/meditation cards */

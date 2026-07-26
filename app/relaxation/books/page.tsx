@@ -4,7 +4,7 @@ import Link from 'next/link';
 import BackButton from '@/components/BackButton';
 import { BookOpen, Search, Sparkles, ExternalLink, Bookmark, Compass, ArrowLeft } from 'lucide-react';
 
-type LibraryTheme = 'celestial' | 'forest' | 'sunset';
+type LibraryTheme = 'celestial' | 'forest' | 'sunset' | 'ocean' | 'aurora';
 
 interface BookItem {
   title: string;
@@ -36,6 +36,20 @@ const LIBRARY_THEMES: Record<LibraryTheme, { name: string; primary: string; seco
     secondary: '#e11d48',
     glow: 'rgba(245, 158, 11, 0.2)',
     bgGrad: 'radial-gradient(ellipse at top right, rgba(245, 158, 11, 0.18) 0%, transparent 60%), radial-gradient(ellipse at bottom left, rgba(225, 29, 72, 0.12) 0%, transparent 60%)',
+  },
+  ocean: {
+    name: '🌊 Deep Ocean Calm',
+    primary: '#3b82f6',
+    secondary: '#0ea5e9',
+    glow: 'rgba(59, 130, 246, 0.2)',
+    bgGrad: 'radial-gradient(ellipse at top right, rgba(59, 130, 246, 0.18) 0%, transparent 60%), radial-gradient(ellipse at bottom left, rgba(14, 165, 233, 0.12) 0%, transparent 60%)',
+  },
+  aurora: {
+    name: '✨ Northern Lights',
+    primary: '#a855f7',
+    secondary: '#10b981',
+    glow: 'rgba(168, 85, 247, 0.2)',
+    bgGrad: 'radial-gradient(ellipse at top right, rgba(168, 85, 247, 0.18) 0%, transparent 60%), radial-gradient(ellipse at bottom left, rgba(10, 200, 120, 0.12) 0%, transparent 60%)',
   },
 };
 
@@ -252,15 +266,17 @@ export default function RelaxationBooksPage() {
         {/* Ambient Mood Selector */}
         <div className="library-theme-selector">
           <span style={{ fontSize: '0.7rem', fontWeight: '600', color: 'var(--echo-text-muted)', paddingLeft: '0.5rem' }}>
-            Ambient Mood:
+            Mood:
           </span>
           {(Object.keys(LIBRARY_THEMES) as LibraryTheme[]).map(key => {
             const t = LIBRARY_THEMES[key];
             const isSelected = theme === key;
+            const isExtra = key === 'ocean' || key === 'aurora';
             return (
               <button
                 key={key}
                 onClick={() => setTheme(key)}
+                className={isExtra ? 'hide-mobile' : ''}
                 style={{
                   padding: '0.35rem 0.75rem',
                   borderRadius: '999px',

@@ -7,7 +7,7 @@ import BackButton from '@/components/BackButton';
 import ThemeToggle from '@/components/ThemeToggle';
 import { Camera, Sparkles, AlertCircle } from 'lucide-react';
 
-type ThemeKey = 'celestial' | 'forest' | 'sunset';
+type ThemeKey = 'celestial' | 'forest' | 'sunset' | 'ocean' | 'aurora';
 
 const THEMES: Record<ThemeKey, { name: string; primary: string; secondary: string; glow: string; bgGrad: string }> = {
   celestial: {
@@ -31,17 +31,32 @@ const THEMES: Record<ThemeKey, { name: string; primary: string; secondary: strin
     glow: 'rgba(245, 158, 11, 0.25)',
     bgGrad: 'radial-gradient(ellipse at top right, rgba(245, 158, 11, 0.18) 0%, transparent 60%), radial-gradient(ellipse at bottom left, rgba(225, 29, 72, 0.12) 0%, transparent 60%)',
   },
+  ocean: {
+    name: '🌊 Ocean',
+    primary: '#3b82f6',
+    secondary: '#0ea5e9',
+    glow: 'rgba(59, 130, 246, 0.25)',
+    bgGrad: 'radial-gradient(ellipse at top right, rgba(59, 130, 246, 0.18) 0%, transparent 60%), radial-gradient(ellipse at bottom left, rgba(14, 165, 233, 0.12) 0%, transparent 60%)',
+  },
+  aurora: {
+    name: '✨ Aurora',
+    primary: '#a855f7',
+    secondary: '#10b981',
+    glow: 'rgba(168, 85, 247, 0.25)',
+    bgGrad: 'radial-gradient(ellipse at top right, rgba(168, 85, 247, 0.18) 0%, transparent 60%), radial-gradient(ellipse at bottom left, rgba(10, 200, 120, 0.12) 0%, transparent 60%)',
+  },
 };
 
 function AmbientSelector({ activeTheme, setActiveTheme }: { activeTheme: ThemeKey; setActiveTheme: (k: ThemeKey) => void }) {
   return (
     <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'var(--echo-surface-2)', padding: '0.35rem 0.5rem', borderRadius: '999px', border: '1px solid var(--echo-border)' }}>
-      <span style={{ fontSize: '0.7rem', fontWeight: '600', color: 'var(--echo-text-muted)', paddingLeft: '0.5rem' }}>Ambient:</span>
+      <span style={{ fontSize: '0.7rem', fontWeight: '600', color: 'var(--echo-text-muted)', paddingLeft: '0.5rem' }}>Mood:</span>
       {(Object.keys(THEMES) as ThemeKey[]).map(key => {
         const t = THEMES[key];
         const isSel = activeTheme === key;
+        const isExtra = key === 'ocean' || key === 'aurora';
         return (
-          <button key={key} onClick={() => setActiveTheme(key)} style={{
+          <button key={key} onClick={() => setActiveTheme(key)} className={isExtra ? 'hide-mobile' : ''} style={{
             padding: '0.35rem 0.75rem', borderRadius: '999px', border: 'none',
             background: isSel ? t.primary : 'transparent', color: isSel ? '#fff' : 'var(--echo-text-muted)',
             fontSize: '0.75rem', fontWeight: isSel ? '700' : '500', cursor: 'pointer', transition: 'all 0.2s ease',
@@ -53,6 +68,17 @@ function AmbientSelector({ activeTheme, setActiveTheme }: { activeTheme: ThemeKe
     </div>
   );
 }
+
+const MOOD_DATA: Record<string, { emoji: string; message: string }> = {
+  Happy: { emoji: '😊', message: "Wonderful! You're feeling happy and positive." },
+  Depressed: { emoji: '😢', message: "It's okay to feel down. Please take a gentle breath and look after yourself." },
+  Sad: { emoji: '🙁', message: "Feeling a bit sad? Sending you warm thoughts." },
+  Tired: { emoji: '🥱', message: "You seem tired. Consider taking a short, restful break." },
+  Angry: { emoji: '😠', message: "Feeling frustrated or angry? Try taking a few slow, calming breaths." },
+  Anxious: { emoji: '😰', message: "Feeling anxious? Remember, you are in a safe space." },
+  Surprised: { emoji: '😲', message: "Oh! Something caught your eye or surprised you." },
+  Neutral: { emoji: '😐', message: "Feeling neutral and balanced. A good state for steady focus." }
+};
 
 export default function CameraMoodTrackerPage() {
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -409,10 +435,16 @@ export default function CameraMoodTrackerPage() {
                     <div style={{ textAlign: 'center', color: 'var(--echo-text-muted)', fontSize: '0.875rem' }}>
                       Position your face in the camera view to run real-time expression detection.
                     </div>
-                 ) : (
-                    <div style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                       <div style={{ fontSize: '0.875rem', color: 'var(--echo-text-muted)', marginBottom: '0.5rem' }}>Detected Mood</div>
-                       <div style={{ fontSize: '2rem', fontWeight: '900', color: currentTheme.primary }}>{detectedMood}</div>
+                  ) : (
+                    <div style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', gap: '0.5rem' }}>
+                       <div style={{ fontSize: '0.875rem', color: 'var(--echo-text-muted)' }}>Detected Mood</div>
+                       <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                          <span style={{ fontSize: '3rem' }}>{MOOD_DATA[detectedMood]?.emoji || '😐'}</span>
+                          <span style={{ fontSize: '2rem', fontWeight: '900', color: currentTheme.primary }}>{detectedMood}</span>
+                       </div>
+                       <p style={{ fontSize: '0.85rem', color: 'var(--echo-text-muted)', marginTop: '0.25rem', lineHeight: '1.4' }}>
+                          {MOOD_DATA[detectedMood]?.message || 'Keep monitoring your mental wellbeing.'}
+                       </p>
                     </div>
                  )}
                </div>
