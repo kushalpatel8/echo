@@ -95,6 +95,32 @@ export default function DoctorDashboard() {
   const pendingRequests = requests.filter((r: any) => r.status === 'pending').length;
   const activePatients = chats.filter((c: any) => c.isActive).length;
 
+  if (dbUser?.isBanned) {
+    return (
+      <div style={{
+        minHeight: '100vh',
+        background: 'var(--echo-bg)',
+        color: 'var(--echo-text)',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: '2rem 1.5rem',
+      }}>
+        <div style={{ maxWidth: '800px', width: '100%' }}>
+          <BanAppealBanner dbUser={dbUser} />
+          <div style={{ display: 'flex', justifyContent: 'center', marginTop: '1.5rem' }}>
+            <SignOutButton>
+              <button className="btn-secondary" style={{ padding: '0.75rem 2rem' }}>
+                Sign Out
+              </button>
+            </SignOutButton>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div style={{ minHeight: '100vh', background: 'var(--echo-bg)', color: 'var(--echo-text)', position: 'relative', overflowX: 'hidden' }}>
       {/* Sidebar Overlay */}

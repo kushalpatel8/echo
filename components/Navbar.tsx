@@ -2,6 +2,7 @@
 import Link from 'next/link';
 import { useUser, SignOutButton, UserButton } from '@clerk/nextjs';
 import { useState, useEffect } from 'react';
+import { Menu, X } from 'lucide-react';
 import ThemeToggle from './ThemeToggle';
 import BackButton from './BackButton';
 
@@ -106,14 +107,13 @@ export default function Navbar() {
                 background: 'none', 
                 border: 'none', 
                 color: 'var(--echo-text)',
-                fontSize: '1.5rem',
                 cursor: 'pointer',
                 display: 'flex',
                 alignItems: 'center',
                 padding: '0.25rem'
               }}
             >
-              {isMenuOpen ? '✕' : '☰'}
+              {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
             </button>
           )}
         </div>

@@ -4,6 +4,7 @@ import Navbar from '@/components/Navbar';
 import MouseGlow from '@/components/MouseGlow';
 import { useUser } from '@clerk/nextjs';
 import { useState, useEffect } from 'react';
+import { Leaf, Globe, Bot, Handshake, Sparkles, Shield, Users, Camera, Heart, Mail, Phone, CheckCircle2 } from 'lucide-react';
 
 export default function HomePage() {
   const { user, isLoaded } = useUser();
@@ -69,6 +70,8 @@ export default function HomePage() {
         <div style={{ position: 'relative', maxWidth: '900px', margin: '0 auto' }} className="animate-fade-in-up">
           <div className="glass-light" style={{ 
             display: 'inline-flex', 
+            alignItems: 'center',
+            gap: '0.5rem',
             padding: '0.5rem 1.25rem', 
             borderRadius: '999px',
             marginBottom: '2rem',
@@ -77,7 +80,7 @@ export default function HomePage() {
             color: 'var(--echo-primary-light)',
             border: '1px solid rgba(124, 58, 237, 0.2)'
           }}>
-            🌿 Your Mental Health Sanctuary
+            <Leaf size={16} /> Your Mental Health Sanctuary
           </div>
 
           <h1 style={{
@@ -127,8 +130,8 @@ export default function HomePage() {
           
           <div style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
             <Link href="/community" style={{ textDecoration: 'none' }}>
-              <button className="btn-secondary" style={{ padding: '0.75rem 2rem', fontSize: '1rem', background: 'transparent', border: '1px solid var(--echo-primary)', color: 'var(--echo-primary-light)' }}>
-                🌍 Explore Echo Community
+              <button className="btn-secondary" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', padding: '0.75rem 2rem', fontSize: '1rem', background: 'transparent', border: '1px solid var(--echo-primary)', color: 'var(--echo-primary-light)' }}>
+                <Globe size={18} /> Explore Echo Community
               </button>
             </Link>
           </div>
@@ -150,7 +153,9 @@ export default function HomePage() {
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '2.5rem' }}>
             <div className="echo-card glass-panel" style={{ padding: '3rem', position: 'relative', overflow: 'hidden' }}>
-              <div style={{ fontSize: '2.5rem', marginBottom: '1.5rem' }}>🤖</div>
+              <div style={{ marginBottom: '1.5rem', display: 'flex', alignItems: 'center' }}>
+                <Bot size={40} style={{ color: 'var(--echo-primary-light)' }} />
+              </div>
               <h3 style={{ fontSize: '1.5rem', fontWeight: '800', marginBottom: '1rem' }}>24/7 AI Companion</h3>
               <p style={{ color: 'var(--echo-text-muted)', lineHeight: '1.7', marginBottom: '1.5rem' }}>
                 Connect with Echo, your compassionate AI companion trained in mindful communication. Access instant, private, and non-judgmental comfort whenever you need it, night or day.
@@ -159,7 +164,9 @@ export default function HomePage() {
             </div>
 
             <div className="echo-card glass-panel" style={{ padding: '3rem' }}>
-              <div style={{ fontSize: '2.5rem', marginBottom: '1.5rem' }}>🤝</div>
+              <div style={{ marginBottom: '1.5rem', display: 'flex', alignItems: 'center' }}>
+                <Handshake size={40} style={{ color: 'var(--echo-primary-light)' }} />
+              </div>
               <h3 style={{ fontSize: '1.5rem', fontWeight: '800', marginBottom: '1rem' }}>Professional & Peer Network</h3>
               <p style={{ color: 'var(--echo-text-muted)', lineHeight: '1.7', marginBottom: '1.5rem' }}>
                 Bridge the gap with human empathy. Consult verified medical practitioners or connect with dedicated peer volunteers who are ready to listen, share, and support you on your path.
@@ -168,7 +175,9 @@ export default function HomePage() {
             </div>
 
             <div className="echo-card glass-panel" style={{ padding: '3rem' }}>
-              <div style={{ fontSize: '2.5rem', marginBottom: '1.5rem' }}>🧘</div>
+              <div style={{ marginBottom: '1.5rem', display: 'flex', alignItems: 'center' }}>
+                <Sparkles size={40} style={{ color: 'var(--echo-primary-light)' }} />
+              </div>
               <h3 style={{ fontSize: '1.5rem', fontWeight: '800', marginBottom: '1rem' }}>The Serenity Sanctuary</h3>
               <p style={{ color: 'var(--echo-text-muted)', lineHeight: '1.7', marginBottom: '1.5rem' }}>
                 Reclaim your inner calm inside our digital oasis. Experience interactive sensory games, customized deep breathing guides, calming audio soundscapes, and our custom AI Personal Exercise Trainer.
@@ -177,7 +186,9 @@ export default function HomePage() {
             </div>
 
             <div className="echo-card glass-panel" style={{ padding: '3rem' }}>
-              <div style={{ fontSize: '2.5rem', marginBottom: '1.5rem' }}>🛡️</div>
+              <div style={{ marginBottom: '1.5rem', display: 'flex', alignItems: 'center' }}>
+                <Shield size={40} style={{ color: 'var(--echo-primary-light)' }} />
+              </div>
               <h3 style={{ fontSize: '1.5rem', fontWeight: '800', marginBottom: '1rem' }}>Complete Anonymity & Security</h3>
               <p style={{ color: 'var(--echo-text-muted)', lineHeight: '1.7', marginBottom: '1.5rem' }}>
                 Your healing journey is secure. We use advanced client-side processing and secure data standards so you can speak your truth and track your mental health with complete peace of mind.
@@ -186,7 +197,9 @@ export default function HomePage() {
             </div>
 
             <div className="echo-card glass-panel" style={{ padding: '3rem' }}>
-              <div style={{ fontSize: '2.5rem', marginBottom: '1.5rem' }}>🌍</div>
+              <div style={{ marginBottom: '1.5rem', display: 'flex', alignItems: 'center' }}>
+                <Users size={40} style={{ color: 'var(--echo-primary-light)' }} />
+              </div>
               <h3 style={{ fontSize: '1.5rem', fontWeight: '800', marginBottom: '1rem' }}>Global Support Community</h3>
               <p style={{ color: 'var(--echo-text-muted)', lineHeight: '1.7', marginBottom: '1.5rem' }}>
                 Step into a sanctuary of shared stories. Browse anonymous community posts, write down your thoughts, and find strength in a supportive community that understands your daily weight.
@@ -195,7 +208,9 @@ export default function HomePage() {
             </div>
 
             <div className="echo-card glass-panel" style={{ padding: '3rem' }}>
-              <div style={{ fontSize: '2.5rem', marginBottom: '1.5rem' }}>📸</div>
+              <div style={{ marginBottom: '1.5rem', display: 'flex', alignItems: 'center' }}>
+                <Camera size={40} style={{ color: 'var(--echo-primary-light)' }} />
+              </div>
               <h3 style={{ fontSize: '1.5rem', fontWeight: '800', marginBottom: '1rem' }}>AI Face Scan & Mood Analytics</h3>
               <p style={{ color: 'var(--echo-text-muted)', lineHeight: '1.7', marginBottom: '1.5rem' }}>
                 Track your emotional growth. Scan your facial expressions in real-time with browser-run AI, log daily questionnaires, and view detailed progress trends to recognize your healing patterns.
@@ -224,7 +239,9 @@ export default function HomePage() {
         }} />
 
         <div style={{ position: 'relative', maxWidth: '800px', margin: '0 auto' }} className="animate-fade-in-up">
-          <div style={{ fontSize: '2.5rem', marginBottom: '1.5rem' }}>🕊️</div>
+          <div style={{ marginBottom: '1.5rem', display: 'flex', justifyContent: 'center' }}>
+            <Heart size={40} style={{ color: 'var(--echo-primary-light)' }} />
+          </div>
           <h2 style={{ fontSize: '2.5rem', fontWeight: '800', marginBottom: '1rem', letterSpacing: '-0.02em' }}>
             Supporting Our <span className="gradient-text">Global Mission</span>
           </h2>
@@ -255,11 +272,11 @@ export default function HomePage() {
               <h3 style={{ color: 'var(--echo-text)', fontSize: '1.25rem', fontWeight: '800', marginBottom: '1.5rem' }}>Contact Us</h3>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', fontSize: '1rem' }}>
-                  <span style={{ fontSize: '1.25rem' }}>✉️</span> 
+                  <Mail size={18} style={{ color: 'var(--echo-primary)' }} />
                   <a href="mailto:support@echo.com" style={{ color: 'var(--echo-primary)', textDecoration: 'none', fontWeight: '500' }}>support@echo.com</a>
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', fontSize: '1rem' }}>
-                  <span style={{ fontSize: '1.25rem' }}>📞</span> 
+                  <Phone size={18} style={{ color: 'var(--echo-primary)' }} />
                   <span style={{ fontWeight: '500', color: 'var(--echo-text)' }}>+91 8869452123</span>
                 </div>
               </div>
@@ -270,8 +287,8 @@ export default function HomePage() {
               <div style={{ flex: '1 1 400px' }}>
                 <h3 style={{ color: 'var(--echo-text)', fontSize: '1.25rem', fontWeight: '800', marginBottom: '1.5rem' }}>Suggestions</h3>
                 {suggestionSent ? (
-                  <div style={{ padding: '1.5rem', background: 'var(--echo-success-low)', color: 'var(--echo-text)', borderRadius: '12px', border: '1px solid rgba(34, 197, 94, 0.2)' }}>
-                    ✅ Thank you! Your suggestion has been sent.
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '1.5rem', background: 'var(--echo-success-low)', color: 'var(--echo-text)', borderRadius: '12px', border: '1px solid rgba(34, 197, 94, 0.2)' }}>
+                    <CheckCircle2 size={20} style={{ color: '#22c55e' }} /> Thank you! Your suggestion has been sent.
                   </div>
                 ) : (
                   <form style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }} onSubmit={handleSuggestionSubmit}>
@@ -294,7 +311,7 @@ export default function HomePage() {
         )}
 
         <div style={{ textAlign: 'center', marginTop: '4rem', paddingTop: '2rem', borderTop: '1px solid var(--echo-border)', fontSize: '0.875rem' }}>
-          <p>© 2026 ECHO Mental Health Platform. Built with compassion. 💜</p>
+          <p>© 2026 ECHO Mental Health Platform. Built with compassion <Heart size={14} style={{ color: '#8b5cf6', display: 'inline-flex', alignSelf: 'center', margin: '0 2px' }} />.</p>
         </div>
       </footer>
     </main>
