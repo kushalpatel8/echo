@@ -56,12 +56,21 @@ export default function CommunityPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isDeleting, setIsDeleting] = useState<string | null>(null);
   const [roomTheme, setRoomTheme] = useState<RoomTheme>('celestial');
+  const [userRole, setUserRole] = useState<string>('user');
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const currentTheme = ROOM_THEMES[roomTheme];
 
   useEffect(() => {
     fetchPosts();
+    fetch('/api/users/me')
+      .then(res => res.json())
+      .then(data => {
+        if (data.user?.role) {
+          setUserRole(data.user.role);
+        }
+      })
+      .catch(err => console.error('Failed to fetch user profile:', err));
   }, []);
 
   const fetchPosts = async () => {
@@ -137,8 +146,9 @@ export default function CommunityPage() {
     e.preventDefault();
     if (!content.trim() && !file) return;
 
-    const hasHarmfulText = isContentHarmful(content);
-    const hasHarmfulImage = file && isContentHarmful(file.name);
+    const isVolunteerOrDoctor = userRole === 'volunteer' || userRole === 'doctor';
+    const hasHarmfulText = isVolunteerOrDoctor && isContentHarmful(content);
+    const hasHarmfulImage = isVolunteerOrDoctor && file && isContentHarmful(file.name);
 
     if (hasHarmfulText || hasHarmfulImage) {
       alert("your text image contain abusive and harmful content your not able to post");

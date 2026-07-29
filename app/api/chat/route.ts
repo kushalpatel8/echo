@@ -121,7 +121,7 @@ export async function POST(req: NextRequest) {
         }, { status: 403 });
       }
 
-      if (isMessageHarmful(content)) {
+      if ((sender.role === 'volunteer' || sender.role === 'doctor') && isMessageHarmful(content)) {
         const currentWarnings = sender.warningCount || 0;
         const newWarnings = currentWarnings + 1;
         const shouldBan = newWarnings >= 3;
