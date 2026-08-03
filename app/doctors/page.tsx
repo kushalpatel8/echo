@@ -5,7 +5,9 @@ import Link from 'next/link';
 import { useUser } from '@clerk/nextjs';
 import BackButton from '@/components/BackButton';
 import ThemeToggle from '@/components/ThemeToggle';
-import { Stethoscope, Heart, Sparkles, MessageSquare } from 'lucide-react';
+import BubbleLoader from '@/components/BubbleLoader';
+import { Stethoscope, Heart, Sparkles, MessageSquare, Phone } from 'lucide-react';
+import { formatName } from '@/lib/utils';
 
 interface Helper {
   clerkId: string;
@@ -26,7 +28,10 @@ interface Helper {
 interface ConnectionRequest {
   _id: string;
   doctorId: string;
+  userName: string;
+  userImage: string;
   status: 'pending' | 'accepted' | 'rejected';
+  whatsappStatus: 'none' | 'pending' | 'accepted' | 'rejected';
 }
 
 type ThemeKey = 'celestial' | 'forest' | 'sunset' | 'ocean' | 'aurora';
@@ -44,7 +49,7 @@ const THEMES: Record<ThemeKey, { name: string; primary: string; secondary: strin
     primary: '#059669',
     secondary: '#10b981',
     glow: 'rgba(5, 150, 105, 0.25)',
-    bgGrad: 'radial-gradient(ellipse at top right, rgba(5, 150, 105, 0.18) 0%, transparent 60%), radial-gradient(ellipse at bottom left, rgba(16, 185, 129, 0.12) 0%, transparent 60%)',
+    bgGrad: 'radial-gradient(ellipse at top right, rgba(5, 150, 105, 0.18) 0%, transparent 60%), radial-gradient(ellipse at bottom left, rgba(10, 185, 129, 0.12) 0%, transparent 60%)',
   },
   sunset: {
     name: '🌅 Sunset',
@@ -96,6 +101,8 @@ export default function DoctorsListPage() {
   const { user, isLoaded: userLoaded } = useUser();
   const [helpers, setHelpers] = useState<Helper[]>([]);
   const [requests, setRequests] = useState<ConnectionRequest[]>([]);
+  const [savedVolunteerId, setSavedVolunteerId] = useState<string | null>(null);
+  const [saveLoading, setSaveLoading] = useState(false);
   const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState<string | null>(null);
   const [activeTheme, setActiveTheme] = useState<ThemeKey>('celestial');
@@ -113,6 +120,7 @@ export default function DoctorsListPage() {
         const docsData = await docsRes.json();
         const reqsData = await reqsRes.json();
         setHelpers(docsData.helpers || []);
+        setSavedVolunteerId(docsData.savedVolunteer || null);
         setRequests(reqsData.requests || []);
       } catch (err) {
         console.error('Failed to load doctors or requests', err);
@@ -122,6 +130,25 @@ export default function DoctorsListPage() {
     };
     loadData();
   }, []);
+
+  const toggleBookmark = async (targetId: string) => {
+    setSaveLoading(true);
+    const action = savedVolunteerId === targetId ? 'remove' : 'save';
+    try {
+      const res = await fetch('/api/volunteers/save', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ targetId, action })
+      });
+      if (res.ok) {
+        setSavedVolunteerId(action === 'save' ? targetId : null);
+      }
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setSaveLoading(false);
+    }
+  };
 
   const sendRequest = async (doctorId: string) => {
     setActionLoading(doctorId);
@@ -138,7 +165,28 @@ export default function DoctorsListPage() {
         alert(data.error || 'Failed to send request');
       }
     } catch (err) {
-      alert('Network error');
+      console.error(err);
+    } finally {
+      setActionLoading(null);
+    }
+  };
+
+  const requestWhatsApp = async (requestId: string, doctorId: string) => {
+    setActionLoading(`wa-${doctorId}`);
+    try {
+      const res = await fetch('/api/connections', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ requestId, whatsappStatus: 'pending' }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setRequests(prev => prev.map(r => r._id === requestId ? data.request : r));
+      } else {
+        alert(data.error || 'Failed to request WhatsApp');
+      }
+    } catch (err) {
+      console.error(err);
     } finally {
       setActionLoading(null);
     }
@@ -355,24 +403,65 @@ export default function DoctorsListPage() {
                         {helper.imageUrl && <img src={helper.imageUrl} alt={helper.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />}
                       </div>
                       <div style={{ flex: 1 }}>
-                        <div style={{ fontWeight: '800', fontSize: '1.125rem', color: 'var(--echo-text)' }}>{helper.name}</div>
+                        <div style={{ fontWeight: '800', fontSize: '1.125rem', color: 'var(--echo-text)', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                          {formatName(helper.name, helper.role)}
+                          <button 
+                            onClick={() => toggleBookmark(helper.clerkId)}
+                            disabled={saveLoading}
+                            style={{
+                              background: 'none', border: 'none', cursor: 'pointer',
+                              color: savedVolunteerId === helper.clerkId ? '#ef4444' : 'var(--echo-text-muted)',
+                              display: 'flex', alignItems: 'center', justifyContent: 'center'
+                            }}
+                            title={savedVolunteerId === helper.clerkId ? "Remove bookmark" : "Bookmark this professional"}
+                          >
+                            <svg xmlns="http://www.svg.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill={savedVolunteerId === helper.clerkId ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/></svg>
+                          </button>
+                        </div>
                         <div style={{ color: currentTheme.primary, fontSize: '0.8125rem', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
                           {helper.doctorProfile?.degree || 'Medical Professional'}
                         </div>
                       </div>
                     </div>
 
-                    <div style={{ display: 'flex', gap: '0.75rem', marginTop: '1rem' }}>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', marginTop: '1rem' }}>
                       {req ? (
                         req.status === 'accepted' ? (
-                          <button
-                            className="btn-primary"
-                            style={{ flex: 1, padding: '0.875rem' }}
-                            onClick={() => startChat(helper.clerkId)}
-                          >
-                            <MessageSquare size={16} style={{ display: 'inline', marginRight: '0.5rem', verticalAlign: 'middle' }} />
-                            Chat Now
-                          </button>
+                          <>
+                            <button
+                              className="btn-primary"
+                              style={{ width: '100%', padding: '0.875rem' }}
+                              onClick={() => startChat(helper.clerkId)}
+                            >
+                              <MessageSquare size={16} style={{ display: 'inline', marginRight: '0.5rem', verticalAlign: 'middle' }} />
+                              Chat Now
+                            </button>
+                            
+                            {(!req.whatsappStatus || req.whatsappStatus === 'none' || req.whatsappStatus === 'rejected') && (
+                              <button
+                                className="btn-secondary"
+                                style={{ width: '100%', padding: '0.875rem', background: 'var(--echo-surface-2)', border: '1px solid var(--echo-border)' }}
+                                onClick={() => requestWhatsApp(req._id, helper.clerkId)}
+                                disabled={actionLoading === `wa-${helper.clerkId}`}
+                              >
+                                <Phone size={16} style={{ display: 'inline', marginRight: '0.5rem', verticalAlign: 'middle', color: '#25D366' }} />
+                                {actionLoading === `wa-${helper.clerkId}` ? 'Requesting...' : 'Request WhatsApp'}
+                              </button>
+                            )}
+                            {req.whatsappStatus === 'pending' && (
+                              <button className="btn-secondary" style={{ width: '100%', padding: '0.875rem', color: '#fbbf24', borderColor: '#fbbf24' }} disabled>
+                                WhatsApp Requested...
+                              </button>
+                            )}
+                            {req.whatsappStatus === 'accepted' && (
+                              <a href={`https://wa.me/${helper.doctorProfile?.whatsappNumber?.replace(/\D/g,'')}`} target="_blank" rel="noreferrer" style={{ textDecoration: 'none' }}>
+                                <button className="btn-primary" style={{ width: '100%', padding: '0.875rem', background: '#25D366' }}>
+                                  <Phone size={16} style={{ display: 'inline', marginRight: '0.5rem', verticalAlign: 'middle' }} />
+                                  {helper.doctorProfile?.whatsappNumber || 'WhatsApp Connected'}
+                                </button>
+                              </a>
+                            )}
+                          </>
                         ) : req.status === 'pending' ? (
                           <button
                             className="btn-secondary"

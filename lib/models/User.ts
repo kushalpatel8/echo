@@ -13,6 +13,7 @@ export interface IUser extends Document {
   banCount?: number;
   warningCount?: number;
   applicationStatus?: ApplicationStatus;
+  savedVolunteer?: string;
   volunteerProfile?: {
     phoneNo: string;
     whyVolunteer: string;
@@ -42,6 +43,7 @@ const UserSchema = new Schema<IUser>({
   banCount: { type: Number, default: 0 },
   warningCount: { type: Number, default: 0 },
   applicationStatus: { type: String, enum: ['pending', 'approved', 'rejected'] },
+  savedVolunteer: { type: String },
   volunteerProfile: {
     phoneNo: String,
     whyVolunteer: String,
@@ -57,6 +59,8 @@ const UserSchema = new Schema<IUser>({
     degree: String,
     experience: String,
     whatsappNumber: String,
+    rating: { type: Number, default: 0 },
+    totalRatings: { type: Number, default: 0 },
   },
 }, { timestamps: true });
 

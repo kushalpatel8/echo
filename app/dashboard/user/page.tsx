@@ -7,6 +7,7 @@ import ThemeToggle from '@/components/ThemeToggle';
 import MobileDashboard from '@/components/MobileDashboard';
 import BackButton from '@/components/BackButton';
 import { LayoutDashboard, CheckSquare, BarChart2, User, LogOut, Sparkles, Heart, Clock, Menu } from 'lucide-react';
+import { formatName } from '@/lib/utils';
 
 type Tab = 'overview' | 'tasks' | 'mood-history' | 'profile';
 type DashTheme = 'celestial' | 'forest' | 'sunset' | 'ocean' | 'aurora';
@@ -154,7 +155,7 @@ export default function UserDashboard() {
           <div style={{ padding: '0.625rem 0.75rem', borderRadius: '0.625rem', background: 'var(--echo-primary-low)', border: '1px solid var(--echo-border)' }}>
             <div style={{ fontSize: '0.6875rem', color: 'var(--echo-text-muted)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '0.2rem' }}>Signed in as</div>
             <div style={{ fontWeight: '700', fontSize: '0.9375rem', color: 'var(--echo-text)' }}>
-              {(dbUser?.name as string) || clerkUser?.username || 'User'}
+              {formatName((dbUser?.name as string) || clerkUser?.username, dbUser?.role as string) || 'User'}
             </div>
           </div>
         </div>
@@ -170,6 +171,7 @@ export default function UserDashboard() {
         </nav>
         <div style={{ marginTop: 'auto', paddingTop: '1.25rem', borderTop: '1px solid var(--echo-border)', display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
           <div style={{ fontSize: '0.625rem', color: 'var(--echo-text-muted)', textTransform: 'uppercase', letterSpacing: '0.08em', padding: '0 1rem', marginBottom: '0.25rem' }}>Quick access</div>
+          <Link href="/leaderboard" style={{ textDecoration: 'none' }} onClick={() => setIsSidebarOpen(false)}><button className="sidebar-link" style={{ border: 'none', background: 'none', textAlign: 'left', width: '100%' }}>🏆 Leaderboard</button></Link>
           <Link href="/companion" style={{ textDecoration: 'none' }} onClick={() => setIsSidebarOpen(false)}><button className="sidebar-link" style={{ border: 'none', background: 'none', textAlign: 'left', width: '100%' }}>🤖 AI Companion</button></Link>
           <Link href="/volunteers" style={{ textDecoration: 'none' }} onClick={() => setIsSidebarOpen(false)}><button className="sidebar-link" style={{ border: 'none', background: 'none', textAlign: 'left', width: '100%' }}>🤝 Peer Support</button></Link>
           <Link href="/doctors" style={{ textDecoration: 'none' }} onClick={() => setIsSidebarOpen(false)}><button className="sidebar-link" style={{ border: 'none', background: 'none', textAlign: 'left', width: '100%' }}>👨‍⚕️ Doctors</button></Link>

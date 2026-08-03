@@ -29,17 +29,36 @@ export async function POST(req: NextRequest) {
         if (role) existingUser.role = role;
         await existingUser.save();
       }
+    } else if (existingUser.role === 'doctor' || role === 'doctor') {
+      const realName = `${clerkUser.firstName || ''} ${clerkUser.lastName || ''}`.trim();
+      if ((existingUser.name !== realName && realName) || (role && existingUser.role !== role)) {
+        existingUser.name = realName || 'Doctor';
+        if (role) existingUser.role = role;
+        await existingUser.save();
+      } else if (!realName && existingUser.name !== 'Doctor') {
+        existingUser.name = 'Doctor';
+        if (role) existingUser.role = role;
+        await existingUser.save();
+      }
     } else {
       const realName = `${clerkUser.firstName || ''} ${clerkUser.lastName || ''}`.trim();
-      if (existingUser.name === realName || (clerkUser.firstName && existingUser.name === clerkUser.firstName)) {
+      if (existingUser.name === realName || (clerkUser.firstName && existingUser.name === clerkUser.firstName) || (role && existingUser.role !== role)) {
         existingUser.name = await getUniqueUsername(clerkUser);
+        if (role) existingUser.role = role;
         await existingUser.save();
       }
     }
     return NextResponse.json({ user: existingUser });
   }
 
-  const uniqueName = role === 'admin' ? 'Admin' : await getUniqueUsername(clerkUser);
+  let uniqueName;
+  if (role === 'admin') {
+    uniqueName = 'Admin';
+  } else if (role === 'doctor') {
+    uniqueName = `${clerkUser.firstName || ''} ${clerkUser.lastName || ''}`.trim() || 'Doctor';
+  } else {
+    uniqueName = await getUniqueUsername(clerkUser);
+  }
 
   const newUser = await User.create({
     clerkId: userId,
@@ -67,6 +86,15 @@ export async function GET() {
   if (dbUser.role === 'admin') {
     if (dbUser.name !== 'Admin') {
       dbUser.name = 'Admin';
+      await dbUser.save();
+    }
+  } else if (dbUser.role === 'doctor') {
+    const realName = `${clerkUser.firstName || ''} ${clerkUser.lastName || ''}`.trim();
+    if (dbUser.name !== realName && realName) {
+      dbUser.name = realName;
+      await dbUser.save();
+    } else if (!realName && dbUser.name !== 'Doctor') {
+      dbUser.name = 'Doctor';
       await dbUser.save();
     }
   } else {

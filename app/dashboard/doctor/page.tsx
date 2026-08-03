@@ -6,7 +6,8 @@ import Link from 'next/link';
 import ThemeToggle from '@/components/ThemeToggle';
 import BackButton from '@/components/BackButton';
 import BanAppealBanner from '@/components/BanAppealBanner';
-import { Stethoscope, Users, Inbox, User, LogOut, Sparkles, Activity, Menu } from 'lucide-react';
+import { Stethoscope, Users, Inbox, User, LogOut, Sparkles, Activity, Menu, Trophy } from 'lucide-react';
+import { formatName } from '@/lib/utils';
 
 type Tab = 'overview' | 'patients' | 'requests' | 'profile';
 type DashTheme = 'celestial' | 'forest' | 'sunset' | 'ocean' | 'aurora';
@@ -64,8 +65,25 @@ export default function DoctorDashboard() {
     } finally { setRequestActionLoading(null); }
   };
 
+  const updateWhatsAppStatus = async (requestId: string, whatsappStatus: 'accepted' | 'rejected') => {
+    setRequestActionLoading(requestId);
+    try {
+      const res = await fetch('/api/connections', { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ requestId, whatsappStatus }) });
+      if (res.ok) setRequests(prev => prev.map((r: any) => r._id === requestId ? { ...r, whatsappStatus } : r));
+    } finally { setRequestActionLoading(null); }
+  };
+
   const removeConnection = async (requestId: string) => {
     if (!confirm("Revoke this patient's access?")) return;
+    setRequestActionLoading(requestId);
+    try {
+      const res = await fetch('/api/connections', { method: 'DELETE', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ requestId }) });
+      if (res.ok) setRequests(prev => prev.filter((r: any) => r._id !== requestId));
+    } finally { setRequestActionLoading(null); }
+  };
+
+  const deleteRequestHistory = async (requestId: string) => {
+    if (!confirm("Delete this request from your history?")) return;
     setRequestActionLoading(requestId);
     try {
       const res = await fetch('/api/connections', { method: 'DELETE', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ requestId }) });
@@ -163,7 +181,7 @@ export default function DoctorDashboard() {
           <div style={{ padding: '0.625rem 0.75rem', borderRadius: '0.625rem', background: 'var(--echo-primary-low)', border: '1px solid var(--echo-border)' }}>
             <div style={{ fontSize: '0.6875rem', color: 'var(--echo-text-muted)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '0.2rem' }}>Signed in as</div>
             <div style={{ fontWeight: '700', fontSize: '0.9375rem', color: 'var(--echo-text)' }}>
-              {(dbUser?.name as string) || clerkUser?.username || 'Doctor'}
+              {formatName((dbUser?.name as string) || clerkUser?.username, dbUser?.role as string) || 'Doctor'}
             </div>
           </div>
         </div>
@@ -177,7 +195,16 @@ export default function DoctorDashboard() {
             </button>
           ))}
         </nav>
-        <div style={{ marginTop: 'auto', paddingTop: '1.25rem', borderTop: '1px solid var(--echo-border)' }}>
+        <div style={{ marginTop: 'auto', paddingTop: '1.25rem', borderTop: '1px solid var(--echo-border)', display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+          <div style={{ fontSize: '0.625rem', color: 'var(--echo-text-muted)', textTransform: 'uppercase', letterSpacing: '0.08em', padding: '0 1rem', marginBottom: '0.25rem' }}>Quick access</div>
+          <Link href="/leaderboard" style={{ textDecoration: 'none' }} onClick={() => setIsSidebarOpen(false)}>
+            <button className="sidebar-link" style={{ border: 'none', background: 'none', textAlign: 'left', width: '100%' }}>🏆 Leaderboard</button>
+          </Link>
+          <Link href="/dashboard/user" style={{ textDecoration: 'none' }} onClick={() => setIsSidebarOpen(false)}>
+            <button className="sidebar-link" style={{ border: 'none', background: 'none', textAlign: 'left', width: '100%' }}>👤 User Dashboard</button>
+          </Link>
+        </div>
+        <div style={{ marginTop: '1rem' }}>
           <SignOutButton><button className="btn-danger" style={{ width: '100%', padding: '0.6rem', fontSize: '0.8125rem' }}>Sign Out</button></SignOutButton>
         </div>
       </aside>
@@ -264,6 +291,20 @@ export default function DoctorDashboard() {
                     </button>
                   );
                 })}
+                <Link href="/leaderboard" style={{ textDecoration: 'none' }}>
+                  <button style={{
+                    display: 'flex', alignItems: 'center', gap: '0.5rem',
+                    padding: '0.75rem 1.25rem', borderRadius: '12px', border: 'none',
+                    background: 'transparent',
+                    color: 'var(--echo-text-muted)',
+                    fontWeight: '600', fontSize: '0.875rem',
+                    cursor: 'pointer', transition: 'all 0.25s ease',
+                    position: 'relative',
+                    flexShrink: 0,
+                  }}>
+                    <Trophy size={15} /><span>Leaderboard</span>
+                  </button>
+                </Link>
               </div>
             </div>
 
@@ -368,9 +409,9 @@ export default function DoctorDashboard() {
             {/* ── REQUESTS ── */}
             {tab === 'requests' && (
               <div className="animate-fade-in-up">
-                <h2 className="section-heading">📨 Incoming WhatsApp Requests</h2>
+                <h2 className="section-heading">📨 Incoming Chat Requests</h2>
                 <p style={{ color: 'var(--echo-text-muted)', marginBottom: '2rem', fontSize: '0.9375rem' }}>
-                  Accept requests to reveal your WhatsApp number to patients for further consultation.
+                  Accept requests to allow patients to chat with you securely on the platform.
                 </p>
                 {requests.filter((r: any) => r.status === 'pending').length === 0 ? (
                   <div className="glass" style={{ padding: '4rem 2rem', textAlign: 'center', borderRadius: '24px', border: '1px solid var(--echo-border)', background: 'var(--echo-surface)', marginBottom: '2rem' }}>
@@ -401,6 +442,33 @@ export default function DoctorDashboard() {
                   </div>
                 )}
 
+                <h3 style={{ fontSize: '1.125rem', fontWeight: '800', marginTop: '2.5rem', marginBottom: '1rem' }}>📱 WhatsApp Requests</h3>
+                {requests.filter((r: any) => r.status === 'accepted' && r.whatsappStatus === 'pending').length === 0 ? (
+                  <p style={{ color: 'var(--echo-text-muted)', fontSize: '0.875rem' }}>No pending WhatsApp requests.</p>
+                ) : (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginBottom: '2rem' }}>
+                    {requests.filter((r: any) => r.status === 'accepted' && r.whatsappStatus === 'pending').map((request: any) => (
+                      <div key={request._id} className="glass echo-card" style={{ padding: '1.25rem 1.5rem', borderRadius: '20px', border: `1px solid #25D36644`, background: 'var(--echo-surface)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem', flexWrap: 'wrap' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem' }}>
+                          <div style={{ width: '48px', height: '48px', borderRadius: '50%', background: 'var(--echo-surface-2)', overflow: 'hidden', border: '1px solid var(--echo-border)' }}>
+                            {request.userImage && <img src={request.userImage} alt={request.userName} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />}
+                          </div>
+                          <div>
+                            <div style={{ fontWeight: '700', fontSize: '1rem', color: 'var(--echo-text)' }}>{request.userName}</div>
+                            <div style={{ fontSize: '0.75rem', color: 'var(--echo-text-muted)' }}>Requests your WhatsApp number</div>
+                          </div>
+                        </div>
+                        <div style={{ display: 'flex', gap: '0.75rem' }}>
+                          <button className="btn-primary" style={{ background: '#25D366', padding: '0.5rem 1.25rem', fontSize: '0.875rem' }} onClick={() => updateWhatsAppStatus(request._id, 'accepted')} disabled={requestActionLoading === request._id}>
+                            {requestActionLoading === request._id ? '...' : '✓ Approve WhatsApp'}
+                          </button>
+                          <button className="btn-danger" style={{ padding: '0.5rem 1.25rem', fontSize: '0.875rem' }} onClick={() => updateWhatsAppStatus(request._id, 'rejected')} disabled={requestActionLoading === request._id}>Reject</button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
                 {/* History */}
                 {requests.filter((r: any) => r.status !== 'pending').length > 0 && (
                   <div>
@@ -416,6 +484,9 @@ export default function DoctorDashboard() {
                                 {requestActionLoading === request._id ? '...' : 'Revoke'}
                               </button>
                             )}
+                            <button onClick={() => deleteRequestHistory(request._id)} disabled={requestActionLoading === request._id} style={{ background: 'none', border: 'none', color: 'var(--echo-text-muted)', fontSize: '0.875rem', cursor: 'pointer', display: 'flex', alignItems: 'center', marginLeft: '0.5rem' }}>
+                              🗑️
+                            </button>
                           </div>
                         </div>
                       ))}

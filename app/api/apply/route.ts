@@ -15,8 +15,10 @@ export async function POST(req: NextRequest) {
   const clerkUser = await currentUser();
   let dbUser = await User.findOne({ clerkId: userId });
 
+  const realName = `${clerkUser?.firstName || ''} ${clerkUser?.lastName || ''}`.trim();
+
   if (!dbUser) {
-    const uniqueName = await getUniqueUsername(clerkUser);
+    const uniqueName = type === 'doctor' ? (realName || 'Doctor') : await getUniqueUsername(clerkUser);
     dbUser = await User.create({
       clerkId: userId,
       email: clerkUser?.emailAddresses[0]?.emailAddress || '',
@@ -25,10 +27,19 @@ export async function POST(req: NextRequest) {
       role: type,
     });
   } else {
-    const realName = `${clerkUser?.firstName || ''} ${clerkUser?.lastName || ''}`.trim();
-    if (dbUser.name === realName || (clerkUser?.firstName && dbUser.name === clerkUser.firstName)) {
-      dbUser.name = await getUniqueUsername(clerkUser);
-      await dbUser.save();
+    if (type === 'doctor') {
+      if (dbUser.name !== realName && realName) {
+        dbUser.name = realName;
+        await dbUser.save();
+      } else if (!realName && dbUser.name !== 'Doctor') {
+        dbUser.name = 'Doctor';
+        await dbUser.save();
+      }
+    } else {
+      if (dbUser.name === realName || (clerkUser?.firstName && dbUser.name === clerkUser.firstName)) {
+        dbUser.name = await getUniqueUsername(clerkUser);
+        await dbUser.save();
+      }
     }
   }
 

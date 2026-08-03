@@ -6,7 +6,8 @@ import Link from 'next/link';
 import ThemeToggle from '@/components/ThemeToggle';
 import BackButton from '@/components/BackButton';
 import BanAppealBanner from '@/components/BanAppealBanner';
-import { HandHeart, MessageSquare, ClipboardList, User, LogOut, Sparkles, Star, Activity, Menu } from 'lucide-react';
+import { HandHeart, MessageSquare, ClipboardList, User, LogOut, Sparkles, Star, Activity, Menu, Trophy } from 'lucide-react';
+import { formatName } from '@/lib/utils';
 
 type Tab = 'overview' | 'chats' | 'tasks' | 'profile';
 type DashTheme = 'celestial' | 'forest' | 'sunset' | 'ocean' | 'aurora';
@@ -152,7 +153,7 @@ export default function VolunteerDashboard() {
           <div style={{ padding: '0.625rem 0.75rem', borderRadius: '0.625rem', background: 'var(--echo-primary-low)', border: '1px solid var(--echo-border)' }}>
             <div style={{ fontSize: '0.6875rem', color: 'var(--echo-text-muted)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '0.2rem' }}>Signed in as</div>
             <div style={{ fontWeight: '700', fontSize: '0.9375rem', color: 'var(--echo-text)' }}>
-              {(dbUser?.name as string) || clerkUser?.username || 'Volunteer'}
+              {formatName((dbUser?.name as string) || clerkUser?.username, dbUser?.role as string) || 'Volunteer'}
             </div>
           </div>
         </div>
@@ -166,7 +167,16 @@ export default function VolunteerDashboard() {
             </button>
           ))}
         </nav>
-        <div style={{ marginTop: 'auto', paddingTop: '1.25rem', borderTop: '1px solid var(--echo-border)' }}>
+        <div style={{ marginTop: 'auto', paddingTop: '1.25rem', borderTop: '1px solid var(--echo-border)', display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+          <div style={{ fontSize: '0.625rem', color: 'var(--echo-text-muted)', textTransform: 'uppercase', letterSpacing: '0.08em', padding: '0 1rem', marginBottom: '0.25rem' }}>Quick access</div>
+          <Link href="/leaderboard" style={{ textDecoration: 'none' }} onClick={() => setIsSidebarOpen(false)}>
+            <button className="sidebar-link" style={{ border: 'none', background: 'none', textAlign: 'left', width: '100%' }}>🏆 Leaderboard</button>
+          </Link>
+          <Link href="/dashboard/user" style={{ textDecoration: 'none' }} onClick={() => setIsSidebarOpen(false)}>
+            <button className="sidebar-link" style={{ border: 'none', background: 'none', textAlign: 'left', width: '100%' }}>👤 User Dashboard</button>
+          </Link>
+        </div>
+        <div style={{ marginTop: '1rem' }}>
           <SignOutButton><button className="btn-danger" style={{ width: '100%', padding: '0.6rem', fontSize: '0.8125rem' }}>Sign Out</button></SignOutButton>
         </div>
       </aside>
@@ -248,6 +258,19 @@ export default function VolunteerDashboard() {
                 </button>
               );
             })}
+            <Link href="/leaderboard" style={{ textDecoration: 'none' }}>
+              <button style={{
+                display: 'flex', alignItems: 'center', gap: '0.5rem',
+                padding: '0.75rem 1.25rem', borderRadius: '12px', border: 'none',
+                background: 'transparent',
+                color: 'var(--echo-text-muted)',
+                fontWeight: '600', fontSize: '0.875rem',
+                cursor: 'pointer', transition: 'all 0.25s ease',
+                flexShrink: 0,
+              }}>
+                <Trophy size={15} /><span>Leaderboard</span>
+              </button>
+            </Link>
           </div>
         </div>
 

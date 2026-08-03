@@ -6,6 +6,7 @@ import Link from 'next/link';
 import ThemeToggle from '@/components/ThemeToggle';
 import BackButton from '@/components/BackButton';
 import { ShieldCheck, ClipboardList, Users, Stethoscope, Lightbulb, Mailbox, Sparkles, LogOut, Menu, UserX } from 'lucide-react';
+import { formatName } from '@/lib/utils';
 
 type Tab = 'applications' | 'users' | 'volunteers' | 'doctors' | 'suggestions' | 'appeals' | 'banned';
 type DashTheme = 'celestial' | 'forest' | 'sunset' | 'ocean' | 'aurora';
@@ -131,7 +132,7 @@ export default function AdminDashboard() {
           <div style={{ padding: '0.625rem 0.75rem', borderRadius: '0.625rem', background: 'var(--echo-primary-low)', border: '1px solid var(--echo-border)' }}>
             <div style={{ fontSize: '0.6875rem', color: 'var(--echo-text-muted)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '0.2rem' }}>Signed in as</div>
             <div style={{ fontWeight: '700', fontSize: '0.9375rem', color: 'var(--echo-text)' }}>
-              {dbUser?.name || 'Administrator'}
+              {formatName(dbUser?.name, dbUser?.role) || 'Administrator'}
             </div>
           </div>
         </div>
@@ -202,7 +203,7 @@ export default function AdminDashboard() {
               <Sparkles size={13} /><span>Admin Command Center</span>
             </div>
             <h1 style={{ fontSize: 'clamp(1.5rem, 3vw, 2rem)', fontWeight: '900', letterSpacing: '-0.03em', color: 'var(--echo-text)', marginBottom: '0.375rem' }}>
-              Welcome, <span style={{ color: currentTheme.primary }}>{dbUser?.name || 'Admin'}</span> 🛡️
+              Welcome, <span style={{ color: currentTheme.primary }}>{formatName(dbUser?.name, dbUser?.role) || 'Admin'}</span> 🛡️
             </h1>
             <p style={{ color: 'var(--echo-text-muted)', fontSize: '0.9375rem', margin: '0 auto', maxWidth: '600px' }}>
               {applications.length} pending application{applications.length !== 1 ? 's' : ''} · {pendingAppeals} pending appeal{pendingAppeals !== 1 ? 's' : ''}
@@ -282,7 +283,7 @@ export default function AdminDashboard() {
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1rem' }}>
                         <div>
                           <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.375rem' }}>
-                            <span style={{ fontWeight: '700', fontSize: '1rem' }}>{app.name}</span>
+                            <span style={{ fontWeight: '700', fontSize: '1rem' }}>{formatName(app.name, app.role)}</span>
                             <span className={`badge badge-${app.role === 'doctor' ? 'cyan' : 'purple'}`}>{app.role}</span>
                           </div>
                           <div style={{ fontSize: '0.8125rem', color: 'var(--echo-text-muted)' }}>{app.email}</div>
@@ -327,7 +328,7 @@ export default function AdminDashboard() {
                         </div>
                         <div>
                           <div style={{ fontWeight: '700', display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.125rem', flexWrap: 'wrap' }}>
-                            {u.name}
+                            {formatName(u.name, u.role)}
                             {u.isBanned && <span className="badge badge-red">Banned</span>}
                             {u.applicationStatus && <span className={`badge badge-${u.applicationStatus === 'approved' ? 'green' : u.applicationStatus === 'pending' ? 'yellow' : 'red'}`}>{u.applicationStatus}</span>}
                           </div>
@@ -378,7 +379,7 @@ export default function AdminDashboard() {
                         </div>
                         <div>
                           <div style={{ fontWeight: '700', display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.125rem', flexWrap: 'wrap' }}>
-                            {u.name}
+                            {formatName(u.name, u.role)}
                             <span className="badge badge-purple">{u.role.toUpperCase()}</span>
                             <span className="badge badge-red" style={{ background: 'rgba(239, 68, 68, 0.15)', color: '#f87171', border: '1px solid rgba(239, 68, 68, 0.3)' }}>Bans: {u.banCount || 0}</span>
                             {u.warningCount > 0 && <span className="badge badge-yellow">Warnings: {u.warningCount}</span>}
@@ -423,7 +424,7 @@ export default function AdminDashboard() {
                     <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem', flexWrap: 'wrap', gap: '0.5rem' }}>
                       <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center', flexWrap: 'wrap' }}>
                         <span className={`badge badge-${s.role === 'anonymous' ? 'gray' : 'purple'}`}>{s.role.toUpperCase()}</span>
-                        {s.name && <span style={{ fontWeight: '600' }}>{s.name} <span style={{ fontWeight: 'normal', color: 'var(--echo-text-muted)', fontSize: '0.8125rem' }}>({s.email})</span></span>}
+                        {s.name && <span style={{ fontWeight: '600' }}>{formatName(s.name, s.role)} <span style={{ fontWeight: 'normal', color: 'var(--echo-text-muted)', fontSize: '0.8125rem' }}>({s.email})</span></span>}
                         <span style={{ fontSize: '0.8125rem', color: 'var(--echo-text-muted)' }}>{new Date(s.createdAt).toLocaleDateString()} {new Date(s.createdAt).toLocaleTimeString()}</span>
                       </div>
                       <button className="btn-danger" style={{ padding: '0.3rem 0.75rem', fontSize: '0.75rem', borderRadius: '6px' }} onClick={() => deleteSuggestion(s._id)} disabled={loading}>🗑️ Delete</button>

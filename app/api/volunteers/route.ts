@@ -17,14 +17,36 @@ export async function GET(req: NextRequest) {
     role: type,
     applicationStatus: 'approved',
     isBanned: false,
+    clerkId: { $ne: userId }
   };
 
-  const helpers = await User.find(filter)
-    .select('clerkId name imageUrl volunteerProfile doctorProfile role')
-    .sort({ 'volunteerProfile.rating': -1 });
+  let helpers: any[] = [];
+
+  // Check if user has a saved volunteer for this type
+  if (currentUser?.savedVolunteer) {
+    const savedFilter = { ...filter, clerkId: currentUser.savedVolunteer };
+    const savedHelper = await User.findOne(savedFilter).select('clerkId name imageUrl volunteerProfile doctorProfile role');
+    if (savedHelper) {
+      helpers = [savedHelper];
+    }
+  }
+
+  // If no saved volunteer, or it is no longer valid, get a random one
+  if (helpers.length === 0) {
+    const count = await User.countDocuments(filter);
+    if (count > 0) {
+      const random = Math.floor(Math.random() * count);
+      const randomHelper = await User.findOne(filter)
+        .select('clerkId name imageUrl volunteerProfile doctorProfile role')
+        .skip(random);
+      if (randomHelper) {
+        helpers = [randomHelper];
+      }
+    }
+  }
 
   const client = await clerkClient();
-  const validHelpers = [];
+  const validHelpers: any[] = [];
 
   for (const helper of helpers) {
     try {
@@ -41,5 +63,8 @@ export async function GET(req: NextRequest) {
     }
   }
 
-  return NextResponse.json({ helpers: validHelpers });
+  return NextResponse.json({ 
+    helpers: validHelpers,
+    savedVolunteer: currentUser?.savedVolunteer || null
+  });
 }

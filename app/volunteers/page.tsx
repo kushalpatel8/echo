@@ -5,6 +5,7 @@ import { useUser } from '@clerk/nextjs';
 import BackButton from '@/components/BackButton';
 import ThemeToggle from '@/components/ThemeToggle';
 import { Heart, Sparkles, MessageSquare } from 'lucide-react';
+import { formatName } from '@/lib/utils';
 
 interface Helper {
   clerkId: string;
@@ -87,6 +88,8 @@ export default function VolunteersListPage() {
   const router = useRouter();
   const { user, isLoaded: userLoaded } = useUser();
   const [helpers, setHelpers] = useState<Helper[]>([]);
+  const [savedVolunteerId, setSavedVolunteerId] = useState<string | null>(null);
+  const [saveLoading, setSaveLoading] = useState(false);
   const [loading, setLoading] = useState(true);
   const [activeTheme, setActiveTheme] = useState<ThemeKey>('celestial');
 
@@ -98,9 +101,29 @@ export default function VolunteersListPage() {
       .then(r => r.json())
       .then(data => {
         setHelpers(data.helpers || []);
+        setSavedVolunteerId(data.savedVolunteer || null);
       })
       .finally(() => setLoading(false));
   }, []);
+
+  const toggleBookmark = async (targetId: string) => {
+    setSaveLoading(true);
+    const action = savedVolunteerId === targetId ? 'remove' : 'save';
+    try {
+      const res = await fetch('/api/volunteers/save', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ targetId, action })
+      });
+      if (res.ok) {
+        setSavedVolunteerId(action === 'save' ? targetId : null);
+      }
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setSaveLoading(false);
+    }
+  };
 
   const startChat = async (targetUserId: string) => {
     try {
@@ -291,7 +314,21 @@ export default function VolunteersListPage() {
                       {helper.imageUrl && <img src={helper.imageUrl} alt={helper.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />}
                     </div>
                     <div style={{ flex: 1 }}>
-                      <div style={{ fontWeight: '800', fontSize: '1.125rem', color: 'var(--echo-text)' }}>{helper.name}</div>
+                      <div style={{ fontWeight: '800', fontSize: '1.125rem', color: 'var(--echo-text)', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                        {formatName(helper.name, helper.role)}
+                        <button 
+                          onClick={() => toggleBookmark(helper.clerkId)}
+                          disabled={saveLoading}
+                          style={{
+                            background: 'none', border: 'none', cursor: 'pointer',
+                            color: savedVolunteerId === helper.clerkId ? '#ef4444' : 'var(--echo-text-muted)',
+                            display: 'flex', alignItems: 'center', justifyContent: 'center'
+                          }}
+                          title={savedVolunteerId === helper.clerkId ? "Remove bookmark" : "Bookmark this volunteer"}
+                        >
+                          <svg xmlns="http://www.svg.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill={savedVolunteerId === helper.clerkId ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/></svg>
+                        </button>
+                      </div>
                       <div style={{ color: 'var(--echo-text-muted)', fontSize: '0.8125rem' }}>
                         Certified Support Volunteer
                       </div>
