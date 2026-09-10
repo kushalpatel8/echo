@@ -14,10 +14,14 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Missing age, gender, or profession' }, { status: 400 });
     }
 
-    const apiKey = process.env.GROQ_API_KEY;
+    const apiKey = process.env.OPENROUTER_API_KEY || process.env.GROQ_API_KEY;
     if (!apiKey) {
-      return NextResponse.json({ error: 'Groq API Key is not configured on server.' }, { status: 500 });
+      return NextResponse.json({ error: 'AI API Key is not configured on server.' }, { status: 500 });
     }
+
+    const endpoint = process.env.OPENROUTER_API_KEY
+      ? 'https://openrouter.ai/api/v1/chat/completions'
+      : (process.env.AI_ENDPOINT || 'https://api.groq.com/openai/v1/chat/completions');
 
     const prompt = `You are a personal exercise trainer. Suggest exactly 3 tailored, mindful, and restorative exercises for a person with the following profile:
 Age: ${age}
@@ -34,20 +38,20 @@ Each exercise object must strictly have these fields:
 
 Do not output any markdown code blocks, preamble, or explanations outside the JSON object.`;
 
-    const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+    const response = await fetch(endpoint, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${apiKey}`
       },
       body: JSON.stringify({
-        model: 'llama-3.3-70b-versatile',
+        model: 'qwen/qwen3.6-27b', 
         messages: [
-          { role: 'system', content: 'You are a helpful assistant that outputs only valid JSON.' },
+          { role: 'system', content: 'You are an expert personal exercise trainer and mindfulness coach that strictly generates well-structured, clear exercise routines and outputs only valid JSON.' },
           { role: 'user', content: prompt }
         ],
         response_format: { type: 'json_object' },
-        temperature: 0.7
+        temperature: 0.5
       })
     });
 
@@ -58,13 +62,24 @@ Do not output any markdown code blocks, preamble, or explanations outside the JS
     }
 
     const data = await response.json();
-    const resultText = data.choices?.[0]?.message?.content;
+    let resultText = data.choices?.[0]?.message?.content || '';
+    
+    // Strip reasoning <think>...</think> blocks
+    resultText = resultText.replace(/<think>[\s\S]*?<\/think>/gi, '').trim();
+    resultText = resultText.replace(/<think>[\s\S]*/gi, '').trim();
     
     if (!resultText) {
       return NextResponse.json({ error: 'Empty response from assistant' }, { status: 500 });
     }
 
-    const parsedData = JSON.parse(resultText);
+    let parsedData: any = {};
+    try {
+      parsedData = JSON.parse(resultText);
+    } catch {
+      const cleaned = resultText.replace(/```json/gi, '').replace(/```/g, '').trim();
+      parsedData = JSON.parse(cleaned);
+    }
+
     return NextResponse.json({ exercises: parsedData.exercises || [] });
 
   } catch (e: any) {
