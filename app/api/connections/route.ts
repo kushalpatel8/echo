@@ -12,12 +12,25 @@ export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const type = searchParams.get('type') || 'sent'; // 'received' for doctors
 
-  let requests;
+  let rawRequests;
   if (type === 'received') {
-    requests = await ConnectionRequest.find({ doctorId: userId }).sort({ createdAt: -1 });
+    rawRequests = await ConnectionRequest.find({ doctorId: userId }).sort({ createdAt: -1 });
   } else {
-    requests = await ConnectionRequest.find({ userId }).sort({ createdAt: -1 });
+    rawRequests = await ConnectionRequest.find({ userId }).sort({ createdAt: -1 });
   }
+
+  // Find users involved to calculate online status
+  const targetIds = rawRequests.map(r => type === 'received' ? r.userId : r.doctorId);
+  const users = await User.find({ clerkId: { $in: targetIds } }).select('clerkId lastSeen');
+  const userMap = new Map(users.map(u => [u.clerkId, u]));
+
+  const requests = rawRequests.map(r => {
+    const rObj: any = r.toObject ? r.toObject() : { ...((r as any)._doc || r) };
+    const targetId = type === 'received' ? r.userId : r.doctorId;
+    const targetUser = userMap.get(targetId);
+    rObj.isOnline = Boolean(targetUser?.lastSeen && (Date.now() - new Date(targetUser.lastSeen).getTime() < 60000));
+    return rObj;
+  });
 
   return NextResponse.json({ requests });
 }

@@ -1,7 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { SignOutButton } from '@clerk/nextjs';
+import SignOutButton from '@/components/SignOutButton';
 import Link from 'next/link';
 import ThemeToggle from '@/components/ThemeToggle';
 import BackButton from '@/components/BackButton';
@@ -329,6 +329,10 @@ export default function AdminDashboard() {
                         <div>
                           <div style={{ fontWeight: '700', display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.125rem', flexWrap: 'wrap' }}>
                             {formatName(u.name, u.role)}
+                            <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem', fontSize: '0.75rem', color: u.isOnline ? '#22c55e' : 'var(--echo-text-muted)', fontWeight: '600' }}>
+                              <span className={`status-dot ${u.isOnline ? 'online' : 'offline'}`} />
+                              {u.isOnline ? 'Online' : 'Offline'}
+                            </span>
                             {u.isBanned && <span className="badge badge-red">Banned</span>}
                             {u.applicationStatus && <span className={`badge badge-${u.applicationStatus === 'approved' ? 'green' : u.applicationStatus === 'pending' ? 'yellow' : 'red'}`}>{u.applicationStatus}</span>}
                           </div>

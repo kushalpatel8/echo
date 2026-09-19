@@ -45,7 +45,7 @@ Do not output any markdown code blocks, preamble, or explanations outside the JS
         'Authorization': `Bearer ${apiKey}`
       },
       body: JSON.stringify({
-        model: 'qwen/qwen3.6-27b', 
+        model: 'qwen/qwen3.8-27b', 
         messages: [
           { role: 'system', content: 'You are an expert personal exercise trainer and mindfulness coach that strictly generates well-structured, clear exercise routines and outputs only valid JSON.' },
           { role: 'user', content: prompt }

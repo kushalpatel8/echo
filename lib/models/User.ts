@@ -29,7 +29,11 @@ export interface IUser extends Document {
     degree: string;
     experience: string;
     whatsappNumber?: string;
+    rating?: number;
+    totalRatings?: number;
   };
+  lastSeen?: Date;
+  isOnline?: boolean;
   createdAt: Date;
 }
 
@@ -62,6 +66,7 @@ const UserSchema = new Schema<IUser>({
     rating: { type: Number, default: 0 },
     totalRatings: { type: Number, default: 0 },
   },
+  lastSeen: { type: Date, default: Date.now },
 }, { timestamps: true });
 
 if (models.User) {

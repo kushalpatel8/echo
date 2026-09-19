@@ -1,7 +1,8 @@
 'use client';
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { useUser, SignOutButton } from '@clerk/nextjs';
+import { useUser } from '@clerk/nextjs';
+import SignOutButton from '@/components/SignOutButton';
 import Link from 'next/link';
 import ThemeToggle from '@/components/ThemeToggle';
 import MobileDashboard from '@/components/MobileDashboard';

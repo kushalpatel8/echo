@@ -105,5 +105,11 @@ export async function GET() {
     }
   }
 
-  return NextResponse.json({ user: dbUser });
+  dbUser.lastSeen = new Date();
+  await dbUser.save();
+
+  const userObj = dbUser.toObject ? dbUser.toObject() : dbUser;
+  userObj.isOnline = true;
+
+  return NextResponse.json({ user: userObj });
 }

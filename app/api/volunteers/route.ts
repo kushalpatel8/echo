@@ -25,7 +25,7 @@ export async function GET(req: NextRequest) {
   // Check if user has a saved volunteer for this type
   if (currentUser?.savedVolunteer) {
     const savedFilter = { ...filter, clerkId: currentUser.savedVolunteer };
-    const savedHelper = await User.findOne(savedFilter).select('clerkId name imageUrl volunteerProfile doctorProfile role');
+    const savedHelper = await User.findOne(savedFilter).select('clerkId name imageUrl volunteerProfile doctorProfile role lastSeen');
     if (savedHelper) {
       helpers = [savedHelper];
     }
@@ -37,7 +37,7 @@ export async function GET(req: NextRequest) {
     if (count > 0) {
       const random = Math.floor(Math.random() * count);
       const randomHelper = await User.findOne(filter)
-        .select('clerkId name imageUrl volunteerProfile doctorProfile role')
+        .select('clerkId name imageUrl volunteerProfile doctorProfile role lastSeen')
         .skip(random);
       if (randomHelper) {
         helpers = [randomHelper];
@@ -52,7 +52,13 @@ export async function GET(req: NextRequest) {
     try {
       const clerkUser = await client.users.getUser(helper.clerkId);
       if (clerkUser) {
-        validHelpers.push(helper);
+        const helperObj = helper.toObject ? helper.toObject() : { ...helper };
+        const isOnline = Boolean(
+          helperObj.lastSeen &&
+          Date.now() - new Date(helperObj.lastSeen).getTime() < 60000
+        );
+        helperObj.isOnline = isOnline;
+        validHelpers.push(helperObj);
       }
     } catch (error: any) {
       // If error is 404, it means user is deleted from clerk

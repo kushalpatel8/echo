@@ -20,6 +20,7 @@ interface Helper {
   doctorProfile?: {
     degree: string;
   };
+  isOnline?: boolean;
 }
 
 type ThemeKey = 'celestial' | 'forest' | 'sunset' | 'ocean' | 'aurora';
@@ -96,14 +97,23 @@ export default function VolunteersListPage() {
   const currentTheme = THEMES[activeTheme];
 
   useEffect(() => {
+    const loadVolunteers = () => {
+      fetch(`/api/volunteers?type=volunteer`)
+        .then(r => r.json())
+        .then(data => {
+          setHelpers(data.helpers || []);
+          setSavedVolunteerId(data.savedVolunteer || null);
+        })
+        .catch(() => {})
+        .finally(() => setLoading(false));
+    };
+
     setLoading(true);
-    fetch(`/api/volunteers?type=volunteer`)
-      .then(r => r.json())
-      .then(data => {
-        setHelpers(data.helpers || []);
-        setSavedVolunteerId(data.savedVolunteer || null);
-      })
-      .finally(() => setLoading(false));
+    loadVolunteers();
+
+    // Poll every 15s to keep live online status fresh
+    const interval = setInterval(loadVolunteers, 15000);
+    return () => clearInterval(interval);
   }, []);
 
   const toggleBookmark = async (targetId: string) => {
@@ -329,8 +339,13 @@ export default function VolunteersListPage() {
                           <svg xmlns="http://www.svg.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill={savedVolunteerId === helper.clerkId ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/></svg>
                         </button>
                       </div>
-                      <div style={{ color: 'var(--echo-text-muted)', fontSize: '0.8125rem' }}>
-                        Certified Support Volunteer
+                      <div style={{ color: 'var(--echo-text-muted)', fontSize: '0.8125rem', display: 'flex', alignItems: 'center', gap: '0.5rem', marginTop: '0.125rem' }}>
+                        <span>Certified Support</span>
+                        <span>•</span>
+                        <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem', color: helper.isOnline ? '#22c55e' : 'var(--echo-text-muted)', fontWeight: '600', fontSize: '0.75rem' }}>
+                          <span className={`status-dot ${helper.isOnline ? 'online' : 'offline'}`} />
+                          {helper.isOnline ? 'Online' : 'Offline'}
+                        </span>
                       </div>
                     </div>
                     <div style={{ textAlign: 'right' }}>

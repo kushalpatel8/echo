@@ -11,6 +11,56 @@ interface Message {
   content: string;
 }
 
+function FormattedMessage({ content }: { content: string }) {
+  // Normalize inline asterisk bullets into distinct lines and strip all asterisks
+  const normalized = content
+    .replace(/\s*\*\s+/g, '\n\n')
+    .replace(/\*+/g, '')
+    .trim();
+
+  const paragraphs = normalized.split(/\n\n+/);
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.625rem', wordBreak: 'break-word' }}>
+      {paragraphs.map((para, pIdx) => {
+        const lines = para.split('\n').filter(l => l.trim().length > 0);
+        return (
+          <div key={pIdx} style={{ lineHeight: '1.65', display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+            {lines.map((line, lIdx) => {
+              const isNumbered = /^\s*(\d+[\.\)])\s+(.*)/.exec(line);
+              const isBullet = /^\s*([•\-])\s+(.*)/.exec(line);
+
+              if (isNumbered) {
+                return (
+                  <div key={lIdx} style={{ display: 'flex', gap: '0.5rem', marginTop: '0.15rem' }}>
+                    <span style={{ fontWeight: '600', color: 'var(--echo-primary-light, #a78bfa)', minWidth: '1.25rem' }}>{isNumbered[1]}</span>
+                    <span style={{ flex: 1 }}>{isNumbered[2]}</span>
+                  </div>
+                );
+              }
+
+              if (isBullet) {
+                return (
+                  <div key={lIdx} style={{ display: 'flex', gap: '0.5rem', marginTop: '0.15rem' }}>
+                    <span style={{ color: 'var(--echo-primary-light, #a78bfa)' }}>•</span>
+                    <span style={{ flex: 1 }}>{isBullet[2]}</span>
+                  </div>
+                );
+              }
+
+              return (
+                <div key={lIdx}>
+                  {line}
+                </div>
+              );
+            })}
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
 export default function AICompanionPage() {
   const { user } = useUser();
   const [messages, setMessages] = useState<Message[]>([
@@ -125,7 +175,7 @@ export default function AICompanionPage() {
               </div>
             )}
             <div className={msg.role === 'user' ? 'message-sent' : 'message-received'} style={{ lineHeight: '1.6', fontSize: '0.9375rem' }}>
-              {msg.content}
+              <FormattedMessage content={msg.content} />
             </div>
             {msg.role === 'assistant' && (
               <VoiceMessageButton

@@ -1,7 +1,8 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { useUser, SignOutButton } from '@clerk/nextjs';
+import { useUser } from '@clerk/nextjs';
+import SignOutButton from '@/components/SignOutButton';
 import Link from 'next/link';
 import ThemeToggle from '@/components/ThemeToggle';
 import BackButton from '@/components/BackButton';
@@ -356,7 +357,12 @@ export default function VolunteerDashboard() {
                               {lastMsg ? (lastMsg.content as string) : 'No messages yet'}
                             </div>
                           </div>
-                          <span className={`status-dot ${chat.isActive ? 'online' : 'offline'}`} />
+                          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '0.25rem' }}>
+                            <span className={`status-dot ${chat.otherIsOnline ? 'online' : 'offline'}`} />
+                            <span style={{ fontSize: '0.6875rem', color: chat.otherIsOnline ? '#22c55e' : 'var(--echo-text-muted)', fontWeight: '600' }}>
+                              {chat.otherIsOnline ? 'Online' : 'Offline'}
+                            </span>
+                          </div>
                         </div>
                       </Link>
                       <button onClick={() => deleteChat(chat._id as string)} style={{ position: 'absolute', right: '1.25rem', top: '50%', transform: 'translateY(-50%)', background: 'rgba(239,68,68,0.1)', border: 'none', color: '#ef4444', width: '32px', height: '32px', borderRadius: '8px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 2 }}>🗑️</button>

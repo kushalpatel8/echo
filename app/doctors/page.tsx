@@ -23,6 +23,7 @@ interface Helper {
     degree: string;
     whatsappNumber?: string;
   };
+  isOnline?: boolean;
 }
 
 interface ConnectionRequest {
@@ -110,8 +111,8 @@ export default function DoctorsListPage() {
   const currentTheme = THEMES[activeTheme];
 
   useEffect(() => {
-    const loadData = async () => {
-      setLoading(true);
+    const loadData = async (isInitial = false) => {
+      if (isInitial) setLoading(true);
       try {
         const [docsRes, reqsRes] = await Promise.all([
           fetch('/api/volunteers?type=doctor'),
@@ -125,10 +126,13 @@ export default function DoctorsListPage() {
       } catch (err) {
         console.error('Failed to load doctors or requests', err);
       } finally {
-        setLoading(false);
+        if (isInitial) setLoading(false);
       }
     };
-    loadData();
+    loadData(true);
+
+    const interval = setInterval(() => loadData(false), 15000);
+    return () => clearInterval(interval);
   }, []);
 
   const toggleBookmark = async (targetId: string) => {
@@ -418,8 +422,15 @@ export default function DoctorsListPage() {
                             <svg xmlns="http://www.svg.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill={savedVolunteerId === helper.clerkId ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/></svg>
                           </button>
                         </div>
-                        <div style={{ color: currentTheme.primary, fontSize: '0.8125rem', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-                          {helper.doctorProfile?.degree || 'Medical Professional'}
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap', marginTop: '0.125rem' }}>
+                          <span style={{ color: currentTheme.primary, fontSize: '0.8125rem', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                            {helper.doctorProfile?.degree || 'Medical Professional'}
+                          </span>
+                          <span style={{ color: 'var(--echo-text-muted)', fontSize: '0.75rem' }}>•</span>
+                          <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem', color: helper.isOnline ? '#22c55e' : 'var(--echo-text-muted)', fontWeight: '600', fontSize: '0.75rem' }}>
+                            <span className={`status-dot ${helper.isOnline ? 'online' : 'offline'}`} />
+                            {helper.isOnline ? 'Online' : 'Offline'}
+                          </span>
                         </div>
                       </div>
                     </div>

@@ -29,7 +29,9 @@ export async function GET(req: NextRequest) {
     try {
       const clerkUser = await client.users.getUser(u.clerkId);
       if (clerkUser) {
-        validUsers.push(u);
+        const uObj = u.toObject ? u.toObject() : { ...u };
+        uObj.isOnline = Boolean(uObj.lastSeen && (Date.now() - new Date(uObj.lastSeen).getTime() < 60000));
+        validUsers.push(uObj);
       }
     } catch (error: any) {
       if (error.status === 404 || error.clerkError) {

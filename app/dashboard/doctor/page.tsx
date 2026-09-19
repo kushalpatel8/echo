@@ -1,7 +1,8 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { useUser, SignOutButton } from '@clerk/nextjs';
+import { useUser } from '@clerk/nextjs';
+import SignOutButton from '@/components/SignOutButton';
 import Link from 'next/link';
 import ThemeToggle from '@/components/ThemeToggle';
 import BackButton from '@/components/BackButton';
@@ -394,7 +395,12 @@ export default function DoctorDashboard() {
                                   {lastMsg ? (lastMsg.content as string) : 'No messages yet'}
                                 </div>
                               </div>
-                              <span className={`status-dot ${chat.isActive ? 'online' : 'offline'}`} />
+                              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '0.25rem' }}>
+                                <span className={`status-dot ${chat.otherIsOnline ? 'online' : 'offline'}`} />
+                                <span style={{ fontSize: '0.6875rem', color: chat.otherIsOnline ? '#22c55e' : 'var(--echo-text-muted)', fontWeight: '600' }}>
+                                  {chat.otherIsOnline ? 'Online' : 'Offline'}
+                                </span>
+                              </div>
                             </div>
                           </Link>
                           <button onClick={(e) => { e.preventDefault(); e.stopPropagation(); deleteChat(chat._id as string); }} style={{ position: 'absolute', right: '1.25rem', top: '50%', transform: 'translateY(-50%)', background: 'rgba(239,68,68,0.1)', border: 'none', color: '#ef4444', width: '32px', height: '32px', borderRadius: '8px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 2 }}>🗑️</button>
@@ -415,8 +421,8 @@ export default function DoctorDashboard() {
                 </p>
                 {requests.filter((r: any) => r.status === 'pending').length === 0 ? (
                   <div className="glass" style={{ padding: '4rem 2rem', textAlign: 'center', borderRadius: '24px', border: '1px solid var(--echo-border)', background: 'var(--echo-surface)', marginBottom: '2rem' }}>
-                    <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>✅</div>
-                    <p style={{ color: 'var(--echo-text-muted)' }}>No new connection requests.</p>
+                    <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>📨</div>
+                    <p style={{ color: 'var(--echo-text-muted)' }}>No pending connection requests.</p>
                   </div>
                 ) : (
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginBottom: '2rem' }}>
@@ -427,7 +433,13 @@ export default function DoctorDashboard() {
                             {request.userImage && <img src={request.userImage} alt={request.userName} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />}
                           </div>
                           <div>
-                            <div style={{ fontWeight: '700', fontSize: '1rem', color: 'var(--echo-text)' }}>{request.userName}</div>
+                            <div style={{ fontWeight: '700', fontSize: '1rem', color: 'var(--echo-text)', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                              {request.userName}
+                              <span className={`status-dot ${request.isOnline ? 'online' : 'offline'}`} />
+                              <span style={{ fontSize: '0.75rem', color: request.isOnline ? '#22c55e' : 'var(--echo-text-muted)', fontWeight: '600' }}>
+                                {request.isOnline ? 'Online' : 'Offline'}
+                              </span>
+                            </div>
                             <div style={{ fontSize: '0.75rem', color: 'var(--echo-text-muted)' }}>Requested: {new Date(request.createdAt).toLocaleDateString()}</div>
                           </div>
                         </div>

@@ -28,6 +28,8 @@ interface Chat {
   volunteerId?: string;
   messages: Message[];
   isActive: boolean;
+  otherIsOnline?: boolean;
+  otherLastSeen?: string;
 }
 
 export default function ChatPage() {
@@ -194,9 +196,9 @@ export default function ChatPage() {
           }}>{otherName[0]}</div>
           <div>
             <div style={{ fontWeight: '700', fontSize: '1rem', color: 'var(--echo-text)' }}>{otherName}</div>
-            <div style={{ fontSize: '0.75rem', color: '#22c55e', display: 'flex', alignItems: 'center', gap: '0.375rem' }}>
-              <span className="status-dot online"></span>
-              Online Support
+            <div style={{ fontSize: '0.75rem', color: chat?.otherIsOnline ? '#22c55e' : 'var(--echo-text-muted)', display: 'flex', alignItems: 'center', gap: '0.375rem', fontWeight: '600' }}>
+              <span className={`status-dot ${chat?.otherIsOnline ? 'online' : 'offline'}`}></span>
+              {chat?.otherIsOnline ? 'Online' : 'Offline'}
             </div>
           </div>
         </div>

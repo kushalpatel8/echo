@@ -5,10 +5,11 @@ import Chat from '@/lib/models/Chat';
 import User from '@/lib/models/User';
 import { isContentHarmful as isMessageHarmful } from '@/lib/moderation';
 
-async function enrichChat(chatDoc: any) {
+async function enrichChat(chatDoc: any, currentUserId?: string) {
   const chatObj = chatDoc.toObject ? chatDoc.toObject() : { ...chatDoc._doc || chatDoc };
+  const users = await User.find({ clerkId: { $in: chatObj.participants } }).select('clerkId name role lastSeen');
+
   if (!chatObj.helperId || (!chatObj.doctorId && chatObj.helperRole === 'doctor')) {
-    const users = await User.find({ clerkId: { $in: chatObj.participants } });
     const helper = users.find(u => u.role === 'doctor' || u.role === 'volunteer');
     const patient = users.find(u => u.role !== 'doctor' && u.role !== 'volunteer') || users[0];
 
@@ -35,6 +36,17 @@ async function enrichChat(chatDoc: any) {
       await chatDoc.save().catch(() => {});
     }
   }
+
+  if (currentUserId) {
+    const otherUser = users.find(u => u.clerkId !== currentUserId);
+    if (otherUser) {
+      chatObj.otherId = otherUser.clerkId;
+      chatObj.otherName = otherUser.name;
+      chatObj.otherLastSeen = otherUser.lastSeen;
+      chatObj.otherIsOnline = Boolean(otherUser.lastSeen && (Date.now() - new Date(otherUser.lastSeen).getTime() < 60000));
+    }
+  }
+
   return chatObj;
 }
 
@@ -52,12 +64,12 @@ export async function GET(req: NextRequest) {
     if (!chat?.participants.includes(userId)) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
-    const enriched = await enrichChat(chat);
+    const enriched = await enrichChat(chat, userId);
     return NextResponse.json({ chat: enriched });
   }
 
   const chats = await Chat.find({ participants: userId }).sort({ updatedAt: -1 });
-  const enrichedChats = await Promise.all(chats.map(c => enrichChat(c)));
+  const enrichedChats = await Promise.all(chats.map(c => enrichChat(c, userId)));
   return NextResponse.json({ chats: enrichedChats });
 }
 
@@ -87,7 +99,7 @@ export async function POST(req: NextRequest) {
       participants: { $all: [userId, targetUserId] }
     });
     if (existingChat) {
-      const enriched = await enrichChat(existingChat);
+      const enriched = await enrichChat(existingChat, userId);
       return NextResponse.json({ chat: enriched });
     }
 
@@ -103,7 +115,7 @@ export async function POST(req: NextRequest) {
       volunteerId: target.role === 'volunteer' ? targetUserId : undefined,
       messages: [],
     });
-    const enriched = await enrichChat(chat);
+    const enriched = await enrichChat(chat, userId);
     return NextResponse.json({ chat: enriched });
   }
 
@@ -166,7 +178,7 @@ export async function POST(req: NextRequest) {
       timestamp: new Date(),
     });
     await chat.save();
-    const enriched = await enrichChat(chat);
+    const enriched = await enrichChat(chat, userId);
     return NextResponse.json({ success: true, chat: enriched });
   }
 
