@@ -93,7 +93,7 @@ export async function PATCH(req: NextRequest) {
     }
 
     // Update whatsapp status
-    if (whatsappStatus && ['pending', 'accepted', 'rejected'].includes(whatsappStatus)) {
+    if (whatsappStatus && ['none', 'pending', 'accepted', 'rejected'].includes(whatsappStatus)) {
       if (whatsappStatus === 'pending') {
         // Only patient can request whatsapp
         if (request.userId !== userId) {
@@ -103,6 +103,12 @@ export async function PATCH(req: NextRequest) {
         if (request.status !== 'accepted') {
           console.error(`WhatsApp Request Error: Connection status is ${request.status}, not accepted`);
           return NextResponse.json({ error: 'Connection must be accepted first' }, { status: 400 });
+        }
+      } else if (whatsappStatus === 'none') {
+        // Only patient can withdraw whatsapp request
+        if (request.userId !== userId) {
+          console.error(`WhatsApp Withdraw Error: User ${userId} is not the sender ${request.userId}`);
+          return NextResponse.json({ error: 'Only patient can withdraw WhatsApp request' }, { status: 403 });
         }
       } else {
         // Only doctor can accept/reject whatsapp

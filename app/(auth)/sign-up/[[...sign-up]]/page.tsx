@@ -78,7 +78,8 @@ export default function SignUpPage() {
               }
             }
           }}
-          fallbackRedirectUrl="/"
+          fallbackRedirectUrl="/roles-overview"
+          forceRedirectUrl="/roles-overview"
           signInUrl="/sign-in"
         />
       </div>

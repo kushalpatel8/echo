@@ -21,7 +21,7 @@ interface Helper {
   };
   doctorProfile?: {
     degree: string;
-    whatsappNumber?: string;
+    whatsappNumber?: number | string;
   };
   isOnline?: boolean;
 }
@@ -191,6 +191,28 @@ export default function DoctorsListPage() {
       }
     } catch (err) {
       console.error(err);
+    } finally {
+      setActionLoading(null);
+    }
+  };
+
+  const withdrawWhatsApp = async (requestId: string, doctorId: string) => {
+    setActionLoading(`wa-withdraw-${doctorId}`);
+    try {
+      const res = await fetch('/api/connections', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ requestId, whatsappStatus: 'none' }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setRequests(prev => prev.map(r => r._id === requestId ? data.request : r));
+      } else {
+        alert(data.error || 'Failed to withdraw WhatsApp request');
+      }
+    } catch (err) {
+      console.error(err);
+      alert('Network error');
     } finally {
       setActionLoading(null);
     }
@@ -460,12 +482,30 @@ export default function DoctorsListPage() {
                               </button>
                             )}
                             {req.whatsappStatus === 'pending' && (
-                              <button className="btn-secondary" style={{ width: '100%', padding: '0.875rem', color: '#fbbf24', borderColor: '#fbbf24' }} disabled>
-                                WhatsApp Requested...
+                              <button
+                                className="btn-secondary"
+                                style={{
+                                  width: '100%',
+                                  padding: '0.875rem',
+                                  color: '#fbbf24',
+                                  borderColor: '#fbbf24',
+                                  background: 'rgba(251, 191, 36, 0.08)',
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  justifyContent: 'center',
+                                  gap: '0.5rem',
+                                  cursor: 'pointer',
+                                }}
+                                onClick={() => withdrawWhatsApp(req._id, helper.clerkId)}
+                                disabled={actionLoading === `wa-withdraw-${helper.clerkId}`}
+                                title="Click to withdraw WhatsApp request"
+                              >
+                                <Phone size={16} style={{ color: '#fbbf24' }} />
+                                {actionLoading === `wa-withdraw-${helper.clerkId}` ? 'Withdrawing WhatsApp...' : 'Withdraw WhatsApp Request'}
                               </button>
                             )}
                             {req.whatsappStatus === 'accepted' && (
-                              <a href={`https://wa.me/${helper.doctorProfile?.whatsappNumber?.replace(/\D/g,'')}`} target="_blank" rel="noreferrer" style={{ textDecoration: 'none' }}>
+                              <a href={`https://wa.me/${String(helper.doctorProfile?.whatsappNumber || '').replace(/\D/g,'')}`} target="_blank" rel="noreferrer" style={{ textDecoration: 'none' }}>
                                 <button className="btn-primary" style={{ width: '100%', padding: '0.875rem', background: '#25D366' }}>
                                   <Phone size={16} style={{ display: 'inline', marginRight: '0.5rem', verticalAlign: 'middle' }} />
                                   {helper.doctorProfile?.whatsappNumber || 'WhatsApp Connected'}

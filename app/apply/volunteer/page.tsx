@@ -37,7 +37,7 @@ export default function VolunteerApplyPage() {
       });
 
       if (res.ok) {
-        router.push('/dashboard');
+        router.push('/apply/status');
       } else {
         const data = await res.json();
         setError(data.error || 'Failed to submit application');
@@ -62,11 +62,13 @@ export default function VolunteerApplyPage() {
             <label className="echo-label">Phone Number</label>
             <input
               type="tel"
+              inputMode="numeric"
+              pattern="[0-9]*"
               className="echo-input"
               required
-              placeholder="+91 9876543210"
+              placeholder="e.g. 9876543210"
               value={formData.phoneNo}
-              onChange={e => setFormData(p => ({ ...p, phoneNo: e.target.value }))}
+              onChange={e => setFormData(p => ({ ...p, phoneNo: e.target.value.replace(/\D/g, '') }))}
             />
           </div>
 
@@ -74,11 +76,13 @@ export default function VolunteerApplyPage() {
             <label className="echo-label">WhatsApp Number</label>
             <input
               type="tel"
+              inputMode="numeric"
+              pattern="[0-9]*"
               className="echo-input"
               required
-              placeholder="+91 9876543210"
+              placeholder="e.g. 9876543210"
               value={formData.whatsappNumber}
-              onChange={e => setFormData(p => ({ ...p, whatsappNumber: e.target.value }))}
+              onChange={e => setFormData(p => ({ ...p, whatsappNumber: e.target.value.replace(/\D/g, '') }))}
             />
           </div>
 

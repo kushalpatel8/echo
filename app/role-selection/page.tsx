@@ -1,7 +1,10 @@
 'use client';
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+
+import { useState, useEffect, Suspense } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useUser } from '@clerk/nextjs';
+import Link from 'next/link';
+import { ArrowLeft, Sparkles, Lock, Check } from 'lucide-react';
 
 const roles = [
   {
@@ -25,7 +28,7 @@ const roles = [
     emoji: '👨‍⚕️',
     title: 'I\'m a mental health professional',
     desc: 'Provide expert guidance as a certified doctor or therapist.',
-    color: '#67e8f9',
+    color: '#06b6d4',
     badge: 'Doctor',
   },
   {
@@ -39,13 +42,21 @@ const roles = [
   },
 ];
 
-export default function RoleSelectionPage() {
+function RoleSelectionContent() {
   const { user } = useUser();
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [selectedRole, setSelectedRole] = useState('');
   const [adminToken, setAdminToken] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+
+  useEffect(() => {
+    const roleParam = searchParams.get('role');
+    if (roleParam && ['user', 'volunteer', 'doctor', 'admin'].includes(roleParam)) {
+      setSelectedRole(roleParam);
+    }
+  }, [searchParams]);
 
   const handleContinue = async () => {
     if (!selectedRole) return;
@@ -86,10 +97,35 @@ export default function RoleSelectionPage() {
       alignItems: 'center',
       justifyContent: 'center',
       padding: '2rem',
+      position: 'relative',
     }}>
-      <div style={{ maxWidth: '700px', width: '100%' }}>
+      <div style={{ maxWidth: '720px', width: '100%' }}>
+        
+        {/* Navigation Link back to Overview */}
+        <div style={{ marginBottom: '1.5rem' }}>
+          <Link 
+            href="/roles-overview" 
+            style={{ 
+              textDecoration: 'none', 
+              display: 'inline-flex', 
+              alignItems: 'center', 
+              gap: '0.5rem', 
+              color: 'var(--echo-text-muted)',
+              fontSize: '0.875rem',
+              fontWeight: '600',
+              padding: '0.4rem 0.875rem',
+              borderRadius: '10px',
+              background: 'var(--echo-surface)',
+              border: '1px solid var(--echo-border)',
+              transition: 'all 0.2s ease',
+            }}
+          >
+            <ArrowLeft size={16} /> View Detailed Roles Overview
+          </Link>
+        </div>
+
         {/* Header */}
-        <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
+        <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
           <div style={{
             width: '64px', height: '64px', borderRadius: '18px',
             background: 'linear-gradient(135deg, #7c3aed, #06b6d4)',
@@ -98,10 +134,10 @@ export default function RoleSelectionPage() {
             margin: '0 auto 1.25rem',
             boxShadow: '0 0 30px rgba(124,58,237,0.4)',
           }}>E</div>
-          <h1 style={{ fontSize: '2rem', fontWeight: '800', marginBottom: '0.5rem' }}>
-            Who are you, {user?.username || 'friend'}?
+          <h1 style={{ fontSize: '2rem', fontWeight: '800', marginBottom: '0.5rem', color: 'var(--echo-text)' }}>
+            Who are you, {user?.firstName || user?.username || 'friend'}?
           </h1>
-          <p style={{ color: 'var(--echo-text-muted)' }}>
+          <p style={{ color: 'var(--echo-text-muted)', fontSize: '0.9375rem' }}>
             Choose your role to personalize your ECHO experience
           </p>
         </div>
@@ -115,9 +151,9 @@ export default function RoleSelectionPage() {
               style={{
                 cursor: 'pointer',
                 padding: '1.5rem',
-                borderRadius: '1rem',
+                borderRadius: '1.25rem',
                 border: `2px solid ${selectedRole === role.id ? role.color : 'var(--echo-border)'}`,
-                background: selectedRole === role.id ? `rgba(${role.id === 'user' ? '34,197,94' : role.id === 'volunteer' ? '167,139,250' : role.id === 'doctor' ? '103,232,249' : '251,191,36'},0.08)` : 'var(--echo-surface)',
+                background: selectedRole === role.id ? `rgba(${role.id === 'user' ? '34,197,94' : role.id === 'volunteer' ? '167,139,250' : role.id === 'doctor' ? '6,182,212' : '251,191,36'},0.08)` : 'var(--echo-surface)',
                 transition: 'all 0.2s ease',
                 transform: selectedRole === role.id ? 'translateY(-2px)' : 'none',
                 boxShadow: selectedRole === role.id ? `0 8px 25px rgba(0,0,0,0.3)` : 'none',
@@ -125,17 +161,18 @@ export default function RoleSelectionPage() {
             >
               <div style={{ display: 'flex', alignItems: 'flex-start', gap: '1rem' }}>
                 <span style={{ fontSize: '2rem' }}>{role.emoji}</span>
-                <div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.375rem' }}>
-                    <span style={{ fontWeight: '700', fontSize: '1rem' }}>{role.title}</span>
+                <div style={{ flex: 1 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.375rem' }}>
+                    <span style={{ fontWeight: '700', fontSize: '1rem', color: 'var(--echo-text)' }}>{role.title}</span>
                     {role.secure && <span className="badge badge-yellow" style={{ fontSize: '0.65rem' }}>🔒 Secure</span>}
                   </div>
                   <p style={{ color: 'var(--echo-text-muted)', fontSize: '0.8125rem', lineHeight: '1.5' }}>{role.desc}</p>
                 </div>
               </div>
               {selectedRole === role.id && (
-                <div style={{ marginTop: '0.75rem', display: 'flex', justifyContent: 'flex-end' }}>
-                  <span style={{ color: role.color, fontSize: '0.8125rem', fontWeight: '600' }}>✓ Selected</span>
+                <div style={{ marginTop: '0.75rem', display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: '0.35rem' }}>
+                  <Check size={14} color={role.color} strokeWidth={3} />
+                  <span style={{ color: role.color, fontSize: '0.8125rem', fontWeight: '700' }}>Selected</span>
                 </div>
               )}
             </div>
@@ -175,5 +212,17 @@ export default function RoleSelectionPage() {
         </button>
       </div>
     </main>
+  );
+}
+
+export default function RoleSelectionPage() {
+  return (
+    <Suspense fallback={
+      <div style={{ minHeight: '100vh', background: 'var(--echo-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <p style={{ color: 'var(--echo-text-muted)' }}>Loading roles...</p>
+      </div>
+    }>
+      <RoleSelectionContent />
+    </Suspense>
   );
 }

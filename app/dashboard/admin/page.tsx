@@ -292,8 +292,11 @@ export default function AdminDashboard() {
                       {profile && (
                         <div style={{ background: 'var(--echo-surface-2)', borderRadius: '12px', padding: '1rem', marginBottom: '1rem', fontSize: '0.875rem', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '0.75rem' }}>
                           <div><strong>📞 Phone:</strong> <span style={{ color: 'var(--echo-text-muted)' }}>{profile.phoneNo}</span></div>
-                          <div><strong>💬 Reason:</strong> <span style={{ color: 'var(--echo-text-muted)' }}>{profile.whyVolunteer || profile.whyDoctor}</span></div>
+                          {profile.whatsappNumber && <div><strong>💬 WhatsApp:</strong> <span style={{ color: 'var(--echo-text-muted)' }}>{profile.whatsappNumber}</span></div>}
+                          {profile.licenseNumber && <div><strong>📜 License No:</strong> <span style={{ color: 'var(--echo-text-muted)' }}>{profile.licenseNumber}</span></div>}
+                          {profile.college && <div><strong>🏛️ College/Univ:</strong> <span style={{ color: 'var(--echo-text-muted)' }}>{profile.college}</span></div>}
                           {profile.degree && <div><strong>🎓 Degree:</strong> <span style={{ color: 'var(--echo-text-muted)' }}>{profile.degree}</span></div>}
+                          <div><strong>💬 Reason:</strong> <span style={{ color: 'var(--echo-text-muted)' }}>{profile.whyVolunteer || profile.whyDoctor}</span></div>
                           {profile.experience && <div><strong>💼 Experience:</strong> <span style={{ color: 'var(--echo-text-muted)' }}>{profile.experience}</span></div>}
                         </div>
                       )}
@@ -347,13 +350,19 @@ export default function AdminDashboard() {
                         <button className="btn-danger" style={{ padding: '0.4rem 0.875rem', fontSize: '0.75rem' }} onClick={() => adminAction(u._id, 'delete')} disabled={loading}>Delete</button>
                       </div>
                     </div>
-                    {(tab === 'volunteers' || tab === 'doctors') && (
-                      <div style={{ background: 'var(--echo-surface-2)', borderRadius: '12px', padding: '1rem', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '1rem', border: '1px solid var(--echo-border)' }}>
-                        {u[tab === 'volunteers' ? 'volunteerProfile' : 'doctorProfile'] ? (<>
-                          <div><div style={{ fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--echo-text-muted)', marginBottom: '0.25rem', fontWeight: '600' }}>📞 Phone</div><div style={{ fontWeight: '500' }}>{u[tab === 'volunteers' ? 'volunteerProfile' : 'doctorProfile'].phoneNo || 'N/A'}</div></div>
-                          <div><div style={{ fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--echo-text-muted)', marginBottom: '0.25rem', fontWeight: '600' }}>💬 WhatsApp</div><div style={{ fontWeight: '500' }}>{u[tab === 'volunteers' ? 'volunteerProfile' : 'doctorProfile'].whatsappNumber || 'N/A'}</div></div>
-                          <div><div style={{ fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--echo-text-muted)', marginBottom: '0.25rem', fontWeight: '600' }}>🎓 Degree</div><div style={{ fontWeight: '500' }}>{u[tab === 'volunteers' ? 'volunteerProfile' : 'doctorProfile'].degree || 'N/A'}</div></div>
-                          <div><div style={{ fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--echo-text-muted)', marginBottom: '0.25rem', fontWeight: '600' }}>💼 Experience</div><div style={{ fontWeight: '500' }}>{u[tab === 'volunteers' ? 'volunteerProfile' : 'doctorProfile'].experience || 'None'}</div></div>
+                    {(tab === 'volunteers' || tab === 'doctors' || (tab === 'users' && (u.role === 'doctor' || u.role === 'volunteer'))) && (
+                      <div style={{ background: 'var(--echo-surface-2)', borderRadius: '12px', padding: '1rem', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '1rem', border: '1px solid var(--echo-border)', marginTop: tab === 'users' ? '1rem' : 0 }}>
+                        {u[u.role === 'doctor' || tab === 'doctors' ? 'doctorProfile' : 'volunteerProfile'] ? (<>
+                          <div><div style={{ fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--echo-text-muted)', marginBottom: '0.25rem', fontWeight: '600' }}>📞 Phone</div><div style={{ fontWeight: '500' }}>{u[u.role === 'doctor' || tab === 'doctors' ? 'doctorProfile' : 'volunteerProfile'].phoneNo || 'N/A'}</div></div>
+                          <div><div style={{ fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--echo-text-muted)', marginBottom: '0.25rem', fontWeight: '600' }}>💬 WhatsApp</div><div style={{ fontWeight: '500' }}>{u[u.role === 'doctor' || tab === 'doctors' ? 'doctorProfile' : 'volunteerProfile'].whatsappNumber || 'N/A'}</div></div>
+                          {(tab === 'doctors' || u.role === 'doctor') && (
+                            <>
+                              <div><div style={{ fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--echo-text-muted)', marginBottom: '0.25rem', fontWeight: '600' }}>📜 License No</div><div style={{ fontWeight: '500' }}>{u.doctorProfile?.licenseNumber || 'N/A'}</div></div>
+                              <div><div style={{ fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--echo-text-muted)', marginBottom: '0.25rem', fontWeight: '600' }}>🏛️ College / University</div><div style={{ fontWeight: '500' }}>{u.doctorProfile?.college || 'N/A'}</div></div>
+                            </>
+                          )}
+                          <div><div style={{ fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--echo-text-muted)', marginBottom: '0.25rem', fontWeight: '600' }}>🎓 Degree</div><div style={{ fontWeight: '500' }}>{u[u.role === 'doctor' || tab === 'doctors' ? 'doctorProfile' : 'volunteerProfile'].degree || 'N/A'}</div></div>
+                          <div><div style={{ fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--echo-text-muted)', marginBottom: '0.25rem', fontWeight: '600' }}>💼 Experience</div><div style={{ fontWeight: '500' }}>{u[u.role === 'doctor' || tab === 'doctors' ? 'doctorProfile' : 'volunteerProfile'].experience || 'None'}</div></div>
                         </>) : <div style={{ gridColumn: '1/-1', textAlign: 'center', color: 'var(--echo-text-muted)', fontSize: '0.875rem' }}>Profile details not available.</div>}
                       </div>
                     )}
@@ -401,6 +410,12 @@ export default function AdminDashboard() {
                         {u[u.role === 'volunteer' ? 'volunteerProfile' : 'doctorProfile'] ? (<>
                           <div><div style={{ fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--echo-text-muted)', marginBottom: '0.25rem', fontWeight: '600' }}>📞 Phone</div><div style={{ fontWeight: '500' }}>{u[u.role === 'volunteer' ? 'volunteerProfile' : 'doctorProfile'].phoneNo || 'N/A'}</div></div>
                           <div><div style={{ fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--echo-text-muted)', marginBottom: '0.25rem', fontWeight: '600' }}>💬 WhatsApp</div><div style={{ fontWeight: '500' }}>{u[u.role === 'volunteer' ? 'volunteerProfile' : 'doctorProfile'].whatsappNumber || 'N/A'}</div></div>
+                          {u.role === 'doctor' && (
+                            <>
+                              <div><div style={{ fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--echo-text-muted)', marginBottom: '0.25rem', fontWeight: '600' }}>📜 License No</div><div style={{ fontWeight: '500' }}>{u.doctorProfile?.licenseNumber || 'N/A'}</div></div>
+                              <div><div style={{ fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--echo-text-muted)', marginBottom: '0.25rem', fontWeight: '600' }}>🏛️ College / University</div><div style={{ fontWeight: '500' }}>{u.doctorProfile?.college || 'N/A'}</div></div>
+                            </>
+                          )}
                           <div><div style={{ fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--echo-text-muted)', marginBottom: '0.25rem', fontWeight: '600' }}>🎓 Degree</div><div style={{ fontWeight: '500' }}>{u[u.role === 'volunteer' ? 'volunteerProfile' : 'doctorProfile'].degree || 'N/A'}</div></div>
                           <div><div style={{ fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--echo-text-muted)', marginBottom: '0.25rem', fontWeight: '600' }}>💼 Experience</div><div style={{ fontWeight: '500' }}>{u[u.role === 'volunteer' ? 'volunteerProfile' : 'doctorProfile'].experience || 'None'}</div></div>
                         </>) : <div style={{ gridColumn: '1/-1', textAlign: 'center', color: 'var(--echo-text-muted)', fontSize: '0.875rem' }}>Profile details not available.</div>}

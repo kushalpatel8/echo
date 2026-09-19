@@ -5,7 +5,7 @@ import { ArrowLeft, LayoutDashboard } from 'lucide-react';
 import Link from 'next/link';
 
 // Pages where a back button makes no sense
-const NO_BACK_PAGES = ['/', '/sign-in', '/sign-up', '/role-selection'];
+const NO_BACK_PAGES = ['/', '/sign-in', '/sign-up', '/roles-overview', '/role-selection'];
 
 export default function BackButton() {
   const router = useRouter();

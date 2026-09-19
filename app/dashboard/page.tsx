@@ -29,12 +29,12 @@ export default function DashboardPage() {
             setChooseRole(true);
             setLoading(false);
           }
-          else router.replace('/role-selection');
+          else router.replace('/roles-overview');
         } else {
-          router.replace('/role-selection');
+          router.replace('/roles-overview');
         }
       })
-      .catch(() => router.replace('/role-selection'));
+      .catch(() => router.replace('/roles-overview'));
   }, [router]);
 
   if (loading || (!chooseRole && user)) return <BubbleLoader message="Loading your dashboard..." />;

@@ -15,20 +15,22 @@ export interface IUser extends Document {
   applicationStatus?: ApplicationStatus;
   savedVolunteer?: string;
   volunteerProfile?: {
-    phoneNo: string;
+    phoneNo: number;
     whyVolunteer: string;
     degree?: string;
     experience?: string;
-    whatsappNumber?: string;
+    whatsappNumber?: number;
     rating: number;
     totalRatings: number;
   };
   doctorProfile?: {
-    phoneNo: string;
+    phoneNo: number;
     whyDoctor: string;
     degree: string;
+    licenseNumber?: string;
+    college?: string;
     experience: string;
-    whatsappNumber?: string;
+    whatsappNumber?: number;
     rating?: number;
     totalRatings?: number;
   };
@@ -49,20 +51,22 @@ const UserSchema = new Schema<IUser>({
   applicationStatus: { type: String, enum: ['pending', 'approved', 'rejected'] },
   savedVolunteer: { type: String },
   volunteerProfile: {
-    phoneNo: String,
+    phoneNo: Number,
     whyVolunteer: String,
     degree: String,
     experience: String,
-    whatsappNumber: String,
+    whatsappNumber: Number,
     rating: { type: Number, default: 0 },
     totalRatings: { type: Number, default: 0 },
   },
   doctorProfile: {
-    phoneNo: String,
+    phoneNo: Number,
     whyDoctor: String,
     degree: String,
+    licenseNumber: String,
+    college: String,
     experience: String,
-    whatsappNumber: String,
+    whatsappNumber: Number,
     rating: { type: Number, default: 0 },
     totalRatings: { type: Number, default: 0 },
   },

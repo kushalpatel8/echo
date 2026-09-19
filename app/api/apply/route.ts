@@ -9,7 +9,16 @@ export async function POST(req: NextRequest) {
   if (!userId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
   const body = await req.json();
-  const { type, phoneNo, reason, degree, experience, whatsappNumber } = body;
+  const { type, phoneNo, reason, degree, experience, whatsappNumber, licenseNumber, college } = body;
+
+  if (type === 'doctor') {
+    if (!licenseNumber || !licenseNumber.toString().trim()) {
+      return NextResponse.json({ error: 'Medical License / Registration Number is mandatory.' }, { status: 400 });
+    }
+    if (!college || !college.toString().trim()) {
+      return NextResponse.json({ error: 'Medical College / University is mandatory.' }, { status: 400 });
+    }
+  }
 
   await connectDB();
   const clerkUser = await currentUser();
@@ -43,16 +52,21 @@ export async function POST(req: NextRequest) {
     }
   }
 
+  const cleanDigits = (phoneNo || '').toString().replace(/\D/g, '');
+  const cleanPhoneNo = cleanDigits ? Number(cleanDigits) : undefined;
+  const cleanWhatsappDigits = (whatsappNumber || '').toString().replace(/\D/g, '');
+  const cleanWhatsappNumber = cleanWhatsappDigits ? Number(cleanWhatsappDigits) : undefined;
+
   if (type === 'volunteer') {
     await User.findOneAndUpdate({ clerkId: userId }, {
       role: 'volunteer',
       applicationStatus: 'pending',
       volunteerProfile: {
-        phoneNo,
+        phoneNo: cleanPhoneNo,
         whyVolunteer: reason,
         degree,
         experience,
-        whatsappNumber: whatsappNumber || '',
+        whatsappNumber: cleanWhatsappNumber,
         rating: 0,
         totalRatings: 0,
       },
@@ -62,19 +76,21 @@ export async function POST(req: NextRequest) {
       role: 'doctor',
       applicationStatus: 'pending',
       doctorProfile: {
-        phoneNo,
+        phoneNo: cleanPhoneNo,
         whyDoctor: reason,
         degree,
+        licenseNumber: licenseNumber.toString().trim(),
+        college: college.toString().trim(),
         experience,
-        whatsappNumber: whatsappNumber || '',
+        whatsappNumber: cleanWhatsappNumber,
       },
       // Doctors are also volunteers
       volunteerProfile: {
-        phoneNo,
+        phoneNo: cleanPhoneNo,
         whyVolunteer: reason,
         degree,
         experience,
-        whatsappNumber: whatsappNumber || '',
+        whatsappNumber: cleanWhatsappNumber,
         rating: 0,
         totalRatings: 0,
       },
@@ -83,3 +99,21 @@ export async function POST(req: NextRequest) {
 
   return NextResponse.json({ success: true });
 }
+
+export async function DELETE() {
+  const { userId } = await auth();
+  if (!userId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+
+  await connectDB();
+  const user = await User.findOneAndUpdate(
+    { clerkId: userId },
+    {
+      role: 'user',
+      $unset: { applicationStatus: 1, doctorProfile: 1, volunteerProfile: 1 }
+    },
+    { new: true }
+  );
+
+  return NextResponse.json({ success: true, user });
+}
+

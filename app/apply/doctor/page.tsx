@@ -9,10 +9,12 @@ export default function DoctorApplyPage() {
   const { user } = useUser();
   const [formData, setFormData] = useState({
     phoneNo: '',
+    whatsappNumber: '',
+    licenseNumber: '',
+    college: '',
     reason: '',
     degree: '',
     experience: '',
-    whatsappNumber: '',
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -22,6 +24,18 @@ export default function DoctorApplyPage() {
     e.preventDefault();
     setLoading(true);
     setError('');
+
+    if (!formData.licenseNumber.trim()) {
+      setError('Medical License / Registration Number is mandatory.');
+      setLoading(false);
+      return;
+    }
+
+    if (!formData.college.trim()) {
+      setError('Medical College / University is mandatory.');
+      setLoading(false);
+      return;
+    }
 
     if (!agreed) {
       setError('You must agree to the Terms & Conditions and Code of Conduct to apply.');
@@ -37,7 +51,7 @@ export default function DoctorApplyPage() {
       });
 
       if (res.ok) {
-        router.push('/dashboard');
+        router.push('/apply/status');
       } else {
         const data = await res.json();
         setError(data.error || 'Failed to submit application');
@@ -59,58 +73,86 @@ export default function DoctorApplyPage() {
 
         <form onSubmit={handleSubmit} className="echo-card animate-fade-in-up">
           <div style={{ marginBottom: '1.5rem' }}>
-            <label className="echo-label">Professional Phone Number</label>
+            <label className="echo-label">Professional Phone Number *</label>
             <input
               type="tel"
+              inputMode="numeric"
+              pattern="[0-9]*"
               className="echo-input"
               required
-              placeholder="+91 9876543210"
+              placeholder="e.g. 9876543210"
               value={formData.phoneNo}
-              onChange={e => setFormData(p => ({ ...p, phoneNo: e.target.value }))}
+              onChange={e => setFormData(p => ({ ...p, phoneNo: e.target.value.replace(/\D/g, '') }))}
             />
           </div>
 
           <div style={{ marginBottom: '1.5rem' }}>
-            <label className="echo-label">WhatsApp Number for Patient Consultations</label>
+            <label className="echo-label">WhatsApp Number for Patient Consultations *</label>
             <input
               type="tel"
+              inputMode="numeric"
+              pattern="[0-9]*"
               className="echo-input"
               required
-              placeholder="+91 9876543210"
+              placeholder="e.g. 9876543210"
               value={formData.whatsappNumber}
-              onChange={e => setFormData(p => ({ ...p, whatsappNumber: e.target.value }))}
+              onChange={e => setFormData(p => ({ ...p, whatsappNumber: e.target.value.replace(/\D/g, '') }))}
             />
           </div>
 
           <div style={{ marginBottom: '1.5rem' }}>
-            <label className="echo-label">Statement of Purpose (Why volunteer as a doctor?)</label>
-            <textarea
-              className="echo-input"
-              required
-              placeholder="Your goals and motivation..."
-              value={formData.reason}
-              onChange={e => setFormData(p => ({ ...p, reason: e.target.value }))}
-            />
-          </div>
-
-          <div style={{ marginBottom: '1.5rem' }}>
-            <label className="echo-label">Medical Degree / Specialization</label>
+            <label className="echo-label">Medical License / Registration Number *</label>
             <input
               type="text"
               className="echo-input"
               required
-              placeholder="e.g. MBBS, MD Psychology"
+              placeholder="e.g. MCI-123456 / State Council Reg No."
+              value={formData.licenseNumber}
+              onChange={e => setFormData(p => ({ ...p, licenseNumber: e.target.value }))}
+            />
+          </div>
+
+          <div style={{ marginBottom: '1.5rem' }}>
+            <label className="echo-label">Medical College / University *</label>
+            <input
+              type="text"
+              className="echo-input"
+              required
+              placeholder="e.g. AIIMS New Delhi / Harvard Medical School"
+              value={formData.college}
+              onChange={e => setFormData(p => ({ ...p, college: e.target.value }))}
+            />
+          </div>
+
+          <div style={{ marginBottom: '1.5rem' }}>
+            <label className="echo-label">Medical Degree / Specialization *</label>
+            <input
+              type="text"
+              className="echo-input"
+              required
+              placeholder="e.g. MBBS, MD Psychology, MS Psychiatry"
               value={formData.degree}
               onChange={e => setFormData(p => ({ ...p, degree: e.target.value }))}
             />
           </div>
 
-          <div style={{ marginBottom: '2rem' }}>
-            <label className="echo-label">Professional Experience (Hospitals, Clinics, etc.)</label>
+          <div style={{ marginBottom: '1.5rem' }}>
+            <label className="echo-label">Statement of Purpose (Why volunteer as a doctor?) *</label>
             <textarea
               className="echo-input"
               required
-              placeholder="Describe your professional career..."
+              placeholder="Your clinical goals and motivation..."
+              value={formData.reason}
+              onChange={e => setFormData(p => ({ ...p, reason: e.target.value }))}
+            />
+          </div>
+
+          <div style={{ marginBottom: '2rem' }}>
+            <label className="echo-label">Professional Experience (Hospitals, Clinics, etc.) *</label>
+            <textarea
+              className="echo-input"
+              required
+              placeholder="Describe your clinical career, practice, or hospital affiliations..."
               value={formData.experience}
               onChange={e => setFormData(p => ({ ...p, experience: e.target.value }))}
             />
