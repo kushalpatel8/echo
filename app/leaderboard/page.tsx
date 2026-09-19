@@ -68,6 +68,36 @@ export default function LeaderboardPage() {
 
   return (
     <div style={{ minHeight: '100vh', background: 'var(--echo-bg)', color: 'var(--echo-text)', position: 'relative', overflowX: 'hidden' }}>
+      <style>{`
+        @media (max-width: 500px) {
+          .leaderboard-card {
+            padding: 1rem 0.75rem !important;
+            gap: 0.75rem !important;
+          }
+          .leaderboard-medal {
+            width: 28px !important;
+          }
+          .leaderboard-avatar {
+            width: 44px !important;
+            height: 44px !important;
+          }
+          .leaderboard-name {
+            font-size: 1rem !important;
+          }
+          .leaderboard-rating {
+            font-size: 1rem !important;
+          }
+          .leaderboard-rating svg {
+            width: 16px !important;
+            height: 16px !important;
+          }
+          .leaderboard-action-btn {
+            width: 32px !important;
+            height: 32px !important;
+            margin-left: 0 !important;
+          }
+        }
+      `}</style>
       {/* Background */}
       <div style={{ position: 'fixed', inset: 0, background: currentTheme.bgGrad, pointerEvents: 'none', zIndex: 0, transition: 'background 1s ease' }} />
 
@@ -157,7 +187,7 @@ export default function LeaderboardPage() {
               return (
                 <div 
                   key={user._id} 
-                  className={`glass echo-card animate-fade-in-up ${isTop3 ? 'top-rank' : ''}`}
+                  className={`glass echo-card animate-fade-in-up leaderboard-card ${isTop3 ? 'top-rank' : ''}`}
                   style={{
                     display: 'flex', alignItems: 'center', gap: '1.25rem', padding: '1.25rem 1.5rem', borderRadius: '24px',
                     border: isTop3 ? `1px solid ${getMedalColor(index)}40` : '1px solid var(--echo-border)',
@@ -168,32 +198,32 @@ export default function LeaderboardPage() {
                 >
                   {isTop3 && <div style={{ position: 'absolute', top: 0, left: 0, bottom: 0, width: '4px', background: getMedalColor(index) }} />}
                   
-                  <div style={{ width: '40px', display: 'flex', justifyContent: 'center', flexShrink: 0 }}>
+                  <div className="leaderboard-medal" style={{ width: '40px', display: 'flex', justifyContent: 'center', flexShrink: 0 }}>
                     {getRankIcon(index)}
                   </div>
 
-                  <div style={{ width: '56px', height: '56px', borderRadius: '50%', overflow: 'hidden', border: `2px solid ${isTop3 ? getMedalColor(index) : 'var(--echo-border)'}`, flexShrink: 0, background: 'var(--echo-surface-2)' }}>
+                  <div className="leaderboard-avatar" style={{ width: '56px', height: '56px', borderRadius: '50%', overflow: 'hidden', border: `2px solid ${isTop3 ? getMedalColor(index) : 'var(--echo-border)'}`, flexShrink: 0, background: 'var(--echo-surface-2)' }}>
                     {user.imageUrl ? <img src={user.imageUrl} alt={user.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: '800', color: 'var(--echo-text-muted)' }}>{user.name?.[0]}</div>}
                   </div>
 
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap', marginBottom: '0.25rem' }}>
-                      <span style={{ fontWeight: '800', fontSize: '1.125rem', color: 'var(--echo-text)' }}>{formatName(user.name, user.role)}</span>
-                      {degree && <span style={{ fontSize: '0.75rem', fontWeight: '700', color: currentTheme.primary, background: `${currentTheme.primary}15`, padding: '0.15rem 0.5rem', borderRadius: '999px' }}>{degree}</span>}
+                      <span className="leaderboard-name" style={{ fontWeight: '800', fontSize: '1.125rem', color: 'var(--echo-text)', wordBreak: 'break-word' }}>{formatName(user.name, user.role)}</span>
+                      {degree && <span style={{ fontSize: '0.75rem', fontWeight: '700', color: currentTheme.primary, background: `${currentTheme.primary}15`, padding: '0.15rem 0.5rem', borderRadius: '999px', whiteSpace: 'nowrap' }}>{degree}</span>}
                     </div>
                     <div style={{ fontSize: '0.875rem', color: 'var(--echo-text-muted)' }}>
                       {totalRatings || 0} {(totalRatings === 1) ? 'review' : 'reviews'}
                     </div>
                   </div>
 
-                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '0.25rem' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.375rem', color: '#fbbf24', fontWeight: '900', fontSize: '1.25rem' }}>
+                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '0.25rem', flexShrink: 0 }}>
+                    <div className="leaderboard-rating" style={{ display: 'flex', alignItems: 'center', gap: '0.375rem', color: '#fbbf24', fontWeight: '900', fontSize: '1.25rem' }}>
                       {rating ? rating.toFixed(1) : '0.0'} <Star size={20} fill="currentColor" />
                     </div>
                   </div>
                   
-                  <Link href={`/${activeTab === 'doctors' ? 'doctors' : 'volunteers'}`} style={{ textDecoration: 'none', display: 'flex' }}>
-                    <button style={{ width: '40px', height: '40px', borderRadius: '50%', border: 'none', background: 'var(--echo-surface-2)', color: 'var(--echo-text)', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', marginLeft: '0.5rem', transition: 'all 0.2s' }} onMouseEnter={e => e.currentTarget.style.background = currentTheme.primary} onMouseLeave={e => e.currentTarget.style.background = 'var(--echo-surface-2)'}>
+                  <Link href={`/${activeTab === 'doctors' ? 'doctors' : 'volunteers'}`} style={{ textDecoration: 'none', display: 'flex', flexShrink: 0 }}>
+                    <button className="leaderboard-action-btn" style={{ width: '40px', height: '40px', borderRadius: '50%', border: 'none', background: 'var(--echo-surface-2)', color: 'var(--echo-text)', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', marginLeft: '0.5rem', transition: 'all 0.2s' }} onMouseEnter={e => e.currentTarget.style.background = currentTheme.primary} onMouseLeave={e => e.currentTarget.style.background = 'var(--echo-surface-2)'}>
                       <ChevronRight size={20} />
                     </button>
                   </Link>
