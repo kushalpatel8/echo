@@ -8,13 +8,12 @@ import { Sparkles, Gamepad2 } from 'lucide-react';
 // Game Components
 import BreathingGame from '@/components/games/BreathingGame';
 import MemoryGame from '@/components/games/MemoryGame';
-import ZenGarden from '@/components/games/ZenGarden';
 import BubblePop from '@/components/games/BubblePop';
 import StarGazer from '@/components/games/StarGazer';
 import WordFlow from '@/components/games/WordFlow';
 import GratitudeBloom from '@/components/games/GratitudeBloom';
 
-type GameID = 'breathing' | 'memory' | 'zen-garden' | 'bubble-pop' | 'stargazer' | 'wordflow' | 'gratitude' | null;
+type GameID = 'breathing' | 'memory' | 'bubble-pop' | 'stargazer' | 'wordflow' | 'gratitude' | null;
 
 interface GameConfig {
   id: GameID;
@@ -28,7 +27,6 @@ interface GameConfig {
 const GAMES: GameConfig[] = [
   { id: 'breathing', title: 'Breathing Guide', description: 'Calm your mind with the guided 4-7-8 breathing method.', icon: '🌬️', color: '#06b6d4', delay: '0s' },
   { id: 'memory', title: 'Memory Match', description: 'Gently sharpen focus through soothing pattern recognition.', icon: '🧩', color: '#7c3aed', delay: '0.1s' },
-  { id: 'zen-garden', title: 'Zen Sand Garden', description: 'Rake the virtual sand to create peaceful, flowing patterns.', icon: '⏳', color: '#f59e0b', delay: '0.2s' },
   { id: 'bubble-pop', title: 'Bubble Pop', description: 'A satisfying sensory experience to release immediate tension.', icon: '🫧', color: '#10b981', delay: '0.3s' },
   { id: 'stargazer', title: 'Star Gazer', description: 'Connect distant stars to form beautiful, ethereal constellations.', icon: '✨', color: '#a78bfa', delay: '0.5s' },
   { id: 'wordflow', title: 'Word Flow', description: 'Acknowledge calming words as they drift gently across your screen.', icon: '📝', color: '#c4b5fd', delay: '0.6s' },
@@ -110,7 +108,6 @@ export default function GamesPage() {
     switch (currentGame) {
       case 'breathing': return <BreathingGame />;
       case 'memory': return <MemoryGame />;
-      case 'zen-garden': return <ZenGarden />;
       case 'bubble-pop': return <BubblePop />;
       case 'stargazer': return <StarGazer />;
       case 'wordflow': return <WordFlow />;
