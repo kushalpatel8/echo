@@ -355,7 +355,7 @@ export default function DoctorDashboard() {
                       ))}
                     </div>
                     {Boolean(doctorProfile?.whatsappNumber) && (
-                      <a href={`https://wa.me/${doctorProfile.whatsappNumber}`} target="_blank" rel="noreferrer" style={{ textDecoration: 'none' }}>
+                      <a href={`https://wa.me/${String(doctorProfile.whatsappNumber || '').replace(/\D/g, '')}`} target="_blank" rel="noreferrer" style={{ textDecoration: 'none' }}>
                         <button className="btn-primary" style={{ background: `linear-gradient(135deg, ${currentTheme.primary}, ${currentTheme.secondary})`, display: 'inline-flex', alignItems: 'center', gap: '0.5rem' }}>
                           📲 Contact via WhatsApp: {doctorProfile.whatsappNumber as string}
                         </button>

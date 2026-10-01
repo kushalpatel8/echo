@@ -15,22 +15,22 @@ export interface IUser extends Document {
   applicationStatus?: ApplicationStatus;
   savedVolunteer?: string;
   volunteerProfile?: {
-    phoneNo: number;
+    phoneNo: string | number;
     whyVolunteer: string;
     degree?: string;
     experience?: string;
-    whatsappNumber?: number;
+    whatsappNumber?: string | number;
     rating: number;
     totalRatings: number;
   };
   doctorProfile?: {
-    phoneNo: number;
+    phoneNo: string | number;
     whyDoctor: string;
     degree: string;
     licenseNumber?: string;
     college?: string;
     experience: string;
-    whatsappNumber?: number;
+    whatsappNumber?: string | number;
     rating?: number;
     totalRatings?: number;
   };
@@ -51,22 +51,22 @@ const UserSchema = new Schema<IUser>({
   applicationStatus: { type: String, enum: ['pending', 'approved', 'rejected'] },
   savedVolunteer: { type: String },
   volunteerProfile: {
-    phoneNo: Number,
+    phoneNo: Schema.Types.Mixed,
     whyVolunteer: String,
     degree: String,
     experience: String,
-    whatsappNumber: Number,
+    whatsappNumber: Schema.Types.Mixed,
     rating: { type: Number, default: 0 },
     totalRatings: { type: Number, default: 0 },
   },
   doctorProfile: {
-    phoneNo: Number,
+    phoneNo: Schema.Types.Mixed,
     whyDoctor: String,
     degree: String,
     licenseNumber: String,
     college: String,
     experience: String,
-    whatsappNumber: Number,
+    whatsappNumber: Schema.Types.Mixed,
     rating: { type: Number, default: 0 },
     totalRatings: { type: Number, default: 0 },
   },

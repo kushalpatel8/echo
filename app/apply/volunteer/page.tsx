@@ -1,8 +1,10 @@
 'use client';
+
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useUser } from '@clerk/nextjs';
+import PhoneInput from '@/components/PhoneInput';
 
 export default function VolunteerApplyPage() {
   const router = useRouter();
@@ -14,14 +16,52 @@ export default function VolunteerApplyPage() {
     degree: '',
     experience: '',
   });
+  const [sameAsPhone, setSameAsPhone] = useState(true);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [agreed, setAgreed] = useState(false);
+
+  const handlePhoneChange = (fullNumber: string) => {
+    setFormData(prev => {
+      const updated = { ...prev, phoneNo: fullNumber };
+      if (sameAsPhone) {
+        updated.whatsappNumber = fullNumber;
+      }
+      return updated;
+    });
+  };
+
+  const handleSameAsPhoneToggle = (checked: boolean) => {
+    setSameAsPhone(checked);
+    if (checked) {
+      setFormData(prev => ({ ...prev, whatsappNumber: prev.phoneNo }));
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError('');
+
+    const phoneDigits = formData.phoneNo.replace(/\D/g, '');
+    if (!phoneDigits || phoneDigits.length < 6) {
+      setError('Please provide a valid phone number with country code.');
+      setLoading(false);
+      return;
+    }
+
+    const whatsappDigits = formData.whatsappNumber.replace(/\D/g, '');
+    if (!whatsappDigits || whatsappDigits.length < 6) {
+      setError('Please provide a valid WhatsApp number with country code.');
+      setLoading(false);
+      return;
+    }
+
+    if (!formData.reason.trim()) {
+      setError('Please tell us why you want to volunteer.');
+      setLoading(false);
+      return;
+    }
 
     if (!agreed) {
       setError('You must agree to the Terms & Conditions and Code of Conduct to apply.');
@@ -58,36 +98,47 @@ export default function VolunteerApplyPage() {
         </div>
 
         <form onSubmit={handleSubmit} className="echo-card animate-fade-in-up">
-          <div style={{ marginBottom: '1.5rem' }}>
-            <label className="echo-label">Phone Number</label>
-            <input
-              type="tel"
-              inputMode="numeric"
-              pattern="[0-9]*"
-              className="echo-input"
-              required
-              placeholder="e.g. 9876543210"
-              value={formData.phoneNo}
-              onChange={e => setFormData(p => ({ ...p, phoneNo: e.target.value.replace(/\D/g, '') }))}
-            />
+          {/* Phone Number with Country Code */}
+          <PhoneInput
+            id="volunteer-phone"
+            label="Phone Number"
+            required
+            value={formData.phoneNo}
+            onChange={handlePhoneChange}
+            defaultCountryCode="+91"
+            placeholder="e.g. 98765 43210"
+            helperText="Select your country code and enter your primary phone number."
+          />
+
+          {/* Same as Phone Number checkbox */}
+          <div style={{ marginBottom: '1.25rem', marginTop: '-0.5rem' }}>
+            <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer', fontSize: '0.8125rem', color: 'var(--echo-text-muted)', userSelect: 'none' }}>
+              <input
+                type="checkbox"
+                checked={sameAsPhone}
+                onChange={e => handleSameAsPhoneToggle(e.target.checked)}
+                style={{ width: '0.95rem', height: '0.95rem', accentColor: 'var(--echo-primary)', cursor: 'pointer' }}
+              />
+              <span>WhatsApp number is the same as Phone Number</span>
+            </label>
           </div>
 
-          <div style={{ marginBottom: '1.5rem' }}>
-            <label className="echo-label">WhatsApp Number</label>
-            <input
-              type="tel"
-              inputMode="numeric"
-              pattern="[0-9]*"
-              className="echo-input"
+          {/* WhatsApp Number with Country Code */}
+          {!sameAsPhone && (
+            <PhoneInput
+              id="volunteer-whatsapp"
+              label="WhatsApp Number"
               required
-              placeholder="e.g. 9876543210"
               value={formData.whatsappNumber}
-              onChange={e => setFormData(p => ({ ...p, whatsappNumber: e.target.value.replace(/\D/g, '') }))}
+              onChange={fullNumber => setFormData(p => ({ ...p, whatsappNumber: fullNumber }))}
+              defaultCountryCode="+91"
+              placeholder="e.g. 98765 43210"
+              helperText="Provide your active WhatsApp contact with country code for platform communications."
             />
-          </div>
+          )}
 
           <div style={{ marginBottom: '1.5rem' }}>
-            <label className="echo-label">Why do you want to volunteer?</label>
+            <label className="echo-label">Why do you want to volunteer? *</label>
             <textarea
               className="echo-input"
               required

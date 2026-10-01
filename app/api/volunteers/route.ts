@@ -20,57 +20,46 @@ export async function GET(req: NextRequest) {
     clerkId: { $ne: userId }
   };
 
-  let helpers: any[] = [];
+  // Fetch ALL approved helpers for this type
+  const rawHelpers = await User.find(filter)
+    .select('clerkId name imageUrl volunteerProfile doctorProfile role lastSeen createdAt')
+    .sort({ lastSeen: -1, 'volunteerProfile.rating': -1 })
+    .lean();
 
-  // Check if user has a saved volunteer for this type
-  if (currentUser?.savedVolunteer) {
-    const savedFilter = { ...filter, clerkId: currentUser.savedVolunteer };
-    const savedHelper = await User.findOne(savedFilter).select('clerkId name imageUrl volunteerProfile doctorProfile role lastSeen');
-    if (savedHelper) {
-      helpers = [savedHelper];
-    }
-  }
-
-  // If no saved volunteer, or it is no longer valid, get a random one
-  if (helpers.length === 0) {
-    const count = await User.countDocuments(filter);
-    if (count > 0) {
-      const random = Math.floor(Math.random() * count);
-      const randomHelper = await User.findOne(filter)
-        .select('clerkId name imageUrl volunteerProfile doctorProfile role lastSeen')
-        .skip(random);
-      if (randomHelper) {
-        helpers = [randomHelper];
-      }
-    }
-  }
-
-  const client = await clerkClient();
   const validHelpers: any[] = [];
+  const now = Date.now();
 
-  for (const helper of helpers) {
-    try {
-      const clerkUser = await client.users.getUser(helper.clerkId);
-      if (clerkUser) {
-        const helperObj = helper.toObject ? helper.toObject() : { ...helper };
-        const isOnline = Boolean(
-          helperObj.lastSeen &&
-          Date.now() - new Date(helperObj.lastSeen).getTime() < 60000
-        );
-        helperObj.isOnline = isOnline;
-        validHelpers.push(helperObj);
-      }
-    } catch (error: any) {
-      // If error is 404, it means user is deleted from clerk
-      if (error.status === 404 || error.clerkError) {
-        console.log(`User ${helper.clerkId} not found in Clerk, deleting from DB.`);
-        await User.deleteOne({ clerkId: helper.clerkId });
-      }
-    }
+  for (const helper of rawHelpers) {
+    const isOnline = Boolean(
+      helper.lastSeen &&
+      now - new Date(helper.lastSeen).getTime() < 60000
+    );
+
+    validHelpers.push({
+      ...helper,
+      isOnline,
+    });
   }
+
+  // Sort helpers: saved volunteer at top, followed by online helpers, followed by offline helpers
+  validHelpers.sort((a, b) => {
+    const isASaved = currentUser?.savedVolunteer === a.clerkId;
+    const isBSaved = currentUser?.savedVolunteer === b.clerkId;
+    if (isASaved && !isBSaved) return -1;
+    if (!isASaved && isBSaved) return 1;
+
+    if (a.isOnline && !b.isOnline) return -1;
+    if (!a.isOnline && b.isOnline) return 1;
+
+    const ratingA = a.volunteerProfile?.rating || a.doctorProfile?.rating || 0;
+    const ratingB = b.volunteerProfile?.rating || b.doctorProfile?.rating || 0;
+    return ratingB - ratingA;
+  });
 
   return NextResponse.json({ 
     helpers: validHelpers,
-    savedVolunteer: currentUser?.savedVolunteer || null
+    savedVolunteer: currentUser?.savedVolunteer || null,
+    onlineCount: validHelpers.filter(h => h.isOnline).length,
+    totalCount: validHelpers.length,
   });
 }

@@ -52,10 +52,10 @@ export async function POST(req: NextRequest) {
     }
   }
 
-  const cleanDigits = (phoneNo || '').toString().replace(/\D/g, '');
-  const cleanPhoneNo = cleanDigits ? Number(cleanDigits) : undefined;
-  const cleanWhatsappDigits = (whatsappNumber || '').toString().replace(/\D/g, '');
-  const cleanWhatsappNumber = cleanWhatsappDigits ? Number(cleanWhatsappDigits) : undefined;
+  const rawPhone = (phoneNo || '').toString().trim();
+  const rawWhatsapp = (whatsappNumber || '').toString().trim();
+  const cleanPhoneNo = rawPhone.replace(/\D/g, '') ? rawPhone : undefined;
+  const cleanWhatsappNumber = rawWhatsapp.replace(/\D/g, '') ? rawWhatsapp : undefined;
 
   if (type === 'volunteer') {
     await User.findOneAndUpdate({ clerkId: userId }, {
