@@ -3,7 +3,8 @@ import { auth } from '@clerk/nextjs/server';
 import connectDB from '@/lib/mongodb';
 import Chat from '@/lib/models/Chat';
 import User from '@/lib/models/User';
-import { isContentHarmful as isMessageHarmful } from '@/lib/moderation';
+import { checkMessageHarmfulness, isContentHarmful } from '@/lib/moderation';
+import { getOrSetCache, delCachePattern, delCache } from '@/lib/redis';
 
 async function enrichChat(chatDoc: any, currentUserId?: string) {
   const chatObj = chatDoc.toObject ? chatDoc.toObject() : { ...chatDoc._doc || chatDoc };
@@ -60,17 +61,27 @@ export async function GET(req: NextRequest) {
   await connectDB();
 
   if (chatId) {
-    const chat = await Chat.findById(chatId);
-    if (!chat?.participants.includes(userId)) {
-      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+    // Fast cache for active chat polling (TTL 3s)
+    const enriched = await getOrSetCache(`chat:${chatId}:${userId}`, 3, async () => {
+      const chat = await Chat.findById(chatId);
+      if (!chat?.participants.includes(userId)) {
+        return null;
+      }
+      return enrichChat(chat, userId);
+    });
+
+    if (!enriched) {
+      return NextResponse.json({ error: 'Chat not found or forbidden' }, { status: 403 });
     }
-    const enriched = await enrichChat(chat, userId);
     return NextResponse.json({ chat: enriched });
   }
 
-  const chats = await Chat.find({ participants: userId }).sort({ updatedAt: -1 });
-  const enrichedChats = await Promise.all(chats.map(c => enrichChat(c, userId)));
-  return NextResponse.json({ chats: enrichedChats });
+  const chats = await getOrSetCache(`chat:list:${userId}`, 4, async () => {
+    const chatDocs = await Chat.find({ participants: userId }).sort({ updatedAt: -1 });
+    return Promise.all(chatDocs.map(c => enrichChat(c, userId)));
+  });
+
+  return NextResponse.json({ chats });
 }
 
 export async function POST(req: NextRequest) {
@@ -115,6 +126,8 @@ export async function POST(req: NextRequest) {
       volunteerId: target.role === 'volunteer' ? targetUserId : undefined,
       messages: [],
     });
+
+    delCachePattern(`chat:list:*`).catch(() => {});
     const enriched = await enrichChat(chat, userId);
     return NextResponse.json({ chat: enriched });
   }
@@ -133,40 +146,52 @@ export async function POST(req: NextRequest) {
         }, { status: 403 });
       }
 
-      if ((sender.role === 'volunteer' || sender.role === 'doctor') && isMessageHarmful(content)) {
-        const currentWarnings = sender.warningCount || 0;
-        const newWarnings = currentWarnings + 1;
-        const shouldBan = newWarnings >= 3;
+      if (sender.role === 'volunteer' || sender.role === 'doctor') {
+        const modResult = await checkMessageHarmfulness(content);
+        if (modResult.isHarmful) {
+          const currentWarnings = sender.warningCount || 0;
+          const newWarnings = currentWarnings + 1;
+          const shouldBan = newWarnings >= 3;
 
-        const updateFields: any = { $set: { warningCount: newWarnings, isBanned: shouldBan } };
-        if (shouldBan) {
-          updateFields.$inc = { banCount: 1 };
-        }
+          const updateFields: any = { $set: { warningCount: newWarnings, isBanned: shouldBan } };
+          if (shouldBan) {
+            updateFields.$inc = { banCount: 1 };
+          }
 
-        await User.findOneAndUpdate(
-          { clerkId: userId },
-          updateFields,
-          { strict: false }
-        );
+          await User.findOneAndUpdate(
+            { clerkId: userId },
+            updateFields,
+            { strict: false }
+          );
 
-        if (shouldBan) {
-          return NextResponse.json({
-            error: '🚫 ACCOUNT BANNED (3rd Offense): You have been banned for repeated abusive or emotionally harmful messaging. You can no longer chat with users. You may contact Admin from your dashboard to appeal this ban.',
-            warningCount: 3,
-            isBanned: true
-          }, { status: 403 });
-        } else if (newWarnings === 2) {
-          return NextResponse.json({
-            error: '🚨 STRONG WARNING (2nd Offense): Your message contained abusive or emotionally harmful language! One more violation will result in an automatic account ban.',
-            warningCount: 2,
-            isBanned: false
-          }, { status: 400 });
-        } else {
-          return NextResponse.json({
-            error: '⚠️ FIRST WARNING: Your message was blocked for containing abusive or emotionally harmful language. Please communicate with empathy and respect.',
-            warningCount: 1,
-            isBanned: false
-          }, { status: 400 });
+          // Invalidate user cache in Redis
+          delCache(`user:me:${userId}`).catch(() => {});
+          delCachePattern('volunteers:raw:*').catch(() => {});
+
+          const explanation = modResult.reason ? ` (${modResult.reason})` : '';
+
+          if (shouldBan) {
+            return NextResponse.json({
+              error: `🚫 ACCOUNT SUSPENDED (3rd Offense): Your account has been suspended for sending harmful or abusive messages${explanation}. You can no longer send messages or assist users. Please contact Admin from your dashboard to submit an appeal.`,
+              warningCount: 3,
+              isBanned: true,
+              reason: modResult.reason,
+            }, { status: 403 });
+          } else if (newWarnings === 2) {
+            return NextResponse.json({
+              error: `🚨 SECOND WARNING (2nd Offense): Your message was blocked by AI moderation for harmful content${explanation}! You have 2 strikes. One more violation will result in immediate account suspension!`,
+              warningCount: 2,
+              isBanned: false,
+              reason: modResult.reason,
+            }, { status: 400 });
+          } else {
+            return NextResponse.json({
+              error: `⚠️ FIRST WARNING (1st Offense): Your message was blocked by AI safety moderation${explanation}. Please communicate with empathy, professional ethics, and respect.`,
+              warningCount: 1,
+              isBanned: false,
+              reason: modResult.reason,
+            }, { status: 400 });
+          }
         }
       }
     }
@@ -178,6 +203,11 @@ export async function POST(req: NextRequest) {
       timestamp: new Date(),
     });
     await chat.save();
+
+    // Invalidate Redis chat caches immediately
+    delCachePattern(`chat:${chatId}:*`).catch(() => {});
+    delCachePattern(`chat:list:*`).catch(() => {});
+
     const enriched = await enrichChat(chat, userId);
     return NextResponse.json({ success: true, chat: enriched });
   }
@@ -204,5 +234,8 @@ export async function DELETE(req: NextRequest) {
   }
 
   await Chat.findByIdAndDelete(chatId);
+  delCachePattern(`chat:${chatId}:*`).catch(() => {});
+  delCachePattern(`chat:list:*`).catch(() => {});
+
   return NextResponse.json({ success: true });
 }

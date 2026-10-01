@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@clerk/nextjs/server';
 import connectDB from '@/lib/mongodb';
 import MoodLog from '@/lib/models/MoodLog';
+import { getOrSetCache, delCache } from '@/lib/redis';
 
 function detectMood(answers: Record<string, number>): { mood: string; score: number } {
   const scores = Object.values(answers).filter(v => typeof v === 'number');
@@ -30,6 +31,8 @@ export async function POST(req: NextRequest) {
     moodScore: score,
   });
 
+  delCache(`mood:logs:${userId}`).catch(() => {});
+
   return NextResponse.json({ mood, score, log });
 }
 
@@ -37,8 +40,11 @@ export async function GET() {
   const { userId } = await auth();
   if (!userId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
-  await connectDB();
-  const logs = await MoodLog.find({ userId }).sort({ createdAt: -1 }).limit(10);
+  const logs = await getOrSetCache(`mood:logs:${userId}`, 30, async () => {
+    await connectDB();
+    return MoodLog.find({ userId }).sort({ createdAt: -1 }).limit(10).lean();
+  });
+
   return NextResponse.json({ logs });
 }
 
@@ -51,12 +57,14 @@ export async function DELETE(req: NextRequest) {
 
   if (deleteAll) {
     await MoodLog.deleteMany({ userId });
+    delCache(`mood:logs:${userId}`).catch(() => {});
     return NextResponse.json({ message: 'All logs deleted' });
   }
 
   if (logId) {
     const log = await MoodLog.findOneAndDelete({ _id: logId, userId });
     if (!log) return NextResponse.json({ error: 'Log not found' }, { status: 404 });
+    delCache(`mood:logs:${userId}`).catch(() => {});
     return NextResponse.json({ message: 'Log deleted' });
   }
 

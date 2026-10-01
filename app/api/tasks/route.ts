@@ -3,20 +3,22 @@ import { auth } from '@clerk/nextjs/server';
 import connectDB from '@/lib/mongodb';
 import Task from '@/lib/models/Task';
 import User from '@/lib/models/User';
+import { getOrSetCache, delCache } from '@/lib/redis';
 
 export async function GET(req: NextRequest) {
   const { userId } = await auth();
   if (!userId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
-  await connectDB();
-  const user = await User.findOne({ clerkId: userId });
+  const tasks = await getOrSetCache(`tasks:user:${userId}`, 15, async () => {
+    await connectDB();
+    const user = await User.findOne({ clerkId: userId }).select('role').lean();
 
-  let tasks;
-  if (user?.role === 'user') {
-    tasks = await Task.find({ assigneeId: userId }).sort({ createdAt: -1 });
-  } else {
-    tasks = await Task.find({ assignerId: userId }).sort({ createdAt: -1 });
-  }
+    if (user?.role === 'user') {
+      return Task.find({ assigneeId: userId }).sort({ createdAt: -1 }).lean();
+    } else {
+      return Task.find({ assignerId: userId }).sort({ createdAt: -1 }).lean();
+    }
+  });
 
   return NextResponse.json({ tasks });
 }
@@ -41,6 +43,8 @@ export async function POST(req: NextRequest) {
     status: 'pending',
   });
 
+  delCache(`tasks:user:${assigneeId}`, `tasks:user:${userId}`).catch(() => {});
+
   return NextResponse.json({ task });
 }
 
@@ -58,5 +62,8 @@ export async function PATCH(req: NextRequest) {
 
   task.status = status;
   await task.save();
+
+  delCache(`tasks:user:${task.assigneeId}`, `tasks:user:${task.assignerId}`).catch(() => {});
+
   return NextResponse.json({ task });
 }

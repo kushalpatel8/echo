@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { auth, clerkClient } from '@clerk/nextjs/server';
+import { auth } from '@clerk/nextjs/server';
 import connectDB from '@/lib/mongodb';
 import User from '@/lib/models/User';
+import { getOrSetCache, getOnlineUserIds } from '@/lib/redis';
 
 export async function GET(req: NextRequest) {
   const { userId } = await auth();
@@ -11,26 +12,31 @@ export async function GET(req: NextRequest) {
   const type = searchParams.get('type') || 'volunteer'; // volunteer | doctor
 
   await connectDB();
-  const currentUser = await User.findOne({ clerkId: userId });
-  
-  const filter: Record<string, unknown> = {
-    role: type,
-    applicationStatus: 'approved',
-    isBanned: false,
-    clerkId: { $ne: userId }
-  };
 
-  // Fetch ALL approved helpers for this type
-  const rawHelpers = await User.find(filter)
-    .select('clerkId name imageUrl volunteerProfile doctorProfile role lastSeen createdAt')
-    .sort({ lastSeen: -1, 'volunteerProfile.rating': -1 })
-    .lean();
+  // Fast fetch currentUser savedVolunteer & cached helpers in parallel
+  const [currentUser, rawHelpers, onlineIds] = await Promise.all([
+    User.findOne({ clerkId: userId }).select('savedVolunteer').lean(),
+    getOrSetCache(`volunteers:raw:${type}`, 10, async () => {
+      return User.find({
+        role: type === 'doctor' ? 'doctor' : 'volunteer',
+        applicationStatus: 'approved',
+        isBanned: false,
+      })
+        .select('clerkId name imageUrl volunteerProfile doctorProfile role lastSeen createdAt')
+        .sort({ lastSeen: -1, 'volunteerProfile.rating': -1 })
+        .lean();
+    }),
+    getOnlineUserIds(),
+  ]);
 
-  const validHelpers: any[] = [];
   const now = Date.now();
+  const validHelpers: any[] = [];
 
-  for (const helper of rawHelpers) {
-    const isOnline = Boolean(
+  for (const helper of (rawHelpers || [])) {
+    if (helper.clerkId === userId) continue;
+
+    // Check online status via Redis real-time presence set or fallback to lastSeen < 60s
+    const isOnline = onlineIds.has(helper.clerkId) || Boolean(
       helper.lastSeen &&
       now - new Date(helper.lastSeen).getTime() < 60000
     );

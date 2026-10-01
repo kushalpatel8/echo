@@ -5,7 +5,7 @@ import { useUser } from '@clerk/nextjs';
 import Link from 'next/link';
 import ThemeToggle from '@/components/ThemeToggle';
 import BackButton from '@/components/BackButton';
-import { Sparkles, Users, Trash2, Paperclip, Lock, Check, X, Image as ImageIcon, Film } from 'lucide-react';
+import { Sparkles, Users, Trash2, Paperclip, Lock, Check, X, Image as ImageIcon, Film, Loader2, CloudUpload } from 'lucide-react';
 import { isContentHarmful } from '@/lib/moderation';
 
 type RoomTheme = 'celestial' | 'forest' | 'sunset' | 'ocean' | 'aurora';
@@ -53,7 +53,9 @@ export default function CommunityPage() {
   const [posts, setPosts] = useState<any[]>([]);
   const [content, setContent] = useState('');
   const [file, setFile] = useState<File | null>(null);
+  const [filePreview, setFilePreview] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [uploadStatus, setUploadStatus] = useState<string | null>(null);
   const [isDeleting, setIsDeleting] = useState<string | null>(null);
   const [roomTheme, setRoomTheme] = useState<RoomTheme>('celestial');
   const [userRole, setUserRole] = useState<string>('user');
@@ -72,6 +74,24 @@ export default function CommunityPage() {
       })
       .catch(err => console.error('Failed to fetch user profile:', err));
   }, []);
+
+  // Cleanup object URL preview
+  useEffect(() => {
+    if (!file) {
+      if (filePreview) {
+        URL.revokeObjectURL(filePreview);
+        setFilePreview(null);
+      }
+      return;
+    }
+
+    const objectUrl = URL.createObjectURL(file);
+    setFilePreview(objectUrl);
+
+    return () => {
+      URL.revokeObjectURL(objectUrl);
+    };
+  }, [file]);
 
   const fetchPosts = async () => {
     try {
@@ -105,41 +125,35 @@ export default function CommunityPage() {
         alert('Please upload a valid image or video file.');
         return;
       }
-      if (selectedFile.type.startsWith('video/') && selectedFile.size > 20 * 1024 * 1024) {
-        alert('Video file is too large. Please keep videos under 60 seconds / 20MB.');
+      if (selectedFile.type.startsWith('video/') && selectedFile.size > 50 * 1024 * 1024) {
+        alert('Video file is too large. Maximum size is 50MB.');
+        return;
+      }
+      if (selectedFile.type.startsWith('image/') && selectedFile.size > 15 * 1024 * 1024) {
+        alert('Image file is too large. Maximum size is 15MB.');
         return;
       }
       setFile(selectedFile);
     }
   };
 
-  const uploadToCloudinary = async (fileToUpload: File) => {
-    const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
-    const uploadPreset = process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET;
-
-    if (!cloudName || !uploadPreset) {
-      throw new Error('Cloudinary configuration is missing. Admin needs to set NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME and NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET in .env');
-    }
-
+  const uploadToVercelBlob = async (fileToUpload: File) => {
+    setUploadStatus('Uploading media to Vercel Blob store...');
     const formData = new FormData();
     formData.append('file', fileToUpload);
-    formData.append('upload_preset', uploadPreset);
 
-    const isVideo = fileToUpload.type.startsWith('video/');
-    const resourceType = isVideo ? 'video' : 'image';
-
-    const res = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/${resourceType}/upload`, {
+    const res = await fetch('/api/blob/upload', {
       method: 'POST',
       body: formData,
     });
 
     if (!res.ok) {
       const errorData = await res.json();
-      throw new Error(errorData.error?.message || 'Upload failed');
+      throw new Error(errorData.error || 'Failed to upload media to Vercel Blob');
     }
 
     const data = await res.json();
-    return { url: data.secure_url, type: resourceType };
+    return { url: data.url, type: data.mediaType };
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -151,26 +165,29 @@ export default function CommunityPage() {
     const hasHarmfulImage = isVolunteerOrDoctor && file && isContentHarmful(file.name);
 
     if (hasHarmfulText || hasHarmfulImage) {
-      alert("your text image contain abusive and harmful content your not able to post");
+      alert("Your post contains prohibited or harmful content. Please follow community safety guidelines.");
       return;
     }
 
     setIsSubmitting(true);
+    setUploadStatus('Processing post...');
 
     try {
       let mediaUrl = undefined;
       let mediaType = 'none';
 
       if (file) {
-        const uploadResult = await uploadToCloudinary(file);
+        const uploadResult = await uploadToVercelBlob(file);
         mediaUrl = uploadResult.url;
         mediaType = uploadResult.type;
       }
 
+      setUploadStatus('Publishing post to feed...');
+
       const res = await fetch('/api/posts', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ content, mediaUrl, mediaType })
+        body: JSON.stringify({ content, mediaUrl, mediaType }),
       });
 
       if (!res.ok) {
@@ -181,13 +198,14 @@ export default function CommunityPage() {
       setContent('');
       setFile(null);
       if (fileInputRef.current) fileInputRef.current.value = '';
-      
+
       fetchPosts();
     } catch (e: any) {
       console.error(e);
       alert(e.message || 'An error occurred while posting.');
     } finally {
       setIsSubmitting(false);
+      setUploadStatus(null);
     }
   };
 
@@ -244,7 +262,7 @@ export default function CommunityPage() {
           gap: 0.5rem;
           background: var(--echo-surface-2);
           padding: 0.35rem 0.5rem;
-          borderRadius: 999px;
+          border-radius: 999px;
           border: 1px solid var(--echo-border);
         }
 
@@ -312,7 +330,7 @@ export default function CommunityPage() {
           </Link>
         </div>
 
-        <div className="community-theme-selector" style={{ borderRadius: '999px' }}>
+        <div className="community-theme-selector">
           <span style={{ fontSize: '0.7rem', fontWeight: '600', color: 'var(--echo-text-muted)', paddingLeft: '0.5rem' }} className="hide-mobile">
             Mood:
           </span>
@@ -346,23 +364,58 @@ export default function CommunityPage() {
 
       <main style={{ flex: 1, padding: '2.5rem 1rem', maxWidth: '800px', margin: '0 auto', width: '100%', position: 'relative', zIndex: 1 }}>
         {/* Hero Section - Desktop only */}
-        <div className="glass hide-mobile" style={{
-          padding: '2.5rem', borderRadius: '28px',
-          border: '1px solid var(--echo-border)', background: 'var(--echo-surface)',
-          boxShadow: `0 25px 60px rgba(0,0,0,0.12), 0 0 40px ${currentTheme.glow}`,
-          marginBottom: '2.5rem', position: 'relative', overflow: 'hidden',
-          textAlign: 'center'
-        }}>
-          <div style={{ position: 'absolute', top: '-40px', right: '-40px', width: '220px', height: '220px', background: `radial-gradient(circle, ${currentTheme.primary} 0%, transparent 70%)`, opacity: 0.12, filter: 'blur(35px)', pointerEvents: 'none' }} />
+        <div
+          className="glass hide-mobile"
+          style={{
+            padding: '2.5rem',
+            borderRadius: '28px',
+            border: '1px solid var(--echo-border)',
+            background: 'var(--echo-surface)',
+            boxShadow: `0 25px 60px rgba(0,0,0,0.12), 0 0 40px ${currentTheme.glow}`,
+            marginBottom: '2.5rem',
+            position: 'relative',
+            overflow: 'hidden',
+            textAlign: 'center',
+          }}
+        >
+          <div
+            style={{
+              position: 'absolute',
+              top: '-40px',
+              right: '-40px',
+              width: '220px',
+              height: '220px',
+              background: `radial-gradient(circle, ${currentTheme.primary} 0%, transparent 70%)`,
+              opacity: 0.12,
+              filter: 'blur(35px)',
+              pointerEvents: 'none',
+            }}
+          />
           <div style={{ position: 'relative', zIndex: 2 }}>
-            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', padding: '0.35rem 0.875rem', borderRadius: '999px', background: 'var(--echo-surface-2)', color: 'var(--echo-primary)', fontSize: '0.75rem', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '1rem' }}>
-              <Users size={14} /><span>Safe Sanctuary</span>
+            <div
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '0.4rem',
+                padding: '0.35rem 0.875rem',
+                borderRadius: '999px',
+                background: 'var(--echo-surface-2)',
+                color: 'var(--echo-primary)',
+                fontSize: '0.75rem',
+                fontWeight: '700',
+                textTransform: 'uppercase',
+                letterSpacing: '0.08em',
+                marginBottom: '1rem',
+              }}
+            >
+              <Users size={14} />
+              <span>Safe Sanctuary</span>
             </div>
             <h1 style={{ fontSize: 'clamp(1.75rem, 4vw, 2.5rem)', fontWeight: '900', letterSpacing: '-0.03em', color: 'var(--echo-text)', marginBottom: '0.5rem' }}>
               Community Feed
             </h1>
             <p style={{ color: 'var(--echo-text-muted)', fontSize: '1.0625rem', lineHeight: '1.6', margin: '0 auto', maxWidth: '600px' }}>
-              A safe space to share supportive thoughts, inspiring photos, and uplifting short videos.
+              A safe space to share supportive thoughts, inspiring photos, and uplifting short videos powered by Vercel Blob storage.
             </p>
           </div>
         </div>
@@ -379,17 +432,17 @@ export default function CommunityPage() {
 
         {isLoaded ? (
           isSignedIn ? (
-            <div 
-              className="glass" 
-              style={{ 
-                padding: '1.75rem', 
-                marginBottom: '2.5rem', 
+            <div
+              className="glass"
+              style={{
+                padding: '1.75rem',
+                marginBottom: '2.5rem',
                 borderRadius: '24px',
                 border: '1px solid var(--echo-border)',
                 background: 'var(--echo-surface)',
                 boxShadow: `0 15px 35px rgba(0, 0, 0, 0.1), 0 0 20px ${currentTheme.glow}`,
                 position: 'relative',
-                overflow: 'hidden'
+                overflow: 'hidden',
               }}
             >
               <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '4px', background: `linear-gradient(90deg, ${currentTheme.primary}, ${currentTheme.secondary})` }} />
@@ -398,8 +451,8 @@ export default function CommunityPage() {
                 <textarea
                   className="echo-input"
                   placeholder="Share a supportive thought, realization, or moment of gratitude..."
-                  style={{ 
-                    minHeight: '120px', 
+                  style={{
+                    minHeight: '120px',
                     resize: 'vertical',
                     background: 'var(--echo-surface-2)',
                     border: '1px solid var(--echo-border)',
@@ -409,26 +462,81 @@ export default function CommunityPage() {
                     fontSize: '0.95rem',
                     outline: 'none',
                     transition: 'border-color 0.2s ease',
-                    textAlign: 'center',
                   }}
                   value={content}
                   onChange={e => setContent(e.target.value)}
                   disabled={isSubmitting}
                 />
-                
+
+                {/* Media Preview before posting */}
+                {file && filePreview && (
+                  <div
+                    style={{
+                      position: 'relative',
+                      borderRadius: '16px',
+                      overflow: 'hidden',
+                      border: '1px solid var(--echo-border)',
+                      background: 'var(--echo-surface-2)',
+                      maxHeight: '320px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                    }}
+                  >
+                    {file.type.startsWith('video/') ? (
+                      <video
+                        src={filePreview}
+                        controls
+                        style={{ maxHeight: '300px', width: '100%', objectFit: 'contain' }}
+                      />
+                    ) : (
+                      <img
+                        src={filePreview}
+                        alt="Upload preview"
+                        style={{ maxHeight: '300px', width: '100%', objectFit: 'contain' }}
+                      />
+                    )}
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setFile(null);
+                        if (fileInputRef.current) fileInputRef.current.value = '';
+                      }}
+                      style={{
+                        position: 'absolute',
+                        top: '10px',
+                        right: '10px',
+                        background: 'rgba(0, 0, 0, 0.7)',
+                        color: '#fff',
+                        border: 'none',
+                        borderRadius: '50%',
+                        width: '32px',
+                        height: '32px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        cursor: 'pointer',
+                      }}
+                      title="Remove attachment"
+                    >
+                      <X size={16} />
+                    </button>
+                  </div>
+                )}
+
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
-                    <input 
-                      type="file" 
-                      accept="image/*,video/*" 
-                      ref={fileInputRef} 
-                      onChange={handleFileChange} 
+                    <input
+                      type="file"
+                      accept="image/png,image/jpeg,image/webp,image/gif,video/mp4,video/webm,video/quicktime"
+                      ref={fileInputRef}
+                      onChange={handleFileChange}
                       style={{ display: 'none' }}
                       disabled={isSubmitting}
                     />
-                    <button 
-                      type="button" 
-                      className="btn-secondary" 
+                    <button
+                      type="button"
+                      className="btn-secondary"
                       onClick={() => fileInputRef.current?.click()}
                       disabled={isSubmitting}
                       style={{
@@ -440,7 +548,7 @@ export default function CommunityPage() {
                         justifyContent: 'center',
                         textAlign: 'center',
                         gap: '0.5rem',
-                        width: '100%',
+                        cursor: 'pointer',
                       }}
                     >
                       <Paperclip size={14} />
@@ -448,35 +556,48 @@ export default function CommunityPage() {
                     </button>
 
                     {file && (
-                      <span style={{ 
-                        fontSize: '0.8125rem', 
-                        color: currentTheme.primary, 
-                        display: 'flex', 
-                        alignItems: 'center', 
-                        gap: '0.35rem',
-                        background: `${currentTheme.primary}15`,
-                        padding: '0.35rem 0.75rem',
-                        borderRadius: '8px',
-                        fontWeight: '600'
-                      }}>
+                      <span
+                        style={{
+                          fontSize: '0.8125rem',
+                          color: currentTheme.primary,
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '0.35rem',
+                          background: `${currentTheme.primary}15`,
+                          padding: '0.35rem 0.75rem',
+                          borderRadius: '8px',
+                          fontWeight: '600',
+                        }}
+                      >
                         {file.type.startsWith('video/') ? <Film size={12} /> : <ImageIcon size={12} />}
                         <span style={{ maxWidth: '150px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                          {file.name}
+                          {file.name} ({(file.size / (1024 * 1024)).toFixed(1)}MB)
                         </span>
-                        <button 
-                          type="button" 
-                          onClick={() => { setFile(null); if(fileInputRef.current) fileInputRef.current.value = ''; }} 
-                          style={{ background: 'none', border: 'none', color: 'var(--echo-text-muted)', cursor: 'pointer', display: 'flex', alignItems: 'center', padding: '0 2px' }}
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setFile(null);
+                            if (fileInputRef.current) fileInputRef.current.value = '';
+                          }}
+                          style={{
+                            background: 'none',
+                            border: 'none',
+                            color: 'var(--echo-text-muted)',
+                            cursor: 'pointer',
+                            display: 'flex',
+                            alignItems: 'center',
+                            padding: '0 2px',
+                          }}
                         >
                           <X size={14} />
                         </button>
                       </span>
                     )}
                   </div>
-                  
-                  <button 
-                    type="submit" 
-                    className="btn-primary" 
+
+                  <button
+                    type="submit"
+                    className="btn-primary"
                     disabled={isSubmitting || (!content.trim() && !file)}
                     style={{
                       padding: '0.625rem 1.5rem',
@@ -487,26 +608,35 @@ export default function CommunityPage() {
                       border: 'none',
                       color: '#fff',
                       boxShadow: `0 4px 15px ${currentTheme.glow}`,
-                      cursor: 'pointer',
+                      cursor: isSubmitting || (!content.trim() && !file) ? 'not-allowed' : 'pointer',
                       transition: 'all 0.2s ease',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
-                      textAlign: 'center',
-                      width: '100%',
+                      gap: '0.5rem',
                     }}
                   >
-                    {isSubmitting ? 'Posting...' : 'Post to Community'}
+                    {isSubmitting ? (
+                      <>
+                        <Loader2 size={16} className="animate-spin" />
+                        <span>{uploadStatus || 'Posting...'}</span>
+                      </>
+                    ) : (
+                      <>
+                        <CloudUpload size={16} />
+                        <span>Post to Community</span>
+                      </>
+                    )}
                   </button>
                 </div>
               </form>
             </div>
           ) : (
-            <div 
-              className="glass" 
-              style={{ 
-                marginBottom: '2.5rem', 
-                textAlign: 'center', 
+            <div
+              className="glass"
+              style={{
+                marginBottom: '2.5rem',
+                textAlign: 'center',
                 padding: '3rem 2rem',
                 borderRadius: '24px',
                 border: '1px solid var(--echo-border)',
@@ -514,16 +644,18 @@ export default function CommunityPage() {
                 boxShadow: '0 15px 35px rgba(0, 0, 0, 0.05)',
               }}
             >
-              <div style={{ 
-                width: '64px', 
-                height: '64px', 
-                borderRadius: '20px', 
-                background: 'var(--echo-surface-2)', 
-                display: 'flex', 
-                alignItems: 'center', 
-                justifyContent: 'center', 
-                margin: '0 auto 1.5rem' 
-              }}>
+              <div
+                style={{
+                  width: '64px',
+                  height: '64px',
+                  borderRadius: '20px',
+                  background: 'var(--echo-surface-2)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  margin: '0 auto 1.5rem',
+                }}
+              >
                 <Lock size={32} style={{ color: 'var(--echo-text-muted)' }} />
               </div>
               <h3 style={{ fontSize: '1.25rem', fontWeight: '800', marginBottom: '0.5rem', color: 'var(--echo-text)' }}>Join the Conversation</h3>
@@ -531,14 +663,14 @@ export default function CommunityPage() {
                 Sign in to share your own thoughts, photos, and videos with the community.
               </p>
               <Link href="/sign-in?redirect_url=/community">
-                <button 
+                <button
                   className="btn-primary"
                   style={{
                     padding: '0.625rem 1.75rem',
                     borderRadius: '12px',
                     fontWeight: '700',
                     fontSize: '0.9rem',
-                    cursor: 'pointer'
+                    cursor: 'pointer',
                   }}
                 >
                   Sign In
@@ -548,17 +680,19 @@ export default function CommunityPage() {
           )
         ) : (
           <div style={{ height: '150px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <span style={{ color: 'var(--echo-text-muted)', fontWeight: '600' }} className="animate-pulse">Loading feed options...</span>
+            <span style={{ color: 'var(--echo-text-muted)', fontWeight: '600' }} className="animate-pulse">
+              Loading feed options...
+            </span>
           </div>
         )}
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
           {posts.length === 0 ? (
-            <div 
-              className="glass" 
-              style={{ 
-                textAlign: 'center', 
-                padding: '4rem 2rem', 
+            <div
+              className="glass"
+              style={{
+                textAlign: 'center',
+                padding: '4rem 2rem',
                 borderRadius: '24px',
                 border: '1px solid var(--echo-border)',
                 background: 'var(--echo-surface)',
@@ -581,8 +715,8 @@ export default function CommunityPage() {
               }
 
               return (
-                <div 
-                  key={post._id} 
+                <div
+                  key={post._id}
                   className="glass animate-fade-in-up"
                   style={{
                     padding: '1.75rem',
@@ -591,44 +725,46 @@ export default function CommunityPage() {
                     background: 'var(--echo-surface)',
                     boxShadow: '0 10px 30px rgba(0, 0, 0, 0.05)',
                     transition: 'transform 0.2s ease, box-shadow 0.2s ease',
-                    position: 'relative'
+                    position: 'relative',
                   }}
                 >
                   <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1.25rem' }}>
-                    <div 
-                      style={{ 
-                        width: '44px', 
-                        height: '44px', 
-                        borderRadius: '12px', 
-                        background: `linear-gradient(135deg, ${currentTheme.primary}, ${currentTheme.secondary})`, 
-                        display: 'flex', 
-                        alignItems: 'center', 
-                        justifyContent: 'center', 
-                        fontWeight: '800', 
+                    <div
+                      style={{
+                        width: '44px',
+                        height: '44px',
+                        borderRadius: '12px',
+                        background: `linear-gradient(135deg, ${currentTheme.primary}, ${currentTheme.secondary})`,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        fontWeight: '800',
                         color: '#fff',
                         textShadow: '0 1px 2px rgba(0,0,0,0.2)',
                         fontSize: '1.25rem',
-                        boxShadow: `0 4px 10px ${currentTheme.glow}`
+                        boxShadow: `0 4px 10px ${currentTheme.glow}`,
                       }}
                     >
-                      {post.authorName[0]?.toUpperCase()}
+                      {post.authorName ? post.authorName[0]?.toUpperCase() : 'U'}
                     </div>
-                    
+
                     <div style={{ flex: 1 }}>
                       <div style={{ fontWeight: '800', display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--echo-text)' }}>
-                        {post.authorName}
-                        <span style={{ 
-                          fontSize: '0.65rem',
-                          fontWeight: '700',
-                          textTransform: 'uppercase',
-                          letterSpacing: '0.05em',
-                          padding: '0.2rem 0.6rem',
-                          borderRadius: '6px',
-                          color: badgeColor,
-                          background: badgeBg,
-                          border: `1px solid ${badgeColor}25`
-                        }}>
-                          {post.authorRole}
+                        {post.authorName || 'Community Member'}
+                        <span
+                          style={{
+                            fontSize: '0.65rem',
+                            fontWeight: '700',
+                            textTransform: 'uppercase',
+                            letterSpacing: '0.05em',
+                            padding: '0.2rem 0.6rem',
+                            borderRadius: '6px',
+                            color: badgeColor,
+                            background: badgeBg,
+                            border: `1px solid ${badgeColor}25`,
+                          }}
+                        >
+                          {post.authorRole || 'Member'}
                         </span>
                       </div>
                       <div style={{ fontSize: '0.75rem', color: 'var(--echo-text-muted)', marginTop: '0.15rem' }}>
@@ -637,28 +773,30 @@ export default function CommunityPage() {
                     </div>
 
                     {user?.id === post.authorId && (
-                      <button 
+                      <button
                         onClick={() => handleDeletePost(post._id)}
                         disabled={isDeleting === post._id}
-                        style={{ 
-                          background: 'none', 
-                          border: 'none', 
-                          color: '#ef4444', 
-                          cursor: 'pointer', 
+                        style={{
+                          background: 'none',
+                          border: 'none',
+                          color: '#ef4444',
+                          cursor: 'pointer',
                           opacity: 0.7,
                           transition: 'opacity 0.2s ease',
                           padding: '0.5rem',
                           borderRadius: '8px',
                           display: 'flex',
                           alignItems: 'center',
-                          justifyContent: 'center'
+                          justifyContent: 'center',
                         }}
                         title="Delete Post"
-                        onMouseEnter={(e) => e.currentTarget.style.opacity = '1'}
-                        onMouseLeave={(e) => e.currentTarget.style.opacity = '0.7'}
+                        onMouseEnter={e => (e.currentTarget.style.opacity = '1')}
+                        onMouseLeave={e => (e.currentTarget.style.opacity = '0.7')}
                       >
                         {isDeleting === post._id ? (
-                          <span style={{ fontSize: '0.8rem' }} className="animate-spin">⏳</span>
+                          <span style={{ fontSize: '0.8rem' }} className="animate-spin">
+                            ⏳
+                          </span>
                         ) : (
                           <Trash2 size={16} />
                         )}
@@ -666,49 +804,55 @@ export default function CommunityPage() {
                     )}
                   </div>
 
-                  <p style={{ 
-                    color: 'var(--echo-text)', 
-                    lineHeight: '1.7', 
-                    fontSize: '1rem',
-                    whiteSpace: 'pre-wrap', 
-                    marginBottom: post.mediaUrl ? '1.25rem' : '0' 
-                  }}>
+                  <p
+                    style={{
+                      color: 'var(--echo-text)',
+                      lineHeight: '1.7',
+                      fontSize: '1rem',
+                      whiteSpace: 'pre-wrap',
+                      marginBottom: post.mediaUrl ? '1.25rem' : '0',
+                    }}
+                  >
                     {post.content}
                   </p>
 
                   {post.mediaUrl && post.mediaType === 'image' && (
-                    <div 
-                      style={{ 
-                        borderRadius: '16px', 
-                        overflow: 'hidden', 
+                    <div
+                      style={{
+                        borderRadius: '16px',
+                        overflow: 'hidden',
                         marginTop: '1.25rem',
                         border: '1px solid var(--echo-border)',
-                        boxShadow: '0 8px 24px rgba(0,0,0,0.1)'
+                        boxShadow: '0 8px 24px rgba(0,0,0,0.1)',
+                        background: 'var(--echo-surface-2)',
                       }}
                     >
-                      <img 
-                        src={post.mediaUrl} 
-                        alt="Post attachment" 
-                        style={{ width: '100%', maxHeight: '500px', objectFit: 'cover', display: 'block' }} 
+                      <img
+                        src={post.mediaUrl}
+                        alt="Community post attachment"
+                        style={{ width: '100%', maxHeight: '550px', objectFit: 'contain', display: 'block' }}
+                        loading="lazy"
                       />
                     </div>
                   )}
 
                   {post.mediaUrl && post.mediaType === 'video' && (
-                    <div 
-                      style={{ 
-                        borderRadius: '16px', 
-                        overflow: 'hidden', 
-                        marginTop: '1.25rem', 
-                        background: 'black',
+                    <div
+                      style={{
+                        borderRadius: '16px',
+                        overflow: 'hidden',
+                        marginTop: '1.25rem',
+                        background: '#000',
                         border: '1px solid var(--echo-border)',
-                        boxShadow: '0 8px 24px rgba(0,0,0,0.1)'
+                        boxShadow: '0 8px 24px rgba(0,0,0,0.1)',
                       }}
                     >
-                      <video 
-                        src={post.mediaUrl} 
-                        controls 
-                        style={{ width: '100%', maxHeight: '500px', display: 'block' }} 
+                      <video
+                        src={post.mediaUrl}
+                        controls
+                        playsInline
+                        preload="metadata"
+                        style={{ width: '100%', maxHeight: '550px', display: 'block' }}
                       />
                     </div>
                   )}

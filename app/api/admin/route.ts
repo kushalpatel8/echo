@@ -3,6 +3,7 @@ import { auth, clerkClient } from '@clerk/nextjs/server';
 import connectDB from '@/lib/mongodb';
 import User from '@/lib/models/User';
 import Appeal from '@/lib/models/Appeal';
+import { delCache, delCachePattern } from '@/lib/redis';
 
 export async function GET() {
   const { userId } = await auth();
@@ -47,20 +48,26 @@ export async function POST(req: NextRequest) {
 
   const { targetUserId, action } = await req.json(); // action: 'approve' | 'reject' | 'ban' | 'unban' | 'delete'
 
+  let targetUserClerkId = '';
   if (action === 'approve') {
-    await User.findByIdAndUpdate(targetUserId, { applicationStatus: 'approved' });
+    const updated = await User.findByIdAndUpdate(targetUserId, { applicationStatus: 'approved' });
+    targetUserClerkId = updated?.clerkId || '';
   } else if (action === 'reject') {
-    await User.findByIdAndUpdate(targetUserId, { applicationStatus: 'rejected' });
+    const updated = await User.findByIdAndUpdate(targetUserId, { applicationStatus: 'rejected' });
+    targetUserClerkId = updated?.clerkId || '';
   } else if (action === 'ban') {
-    await User.findByIdAndUpdate(targetUserId, { isBanned: true, $inc: { banCount: 1 } });
+    const updated = await User.findByIdAndUpdate(targetUserId, { isBanned: true, $inc: { banCount: 1 } });
+    targetUserClerkId = updated?.clerkId || '';
   } else if (action === 'unban') {
     const unbannedUser = await User.findByIdAndUpdate(targetUserId, { isBanned: false, warningCount: 0 });
     if (unbannedUser) {
+      targetUserClerkId = unbannedUser.clerkId;
       await Appeal.deleteMany({ userId: unbannedUser.clerkId });
     }
   } else if (action === 'delete') {
     const userToDelete = await User.findById(targetUserId);
     if (userToDelete) {
+      targetUserClerkId = userToDelete.clerkId;
       await User.findByIdAndDelete(targetUserId);
       try {
         const client = await clerkClient();
@@ -70,6 +77,13 @@ export async function POST(req: NextRequest) {
       }
     }
   }
+
+  // Invalidate Redis caches across affected keys
+  if (targetUserClerkId) {
+    delCache(`user:me:${targetUserClerkId}`).catch(() => {});
+  }
+  delCachePattern('volunteers:raw:*').catch(() => {});
+  delCache('leaderboard:data').catch(() => {});
 
   return NextResponse.json({ success: true });
 }

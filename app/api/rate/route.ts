@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@clerk/nextjs/server';
 import connectDB from '@/lib/mongodb';
 import User from '@/lib/models/User';
+import { delCache, delCachePattern } from '@/lib/redis';
 
 export async function POST(req: NextRequest) {
   const { userId } = await auth();
@@ -25,6 +26,11 @@ export async function POST(req: NextRequest) {
       'volunteerProfile.totalRatings': newTotal,
     }
   );
+
+  // Invalidate Redis caches
+  delCache('leaderboard:data').catch(() => {});
+  delCachePattern('volunteers:raw:*').catch(() => {});
+  delCache(`user:me:${volunteerId}`).catch(() => {});
 
   return NextResponse.json({ success: true, newRating: Math.round(newRating * 10) / 10 });
 }

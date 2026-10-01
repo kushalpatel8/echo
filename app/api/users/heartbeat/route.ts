@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@clerk/nextjs/server';
 import connectDB from '@/lib/mongodb';
 import User from '@/lib/models/User';
+import { setOnlinePresence } from '@/lib/redis';
 
 export async function POST(req: NextRequest) {
   const { userId } = await auth();
@@ -10,8 +11,14 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    await connectDB();
-    await User.updateOne({ clerkId: userId }, { $set: { lastSeen: new Date() } });
+    // Instant real-time presence in Upstash Redis
+    setOnlinePresence(userId).catch(() => {});
+
+    // Asynchronous MongoDB heartbeat update without blocking
+    connectDB().then(() => {
+      User.updateOne({ clerkId: userId }, { $set: { lastSeen: new Date() } }).catch(() => {});
+    }).catch(() => {});
+
     return NextResponse.json({ success: true, timestamp: new Date() });
   } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 500 });
@@ -25,8 +32,12 @@ export async function GET(req: NextRequest) {
   }
 
   try {
-    await connectDB();
-    await User.updateOne({ clerkId: userId }, { $set: { lastSeen: new Date() } });
+    setOnlinePresence(userId).catch(() => {});
+
+    connectDB().then(() => {
+      User.updateOne({ clerkId: userId }, { $set: { lastSeen: new Date() } }).catch(() => {});
+    }).catch(() => {});
+
     return NextResponse.json({ success: true, timestamp: new Date() });
   } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 500 });

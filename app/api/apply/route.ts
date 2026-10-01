@@ -3,6 +3,7 @@ import { auth, currentUser } from '@clerk/nextjs/server';
 import connectDB from '@/lib/mongodb';
 import User from '@/lib/models/User';
 import { getUniqueUsername } from '@/lib/username';
+import { delCache, delCachePattern } from '@/lib/redis';
 
 export async function POST(req: NextRequest) {
   const { userId } = await auth();
@@ -97,6 +98,9 @@ export async function POST(req: NextRequest) {
     });
   }
 
+  delCache(`user:me:${userId}`).catch(() => {});
+  delCachePattern('volunteers:raw:*').catch(() => {});
+
   return NextResponse.json({ success: true });
 }
 
@@ -114,6 +118,8 @@ export async function DELETE() {
     { new: true }
   );
 
+  delCache(`user:me:${userId}`).catch(() => {});
+  delCachePattern('volunteers:raw:*').catch(() => {});
+
   return NextResponse.json({ success: true, user });
 }
-
