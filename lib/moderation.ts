@@ -1,11 +1,7 @@
 import { GoogleGenerativeAI } from '@google/generative-ai';
 
-export interface ModerationResult {
-  isHarmful: boolean;
-  reason?: string;
-  category?: 'abuse' | 'medical_hazard' | 'self_harm' | 'harassment' | 'slur' | 'toxic' | 'malice' | 'demoralization' | 'safe';
-  source?: 'regex' | 'gemini' | 'tavily' | 'tavily_gemini';
-}
+import type { ModerationResult } from '@/types';
+export type { ModerationResult };
 
 export const exactWords = [
   'mc', 'bc', 'dog', 'pig', 'ass', 'die', 'fag', 'mf', 'bsdk', 'oc', 'ocu', 'amk', 'pic', 'pd', 'chmo', 'xui', 'bobo', 'gago', 'tanga'

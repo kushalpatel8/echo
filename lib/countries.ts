@@ -1,10 +1,5 @@
-export interface Country {
-  name: string;
-  code: string;
-  dialCode: string;
-  flag: string;
-  placeholder?: string;
-}
+import type { Country } from '@/types';
+export type { Country };
 
 export const POPULAR_COUNTRIES: Country[] = [
   { name: 'India', code: 'IN', dialCode: '+91', flag: '🇮🇳', placeholder: '98765 43210' },

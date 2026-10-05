@@ -2,22 +2,10 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { ChevronDown, Search, X, Check, Phone } from 'lucide-react';
-import { Country, COUNTRIES, POPULAR_COUNTRIES, DEFAULT_COUNTRY } from '@/lib/countries';
+import { COUNTRIES, POPULAR_COUNTRIES, DEFAULT_COUNTRY } from '@/lib/countries';
+import type { Country, PhoneInputProps } from '@/types';
 
-export interface PhoneInputProps {
-  label?: string;
-  required?: boolean;
-  value?: string;
-  onChange: (value: string, meta: { countryCode: string; nationalNumber: string; country: Country }) => void;
-  defaultCountryCode?: string; // e.g. "IN" or "+91"
-  placeholder?: string;
-  disabled?: boolean;
-  id?: string;
-  name?: string;
-  className?: string;
-  helperText?: string;
-  error?: string;
-}
+export type { PhoneInputProps };
 
 export default function PhoneInput({
   label,

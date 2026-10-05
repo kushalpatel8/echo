@@ -1,13 +1,7 @@
 import mongoose, { Schema, Document, models, model } from 'mongoose';
 
-export interface ISuggestion extends Document {
-  text: string;
-  role: string;
-  userId?: string;
-  name?: string;
-  email?: string;
-  createdAt: Date;
-}
+import type { ISuggestion } from '@/types';
+export type { ISuggestion };
 
 const SuggestionSchema = new Schema<ISuggestion>({
   text: { type: String, required: true },

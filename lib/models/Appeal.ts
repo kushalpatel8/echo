@@ -1,23 +1,7 @@
 import mongoose, { Schema, Document, models, model } from 'mongoose';
 
-export interface IAppealMessage {
-  senderId: string;
-  senderName: string;
-  isAdmin: boolean;
-  content: string;
-  timestamp: Date;
-}
-
-export interface IAppeal extends Document {
-  userId: string; // clerkId of banned volunteer/doctor
-  userName: string;
-  userRole: string;
-  userEmail: string;
-  messages: IAppealMessage[];
-  status: 'pending' | 'resolved' | 'rejected';
-  createdAt: Date;
-  updatedAt: Date;
-}
+import type { IAppeal, IAppealMessage } from '@/types';
+export type { IAppeal, IAppealMessage };
 
 const AppealMessageSchema = new Schema<IAppealMessage>({
   senderId: { type: String, required: true },

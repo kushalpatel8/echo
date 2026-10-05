@@ -1,43 +1,7 @@
 import mongoose, { Schema, Document, models, model } from 'mongoose';
 
-export type UserRole = 'user' | 'volunteer' | 'doctor' | 'admin';
-export type ApplicationStatus = 'pending' | 'approved' | 'rejected';
-
-export interface IUser extends Document {
-  clerkId: string;
-  email: string;
-  name: string;
-  imageUrl: string;
-  role: UserRole;
-  isBanned: boolean;
-  banCount?: number;
-  warningCount?: number;
-  applicationStatus?: ApplicationStatus;
-  savedVolunteer?: string;
-  volunteerProfile?: {
-    phoneNo: string | number;
-    whyVolunteer: string;
-    degree?: string;
-    experience?: string;
-    whatsappNumber?: string | number;
-    rating: number;
-    totalRatings: number;
-  };
-  doctorProfile?: {
-    phoneNo: string | number;
-    whyDoctor: string;
-    degree: string;
-    licenseNumber?: string;
-    college?: string;
-    experience: string;
-    whatsappNumber?: string | number;
-    rating?: number;
-    totalRatings?: number;
-  };
-  lastSeen?: Date;
-  isOnline?: boolean;
-  createdAt: Date;
-}
+import type { IUser, UserRole, ApplicationStatus } from '@/types';
+export type { IUser, UserRole, ApplicationStatus };
 
 const UserSchema = new Schema<IUser>({
   clerkId: { type: String, required: true, unique: true },

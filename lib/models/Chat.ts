@@ -1,27 +1,7 @@
 import mongoose, { Schema, Document, models, model } from 'mongoose';
 
-export interface IMessage {
-  senderId: string;
-  senderName: string;
-  content: string;
-  timestamp: Date;
-}
-
-export interface IChat extends Document {
-  participants: string[]; // clerkIds
-  participantNames: string[];
-  userId?: string;
-  userName?: string;
-  helperId?: string;
-  helperName?: string;
-  helperRole?: 'doctor' | 'volunteer';
-  doctorId?: string;
-  volunteerId?: string;
-  messages: IMessage[];
-  isActive: boolean;
-  createdAt: Date;
-  updatedAt: Date;
-}
+import type { IChat, IMessage } from '@/types';
+export type { IChat, IMessage };
 
 const MessageSchema = new Schema<IMessage>({
   senderId: { type: String, required: true },

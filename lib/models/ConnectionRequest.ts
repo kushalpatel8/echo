@@ -1,18 +1,7 @@
 import mongoose, { Schema, Document, models, model } from 'mongoose';
 
-export type ConnectionStatus = 'pending' | 'accepted' | 'rejected';
-export type WhatsappStatus = 'none' | 'pending' | 'accepted' | 'rejected';
-
-export interface IConnectionRequest extends Document {
-  userId: string; // sender (patient)
-  doctorId: string; // receiver (doctor)
-  status: ConnectionStatus;
-  whatsappStatus: WhatsappStatus;
-  userName: string;
-  userImage: string;
-  createdAt: Date;
-  updatedAt: Date;
-}
+import type { IConnectionRequest, ConnectionStatus, WhatsappStatus } from '@/types';
+export type { IConnectionRequest, ConnectionStatus, WhatsappStatus };
 
 const ConnectionRequestSchema = new Schema<IConnectionRequest>({
   userId: { type: String, required: true },

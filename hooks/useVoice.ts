@@ -1,12 +1,8 @@
 'use client';
 import { useState, useEffect, useCallback, useRef } from 'react';
 
-export interface VoiceSettings {
-  selectedVoiceURI: string;
-  rate: number;
-  pitch: number;
-  autoSpeak: boolean;
-}
+import type { VoiceSettings } from '@/types';
+export type { VoiceSettings };
 
 export function useVoice() {
   const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([]);

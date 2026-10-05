@@ -1,12 +1,7 @@
 import mongoose, { Schema, Document, models, model } from 'mongoose';
 
-export interface IMoodLog extends Document {
-  userId: string;
-  answers: Record<string, number | string>;
-  detectedMood: string;
-  moodScore: number;
-  createdAt: Date;
-}
+import type { IMoodLog } from '@/types';
+export type { IMoodLog };
 
 const MoodLogSchema = new Schema<IMoodLog>({
   userId: { type: String, required: true },

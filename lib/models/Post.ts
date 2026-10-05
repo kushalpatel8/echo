@@ -1,14 +1,7 @@
 import mongoose, { Schema, Document, models, model } from 'mongoose';
 
-export interface IPost extends Document {
-  authorId: string;
-  authorName: string;
-  authorRole: string;
-  content: string;
-  mediaUrl?: string;
-  mediaType?: 'image' | 'video' | 'none';
-  createdAt: Date;
-}
+import type { IPost } from '@/types';
+export type { IPost };
 
 const PostSchema = new Schema<IPost>({
   authorId: { type: String, required: true },

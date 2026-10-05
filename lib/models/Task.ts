@@ -1,14 +1,7 @@
 import mongoose, { Schema, Document, models, model } from 'mongoose';
 
-export interface ITask extends Document {
-  title: string;
-  description: string;
-  assignerId: string; // volunteer or doctor clerkId
-  assignerName: string;
-  assigneeId: string; // user clerkId
-  status: 'pending' | 'in-progress' | 'completed';
-  createdAt: Date;
-}
+import type { ITask } from '@/types';
+export type { ITask };
 
 const TaskSchema = new Schema<ITask>({
   title: { type: String, required: true },
