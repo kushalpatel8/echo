@@ -1,10 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { Ban, MessageSquare, Crown, Send, CheckCircle2, XCircle, ChevronUp, ChevronDown } from 'lucide-react';
-
-interface BanAppealBannerProps {
-  dbUser: any;
-}
+import type { BanAppealBannerProps } from '@/types';
 
 export default function BanAppealBanner({ dbUser }: BanAppealBannerProps) {
   const [appeals, setAppeals] = useState<any[]>([]);

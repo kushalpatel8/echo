@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
+import type { TabletDashboardProps } from '@/types';
 import {
   MessageCircle, Heart, Quote, Bot, Stethoscope,
   Gamepad2, BookOpen, Sparkles, TrendingUp, CheckCircle2, Activity,
@@ -86,19 +87,6 @@ const ACTIONS = [
     border: 'rgba(253,186,116,0.3)',
   },
 ];
-
-interface TabletDashboardProps {
-  userName?: string;
-  tasksPending?: number;
-  tasksCompleted?: number;
-  moodChecks?: number;
-  latestMood?: {
-    label: string;
-    score: number;
-    emoji: string;
-    color: string;
-  } | null;
-}
 
 export default function TabletDashboard({
   userName,

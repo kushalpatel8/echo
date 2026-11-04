@@ -12,17 +12,7 @@ import BubblePop from '@/components/games/BubblePop';
 import StarGazer from '@/components/games/StarGazer';
 import WordFlow from '@/components/games/WordFlow';
 import GratitudeBloom from '@/components/games/GratitudeBloom';
-
-type GameID = 'breathing' | 'memory' | 'bubble-pop' | 'stargazer' | 'wordflow' | 'gratitude' | null;
-
-interface GameConfig {
-  id: GameID;
-  title: string;
-  description: string;
-  icon: string;
-  color: string;
-  delay: string;
-}
+import type { GameConfig, GameID } from '@/types';
 
 const GAMES: GameConfig[] = [
   { id: 'breathing', title: 'Breathing Guide', description: 'Calm your mind with the guided 4-7-8 breathing method.', icon: '🌬️', color: '#06b6d4', delay: '0s' },

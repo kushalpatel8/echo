@@ -8,16 +8,7 @@ import { Trophy, Star, Medal, Heart, Stethoscope, ChevronRight } from 'lucide-re
 import { formatName } from '@/lib/utils';
 import Link from 'next/link';
 import { useUser } from '@clerk/nextjs';
-
-interface LeaderboardUser {
-  _id: string;
-  clerkId: string;
-  name: string;
-  imageUrl: string;
-  role: 'doctor' | 'volunteer';
-  doctorProfile?: { rating: number; totalRatings: number; degree: string };
-  volunteerProfile?: { rating: number; totalRatings: number };
-}
+import type { LeaderboardUser } from '@/types';
 
 type ThemeKey = 'celestial' | 'forest' | 'sunset' | 'ocean' | 'aurora';
 const THEMES: Record<ThemeKey, { name: string; primary: string; secondary: string; glow: string; bgGrad: string }> = {

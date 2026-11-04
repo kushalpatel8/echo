@@ -26,24 +26,7 @@ import {
 } from 'lucide-react';
 import ThemeToggle from '@/components/ThemeToggle';
 import BubbleLoader from '@/components/BubbleLoader';
-
-interface RoleDetail {
-  id: 'doctor' | 'volunteer';
-  title: string;
-  subtitle: string;
-  badge: string;
-  badgeColor: string;
-  icon: React.ReactNode;
-  emoji: string;
-  color: string;
-  gradient: string;
-  description: string;
-  whoIsItFor: string;
-  verificationLevel: string;
-  verificationIcon: React.ReactNode;
-  features: { title: string; desc: string; icon: React.ReactNode }[];
-  responsibilities: string[];
-}
+import type { RoleDetail } from '@/types';
 
 const ROLES_INFO: Record<'doctor' | 'volunteer', RoleDetail> = {
   doctor: {

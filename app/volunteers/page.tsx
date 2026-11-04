@@ -7,22 +7,7 @@ import BackButton from '@/components/BackButton';
 import ThemeToggle from '@/components/ThemeToggle';
 import { Heart, Sparkles, MessageSquare, Search, X, Users, Radio, Bookmark } from 'lucide-react';
 import { formatName } from '@/lib/utils';
-
-interface Helper {
-  clerkId: string;
-  name: string;
-  imageUrl: string;
-  role: 'volunteer' | 'doctor';
-  volunteerProfile: {
-    rating: number;
-    totalRatings: number;
-    experience: string;
-  };
-  doctorProfile?: {
-    degree: string;
-  };
-  isOnline?: boolean;
-}
+import type { Helper } from '@/types';
 
 type ThemeKey = 'celestial' | 'forest' | 'sunset' | 'ocean' | 'aurora';
 type StatusFilter = 'all' | 'online' | 'offline' | 'saved';

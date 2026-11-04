@@ -5,11 +5,7 @@ import { useUser } from '@clerk/nextjs';
 import BackButton from '@/components/BackButton';
 import { useVoice } from '@/hooks/useVoice';
 import { VoiceHeaderControls, VoiceMessageButton, VoiceInputButton } from '@/components/VoiceControls';
-
-interface Message {
-  role: 'user' | 'assistant';
-  content: string;
-}
+import type { CompanionMessage as Message } from '@/types';
 
 function FormattedMessage({ content }: { content: string }) {
   // Normalize inline asterisk bullets into distinct lines and strip all asterisks

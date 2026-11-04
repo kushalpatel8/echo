@@ -1,17 +1,7 @@
 'use client';
 import React, { useState } from 'react';
 import { Volume2, VolumeX, Mic, MicOff, Square, Settings, Sparkles, Play } from 'lucide-react';
-import { VoiceSettings } from '@/hooks/useVoice';
-
-interface VoiceHeaderControlsProps {
-  voices: SpeechSynthesisVoice[];
-  settings: VoiceSettings;
-  updateSettings: (newSettings: Partial<VoiceSettings>) => void;
-  speak: (text: string, id?: string | number) => void;
-  stopSpeaking: () => void;
-  speakingId: string | number | null;
-  hasSynthesisSupport: boolean;
-}
+import type { VoiceSettings, VoiceHeaderControlsProps, VoiceMessageButtonProps, VoiceInputButtonProps } from '@/types';
 
 export function VoiceHeaderControls({
   voices,
@@ -265,16 +255,6 @@ export function VoiceHeaderControls({
   );
 }
 
-interface VoiceMessageButtonProps {
-  text: string;
-  messageId: string | number;
-  speakingId: string | number | null;
-  speak: (text: string, id?: string | number) => void;
-  stopSpeaking: () => void;
-  hasSynthesisSupport: boolean;
-  label?: string;
-}
-
 export function VoiceMessageButton({
   text,
   messageId,
@@ -332,13 +312,6 @@ export function VoiceMessageButton({
       )}
     </button>
   );
-}
-
-interface VoiceInputButtonProps {
-  isListening: boolean;
-  onStart: () => void;
-  onStop: () => void;
-  hasSpeechSupport: boolean;
 }
 
 export function VoiceInputButton({

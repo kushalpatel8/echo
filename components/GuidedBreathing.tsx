@@ -2,16 +2,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Play, Pause, RotateCcw, Volume2, VolumeX, Wind, CheckCircle2 } from 'lucide-react';
 import { useVoice } from '@/hooks/useVoice';
+import type { BreathStage } from '@/types';
 
 type BreathingMode = 'box' | 'relax' | 'calm';
-
-interface BreathStage {
-  label: string;
-  duration: number; // in seconds
-  scale: number; // visual scale of orb
-  color: string; // gradient color
-  instruction: string;
-}
 
 const MODES: Record<BreathingMode, { name: string; desc: string; stages: BreathStage[] }> = {
   box: {

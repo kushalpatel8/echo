@@ -1,14 +1,10 @@
 import mongoose from 'mongoose';
+import type { MongooseCache } from '@/types';
 
 const MONGODB_URI = process.env.MONODB_URL!;
 
 if (!MONGODB_URI) {
   throw new Error('Please define the MONODB_URL environment variable');
-}
-
-interface MongooseCache {
-  conn: typeof mongoose | null;
-  promise: Promise<typeof mongoose> | null;
 }
 
 declare global {

@@ -1,16 +1,7 @@
 'use client';
 import React, { useState, useEffect, useRef } from 'react';
 import { Volume2, VolumeX, Sparkles, CloudRain, Waves as WavesIcon, Wind, Bell, Radio } from 'lucide-react';
-
-type SoundscapeType = 'rain' | 'ocean' | 'breeze' | 'bowl' | 'drone' | null;
-
-interface SoundscapeOption {
-  id: SoundscapeType;
-  label: string;
-  desc: string;
-  icon: React.ReactNode;
-  color: string;
-}
+import type { SoundscapeOption, SoundscapeType } from '@/types';
 
 const SOUNDSCAPES: SoundscapeOption[] = [
   { id: 'rain', label: 'Gentle Rain', desc: 'Soft rainfall filtering through canopy leaves', icon: <CloudRain size={18} />, color: '#38bdf8' },

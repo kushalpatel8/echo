@@ -7,15 +7,10 @@ import { RelaxationSoundscapes } from '@/components/RelaxationSoundscapes';
 import { VoiceMessageButton } from '@/components/VoiceControls';
 import { useVoice } from '@/hooks/useVoice';
 import { Sparkles, Wind, BookOpen, Copy, Check, ArrowRight, Dumbbell } from 'lucide-react';
+import type { QuoteItem } from '@/types';
 
 type RoomTheme = 'celestial' | 'forest' | 'sunset' | 'ocean' | 'aurora';
 type TabType = 'breathing' | 'affirmations' | 'library' | 'trainer';
-
-interface QuoteItem {
-  text: string;
-  author: string;
-  category: 'Self-Compassion' | 'Resilience' | 'Mindfulness' | 'Inner Peace';
-}
 
 const QUOTES: QuoteItem[] = [
   { text: "You don't have to be positive all the time. It's perfectly okay to feel sad, angry, annoyed, frustrated, scared, or anxious. Having feelings doesn't make you a negative person. It makes you human.", author: "Lori Deschene", category: "Self-Compassion" },

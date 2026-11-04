@@ -3,17 +3,9 @@ import React, { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
 import BackButton from '@/components/BackButton';
 import { BookOpen, Search, Sparkles, ExternalLink, Bookmark, Compass, ArrowLeft } from 'lucide-react';
+import type { BookItem } from '@/types';
 
 type LibraryTheme = 'celestial' | 'forest' | 'sunset' | 'ocean' | 'aurora';
-
-interface BookItem {
-  title: string;
-  author?: string;
-  desc: string;
-  icon: string;
-  url: string;
-  category: string;
-}
 
 const LIBRARY_THEMES: Record<LibraryTheme, { name: string; primary: string; secondary: string; glow: string; bgGrad: string }> = {
   celestial: {

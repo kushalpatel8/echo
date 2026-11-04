@@ -1,11 +1,7 @@
 'use client';
 import { useEffect, useRef, useState } from 'react';
 import * as faceapi from '@vladmandic/face-api';
-
-interface FaceMoodDetectorProps {
-  onMoodDetected: (mood: string, confidence: number) => void;
-  onClose: () => void;
-}
+import type { FaceMoodDetectorProps } from '@/types';
 
 export default function FaceMoodDetector({ onMoodDetected, onClose }: FaceMoodDetectorProps) {
   const videoRef = useRef<HTMLVideoElement>(null);

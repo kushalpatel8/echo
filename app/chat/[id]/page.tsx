@@ -7,30 +7,7 @@ import { useParams } from 'next/navigation';
 import BackButton from '@/components/BackButton';
 import { useVoice } from '@/hooks/useVoice';
 import { VoiceHeaderControls, VoiceMessageButton, VoiceInputButton } from '@/components/VoiceControls';
-
-interface Message {
-  senderId: string;
-  senderName: string;
-  content: string;
-  timestamp: string;
-}
-
-interface Chat {
-  _id: string;
-  participants: string[];
-  participantNames: string[];
-  userId?: string;
-  userName?: string;
-  helperId?: string;
-  helperName?: string;
-  helperRole?: 'doctor' | 'volunteer';
-  doctorId?: string;
-  volunteerId?: string;
-  messages: Message[];
-  isActive: boolean;
-  otherIsOnline?: boolean;
-  otherLastSeen?: string;
-}
+import type { Chat, ChatMessage as Message } from '@/types';
 
 export default function ChatPage() {
   const { id } = useParams();

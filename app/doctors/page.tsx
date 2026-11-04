@@ -8,32 +8,7 @@ import ThemeToggle from '@/components/ThemeToggle';
 import BubbleLoader from '@/components/BubbleLoader';
 import { Stethoscope, Heart, Sparkles, MessageSquare, Phone } from 'lucide-react';
 import { formatName } from '@/lib/utils';
-
-interface Helper {
-  clerkId: string;
-  name: string;
-  imageUrl: string;
-  role: 'volunteer' | 'doctor';
-  volunteerProfile: {
-    rating: number;
-    totalRatings: number;
-    experience: string;
-  };
-  doctorProfile?: {
-    degree: string;
-    whatsappNumber?: number | string;
-  };
-  isOnline?: boolean;
-}
-
-interface ConnectionRequest {
-  _id: string;
-  doctorId: string;
-  userName: string;
-  userImage: string;
-  status: 'pending' | 'accepted' | 'rejected';
-  whatsappStatus: 'none' | 'pending' | 'accepted' | 'rejected';
-}
+import type { Helper, ConnectionRequest } from '@/types';
 
 type ThemeKey = 'celestial' | 'forest' | 'sunset' | 'ocean' | 'aurora';
 

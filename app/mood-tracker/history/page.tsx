@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useUser } from '@clerk/nextjs';
+import type { MoodLog } from '@/types';
 
 const MOOD_EMOJIS: Record<string, string> = {
   Radiant: '🌟', Calm: '😌', Neutral: '😐', Uneasy: '😟', Distressed: '😰', Critical: '😢'
@@ -9,13 +10,6 @@ const MOOD_EMOJIS: Record<string, string> = {
 const MOOD_COLORS: Record<string, string> = {
   Radiant: '#fde047', Calm: '#86efac', Neutral: '#93c5fd', Uneasy: '#fdba74', Distressed: '#fca5a5', Critical: '#f87171'
 };
-
-interface MoodLog {
-  _id: string;
-  detectedMood: string;
-  moodScore: number;
-  createdAt: string;
-}
 
 export default function MoodHistoryPage() {
   const { isLoaded, user } = useUser();

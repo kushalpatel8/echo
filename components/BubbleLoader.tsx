@@ -1,13 +1,8 @@
-﻿'use client';
+'use client';
 
 import React, { useEffect, useState } from 'react';
 import { useTheme } from 'next-themes';
-
-interface BubbleLoaderProps {
-  message?: string;
-  size?: 'sm' | 'md' | 'lg';
-  fullscreen?: boolean;
-}
+import type { BubbleLoaderProps } from '@/types';
 
 // ── Dark Mode Palette (Serene Midnight & Pastel Sky) ──
 const darkBubbles = [

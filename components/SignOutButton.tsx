@@ -3,13 +3,7 @@
 import React from 'react';
 import { useClerk } from '@clerk/nextjs';
 import { useRouter } from 'next/navigation';
-
-interface SignOutProps {
-  children?: React.ReactNode;
-  redirectUrl?: string;
-  className?: string;
-  style?: React.CSSProperties;
-}
+import type { SignOutProps } from '@/types';
 
 export default function EchoSignOutButton({ children, redirectUrl = '/', className, style }: SignOutProps) {
   const { signOut } = useClerk();
