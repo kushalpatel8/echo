@@ -460,11 +460,6 @@ export interface TabletDashboardProps {
 // Database & Infrastructure Interfaces
 // ==========================================
 
-export interface MongooseCache {
-  conn: typeof import('mongoose') | null;
-  promise: Promise<typeof import('mongoose')> | null;
-}
-
 export interface SignOutProps {
   children?: React.ReactNode;
   redirectUrl?: string;
@@ -493,4 +488,31 @@ export interface MongooseCache {
   conn: typeof import('mongoose') | null;
   promise: Promise<typeof import('mongoose')> | null;
 }
+
+// ==========================================
+// Mood Theme Interfaces
+// ==========================================
+
+export type MoodThemeKey = 'celestial' | 'forest' | 'sunset' | 'ocean' | 'aurora';
+export type RoomTheme = MoodThemeKey;
+export type DashTheme = MoodThemeKey;
+export type ThemeKey = MoodThemeKey;
+export type LibraryTheme = MoodThemeKey;
+
+export interface MoodTheme {
+  name: string;
+  primary: string;
+  secondary: string;
+  glow: string;
+  bgGrad: string;
+}
+
+export type ThemeConfig = MoodTheme;
+
+export interface AmbientSelectorProps {
+  activeTheme: MoodThemeKey;
+  setActiveTheme: (k: MoodThemeKey) => void;
+  themes?: Record<MoodThemeKey, MoodTheme>;
+}
+
 

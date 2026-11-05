@@ -13,6 +13,7 @@ import StarGazer from '@/components/games/StarGazer';
 import WordFlow from '@/components/games/WordFlow';
 import GratitudeBloom from '@/components/games/GratitudeBloom';
 import type { GameConfig, GameID } from '@/types';
+import { THEMES, type ThemeKey } from '@/moodthemes';
 
 const GAMES: GameConfig[] = [
   { id: 'breathing', title: 'Breathing Guide', description: 'Calm your mind with the guided 4-7-8 breathing method.', icon: '🌬️', color: '#06b6d4', delay: '0s' },
@@ -22,46 +23,6 @@ const GAMES: GameConfig[] = [
   { id: 'wordflow', title: 'Word Flow', description: 'Acknowledge calming words as they drift gently across your screen.', icon: '📝', color: '#c4b5fd', delay: '0.6s' },
   { id: 'gratitude', title: 'Gratitude Bloom', description: 'Plant seeds of gratitude and watch your visual garden grow.', icon: '🌸', color: '#f472b6', delay: '0.7s' },
 ];
-
-type ThemeKey = 'celestial' | 'forest' | 'sunset' | 'ocean' | 'aurora';
-
-const THEMES: Record<ThemeKey, { name: string; primary: string; secondary: string; glow: string; bgGrad: string }> = {
-  celestial: {
-    name: '🌌 Celestial',
-    primary: '#7c3aed',
-    secondary: '#06b6d4',
-    glow: 'rgba(124, 58, 237, 0.25)',
-    bgGrad: 'radial-gradient(ellipse at top right, rgba(124, 58, 237, 0.15) 0%, transparent 60%), radial-gradient(ellipse at bottom left, rgba(6, 182, 212, 0.12) 0%, transparent 60%)',
-  },
-  forest: {
-    name: '🌲 Forest',
-    primary: '#059669',
-    secondary: '#10b981',
-    glow: 'rgba(5, 150, 105, 0.25)',
-    bgGrad: 'radial-gradient(ellipse at top right, rgba(5, 150, 105, 0.18) 0%, transparent 60%), radial-gradient(ellipse at bottom left, rgba(16, 185, 129, 0.12) 0%, transparent 60%)',
-  },
-  sunset: {
-    name: '🌅 Sunset',
-    primary: '#f59e0b',
-    secondary: '#e11d48',
-    glow: 'rgba(245, 158, 11, 0.25)',
-    bgGrad: 'radial-gradient(ellipse at top right, rgba(245, 158, 11, 0.18) 0%, transparent 60%), radial-gradient(ellipse at bottom left, rgba(225, 29, 72, 0.12) 0%, transparent 60%)',
-  },
-  ocean: {
-    name: '🌊 Ocean',
-    primary: '#3b82f6',
-    secondary: '#0ea5e9',
-    glow: 'rgba(59, 130, 246, 0.25)',
-    bgGrad: 'radial-gradient(ellipse at top right, rgba(59, 130, 246, 0.18) 0%, transparent 60%), radial-gradient(ellipse at bottom left, rgba(14, 165, 233, 0.12) 0%, transparent 60%)',
-  },
-  aurora: {
-    name: '✨ Aurora',
-    primary: '#a855f7',
-    secondary: '#10b981',
-    glow: 'rgba(168, 85, 247, 0.25)',
-    bgGrad: 'radial-gradient(ellipse at top right, rgba(168, 85, 247, 0.18) 0%, transparent 60%), radial-gradient(ellipse at bottom left, rgba(10, 200, 120, 0.12) 0%, transparent 60%)',
-  },
-};
 
 function AmbientSelector({ activeTheme, setActiveTheme }: { activeTheme: ThemeKey; setActiveTheme: (k: ThemeKey) => void }) {
   return (

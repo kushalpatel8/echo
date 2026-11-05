@@ -9,17 +9,9 @@ import BackButton from '@/components/BackButton';
 import BanAppealBanner from '@/components/BanAppealBanner';
 import { HandHeart, MessageSquare, ClipboardList, User, LogOut, Sparkles, Star, Activity, Menu, Trophy } from 'lucide-react';
 import { formatName } from '@/lib/utils';
+import { DASH_THEMES, type DashTheme } from '@/moodthemes';
 
 type Tab = 'overview' | 'chats' | 'tasks' | 'profile';
-type DashTheme = 'celestial' | 'forest' | 'sunset' | 'ocean' | 'aurora';
-
-const DASH_THEMES: Record<DashTheme, { name: string; primary: string; secondary: string; glow: string; bgGrad: string }> = {
-  celestial: { name: '🌌 Celestial', primary: '#7c3aed', secondary: '#06b6d4', glow: 'rgba(124,58,237,0.25)', bgGrad: 'radial-gradient(ellipse at top right, rgba(124,58,237,0.15) 0%, transparent 60%), radial-gradient(ellipse at bottom left, rgba(6, 182, 212, 0.12) 0%, transparent 60%)' },
-  forest:    { name: '🌲 Forest',    primary: '#059669', secondary: '#10b981', glow: 'rgba(5,150,105,0.25)',  bgGrad: 'radial-gradient(ellipse at top right, rgba(5,150,105,0.18) 0%, transparent 60%), radial-gradient(ellipse at bottom left, rgba(16, 185, 129, 0.12) 0%, transparent 60%)' },
-  sunset:    { name: '🌅 Sunset',    primary: '#f59e0b', secondary: '#e11d48', glow: 'rgba(245,158,11,0.25)', bgGrad: 'radial-gradient(ellipse at top right, rgba(245,158,11,0.18) 0%, transparent 60%), radial-gradient(ellipse at bottom left, rgba(225, 29, 72, 0.12) 0%, transparent 60%)' },
-  ocean:     { name: '🌊 Ocean',     primary: '#3b82f6', secondary: '#0ea5e9', glow: 'rgba(59,130,246,0.25)', bgGrad: 'radial-gradient(ellipse at top right, rgba(59, 130, 246, 0.18) 0%, transparent 60%), radial-gradient(ellipse at bottom left, rgba(14, 165, 233, 0.12) 0%, transparent 60%)' },
-  aurora:    { name: '✨ Aurora',    primary: '#a855f7', secondary: '#10b981', glow: 'rgba(168,85,247,0.25)', bgGrad: 'radial-gradient(ellipse at top right, rgba(168, 85, 247, 0.18) 0%, transparent 60%), radial-gradient(ellipse at bottom left, rgba(10, 200, 120, 0.12) 0%, transparent 60%)' },
-};
 
 const TABS: { id: Tab; label: string; icon: React.ReactNode }[] = [
   { id: 'overview', label: '📊 Overview',      icon: <Activity size={15} /> },

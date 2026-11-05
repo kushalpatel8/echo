@@ -8,8 +8,8 @@ import { VoiceMessageButton } from '@/components/VoiceControls';
 import { useVoice } from '@/hooks/useVoice';
 import { Sparkles, Wind, BookOpen, Copy, Check, ArrowRight, Dumbbell } from 'lucide-react';
 import type { QuoteItem } from '@/types';
+import { ROOM_THEMES, type RoomTheme } from '@/moodthemes';
 
-type RoomTheme = 'celestial' | 'forest' | 'sunset' | 'ocean' | 'aurora';
 type TabType = 'breathing' | 'affirmations' | 'library' | 'trainer';
 
 const QUOTES: QuoteItem[] = [
@@ -34,44 +34,6 @@ const QUOTES: QuoteItem[] = [
   { text: "Promise me you'll always remember: you're braver than you believe, stronger than you seem, and smarter than you think.", author: "Christopher Robin", category: "Self-Compassion" },
   { text: "Start where you are. Use what you have. Do what you can.", author: "Arthur Ashe", category: "Mindfulness" },
 ];
-
-const ROOM_THEMES: Record<RoomTheme, { name: string; primary: string; secondary: string; glow: string; bgGrad: string }> = {
-  celestial: {
-    name: '🌌 Celestial Twilight',
-    primary: '#7c3aed',
-    secondary: '#06b6d4',
-    glow: 'rgba(124, 58, 237, 0.2)',
-    bgGrad: 'radial-gradient(ellipse at top right, rgba(124, 58, 237, 0.15) 0%, transparent 60%), radial-gradient(ellipse at bottom left, rgba(6, 182, 212, 0.12) 0%, transparent 60%)',
-  },
-  forest: {
-    name: '🌲 Deep Forest Sanctuary',
-    primary: '#059669',
-    secondary: '#10b981',
-    glow: 'rgba(5, 150, 105, 0.2)',
-    bgGrad: 'radial-gradient(ellipse at top right, rgba(5, 150, 105, 0.18) 0%, transparent 60%), radial-gradient(ellipse at bottom left, rgba(16, 185, 129, 0.12) 0%, transparent 60%)',
-  },
-  sunset: {
-    name: '🌅 Amber Serenity',
-    primary: '#f59e0b',
-    secondary: '#e11d48',
-    glow: 'rgba(245, 158, 11, 0.2)',
-    bgGrad: 'radial-gradient(ellipse at top right, rgba(245, 158, 11, 0.18) 0%, transparent 60%), radial-gradient(ellipse at bottom left, rgba(225, 29, 72, 0.12) 0%, transparent 60%)',
-  },
-  ocean: {
-    name: '🌊 Deep Ocean Calm',
-    primary: '#3b82f6',
-    secondary: '#0ea5e9',
-    glow: 'rgba(59, 130, 246, 0.2)',
-    bgGrad: 'radial-gradient(ellipse at top right, rgba(59, 130, 246, 0.18) 0%, transparent 60%), radial-gradient(ellipse at bottom left, rgba(14, 165, 233, 0.12) 0%, transparent 60%)',
-  },
-  aurora: {
-    name: '✨ Northern Lights',
-    primary: '#a855f7',
-    secondary: '#10b981',
-    glow: 'rgba(168, 85, 247, 0.2)',
-    bgGrad: 'radial-gradient(ellipse at top right, rgba(168, 85, 247, 0.18) 0%, transparent 60%), radial-gradient(ellipse at bottom left, rgba(10, 200, 120, 0.12) 0%, transparent 60%)',
-  },
-};
 
 export default function RelaxationPage() {
   const [activeTab, setActiveTab] = useState<TabType>('breathing');
