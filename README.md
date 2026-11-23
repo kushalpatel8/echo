@@ -16,6 +16,23 @@ ECHO is a modern, open-access mental health sanctuary engineered to provide a co
 
 ## 🌟 Key Features
 
+### 💊 Digital Prescriptions on Echo Letterhead & Telehealth Delivery
+- **3-Step Doctor Medication Suite**:
+  - **Step 1: Select the Patient**: Fast searchable candidate picker supporting both active consultations and platform patients with zero email exposure for clinical privacy.
+  - **Step 2: Compose on Echo Letterhead & Digitally Sign**: Comprehensive medication builder (name, dosage, frequency, duration, instructions), one-click clinical presets (*Anxiety Relief*, *Restful Sleep*, *Mood Elevation*), clinical lifestyle advice, live letterhead preview, and cryptographic-style digital signature including doctor qualifications, registration license, and timestamp seal.
+  - **Step 3: Deliver Directly to Patient Chat**: Generates an A4 medical PDF via `jspdf` on official Echo letterhead, records the prescription in MongoDB, establishes or updates the patient chat, and dispatches the PDF.
+- **Dedicated Same-Origin PDF Streaming (`/api/prescriptions/view`)**:
+  - Delivers pristine binary PDF streams (`application/pdf`) with strict role-based authorization (prescribing doctor, recipient patient, chat participant, or admin).
+  - Built-in self-healing fallback that re-generates valid PDFs on-the-fly if cached records require recreation.
+- **Bi-Directional Prescription Management & Deletion**:
+  - **Patient Dashboard (💊 Prescriptions tab)**: View all active medical prescriptions, open official signed PDFs in the browser, jump directly to the doctor consultation chat, or delete records.
+  - **Doctor Dashboard (💊 Prescribe Medicine tab)**: Audit full prescription history, view issued PDFs, navigate to patient chats, or delete prescription records.
+  - **Chat Message Synchronization**: Deleting a prescription automatically purges the corresponding prescription card from the consultation chat room and invalidates the Redis cache.
+
+### 📋 Role-Based Task Assignment & Privacy Protection
+- **Targeted Wellness Task Assignment**: Volunteers and Doctors can select specific patients from their active chats or community directory and assign structured wellness tasks and self-care goals.
+- **Absolute Email Obfuscation**: User email addresses are strictly masked and hidden from doctors and volunteers across candidate selectors, assignment forms, and chat rooms to preserve patient confidentiality.
+
 ### 🛡️ AI Message Moderation & 3-Strike Safety Policy
 - **Multi-Layer Moderation Engine**: Screens helper (volunteer/doctor) messages in real time using:
   1. **Instant Lexical & Semantic Malice Rules (`<1ms`)**: Detects explicit profanity, slurs, fatal disease/cancer wishes, and existential demoralization (e.g., *"your life is a curse"*, *"you are a burden"*, *"teri zindagi ek shraap hai"*).
@@ -67,15 +84,17 @@ echo/
 ├── app/                        # Next.js App Router
 │   ├── api/                    # Backend API Endpoints
 │   │   ├── blob/               # Vercel Blob upload & streaming proxy
-│   │   ├── chat/               # Chat messages with 3-strike moderation
+│   │   ├── chat/               # Chat messages with 3-strike moderation & PDF attachments
 │   │   ├── connections/        # WhatsApp professional handshake
 │   │   ├── posts/              # Community posts (Redis cached + Blob media)
+│   │   ├── prescriptions/      # Prescription management & PDF streaming (`/view`)
+│   │   ├── tasks/              # Task assignments & candidate user queries
 │   │   ├── users/              # Presence heartbeats & user profiles
 │   │   ├── volunteers/         # Approved helpers with live Redis presence
 │   │   ├── ai-companion/       # Gemini AI conversational agent
 │   │   └── exercise-trainer/   # Groq-powered workout recommendations
 │   ├── apply/                  # Application forms (Volunteer, Doctor)
-│   ├── chat/                   # Real-time chat interface with strike alerts
+│   ├── chat/                   # Real-time chat interface with PDF prescriptions
 │   ├── community/              # Community feed with photo/video playback
 │   ├── dashboard/              # Role-based dashboards (User, Doctor, Admin)
 │   ├── doctors/                # Clinical directory
@@ -83,17 +102,20 @@ echo/
 │   ├── games/                  # Zen sensory experiences
 │   └── relaxation/             # Audio discourses & spiritual library
 ├── components/                 # Reusable React Components
+│   ├── DoctorMedicationSection.tsx # 3-step digital prescription builder & history
+│   ├── TaskAssignmentSection.tsx   # Privacy-safe patient selector & task assigner
 │   ├── PhoneInput.tsx          # Country code selector with search & flags
 │   ├── BanAppealBanner.tsx     # Account suspension & appeal modal
 │   ├── ThemeToggle.tsx         # Dark/light & aesthetic theme switcher
 │   └── mood/                   # AI facial emotion detector
 ├── lib/                        # Core Utilities & Services
+│   ├── prescriptionPdf.ts      # A4 PDF letterhead generator on Echo branding (jsPDF)
 │   ├── blob.ts                 # Vercel Blob upload, delete & streaming helpers
 │   ├── redis.ts                # Upstash Redis caching & presence engine
 │   ├── moderation.ts           # Multi-layer safety engine (Regex + Gemini + Tavily)
 │   ├── countries.ts            # Global dial codes and flag dataset
 │   ├── mongodb.ts              # Mongoose database connector
-│   └── models/                 # Schemas (User, Post, Chat, Appeal, MoodLog)
+│   └── models/                 # Schemas (User, Post, Chat, Prescription, Task, MoodLog)
 ```
 
 ---
@@ -111,6 +133,7 @@ echo/
 | **AI Grounding & Verification** | [Tavily Search API](https://tavily.com/) (`@tavily/core`) |
 | **AI Exercise Generator** | [Groq](https://groq.com/) (Llama 3.3 70B) |
 | **Computer Vision** | [@vladmandic/face-api](https://github.com/vladmandic/face-api) (Facial emotion detection) |
+| **PDF & Letterhead Generation** | [jsPDF](https://github.com/parallax/jsPDF) (`jspdf`) |
 | **Styling** | Vanilla CSS + Tailored Design Tokens (Glassmorphism) |
 
 ---
@@ -171,6 +194,8 @@ Open [http://localhost:3000](http://localhost:3000) to view the platform.
 ECHO operates under strict ethical guidelines for mental health and peer support:
 - **Zero-Tolerance for Hostility**: AI moderation proactively catches and halts toxic content, slurs, cancer/illness wishes, and demoralizing phrases (*"your life is a curse"*) before delivery.
 - **Escalated Accountability**: Helpers who violate guidelines receive automated warnings with immediate suspension upon a 3rd strike.
+- **Patient Anonymity & PII Protection**: Patient email addresses and private identifiers are completely masked from doctors, volunteers, and peer counselors during consultations and task assignments.
+- **Digitally Signed Medical Records**: Electronic prescriptions generated on Echo letterhead feature verifiable practitioner credentials, license seals, and audit timestamps with full patient/doctor deletion control.
 - **Clinical Boundaries**: WhatsApp professional connections adhere to an explicit **Request-Accept-Connect** handshake to ensure patient safety and practitioner boundaries.
 
 ---
