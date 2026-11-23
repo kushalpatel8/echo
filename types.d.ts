@@ -78,6 +78,9 @@ export interface IMessage {
   senderId: string;
   senderName: string;
   content: string;
+  attachmentUrl?: string;
+  attachmentType?: string;
+  attachmentName?: string;
   timestamp: Date;
 }
 
@@ -109,6 +112,31 @@ export interface IConnectionRequest extends Document {
   userImage: string;
   createdAt: Date;
   updatedAt: Date;
+}
+
+export interface PrescriptionMedicine {
+  name: string;
+  dosage: string;
+  frequency: string;
+  duration: string;
+  instructions?: string;
+}
+
+export interface IPrescription extends Document {
+  doctorId: string;
+  doctorName: string;
+  doctorDegree?: string;
+  doctorLicense?: string;
+  patientId: string;
+  patientName: string;
+  chatId?: string;
+  medicines: PrescriptionMedicine[];
+  notes?: string;
+  pdfUrl?: string;
+  pdfData?: string;
+  digitalSignature: string;
+  signedAt: Date;
+  createdAt: Date;
 }
 
 export interface ITask extends Document {
@@ -175,6 +203,9 @@ export interface ChatMessage {
   senderId: string;
   senderName: string;
   content: string;
+  attachmentUrl?: string;
+  attachmentType?: string;
+  attachmentName?: string;
   timestamp: string;
 }
 

@@ -8,7 +8,7 @@ import BackButton from '@/components/BackButton';
 import { useVoice } from '@/hooks/useVoice';
 import { VoiceHeaderControls, VoiceMessageButton, VoiceInputButton } from '@/components/VoiceControls';
 import AssignTaskModal from '@/components/AssignTaskModal';
-import { ClipboardList } from 'lucide-react';
+import { ClipboardList, FileText, ExternalLink } from 'lucide-react';
 import type { Chat, ChatMessage as Message } from '@/types';
 
 export default function ChatPage() {
@@ -279,9 +279,62 @@ export default function ChatPage() {
                   </span>
                 </div>
                 <div className={isMe ? 'message-sent' : 'message-received'} style={{
-                  boxShadow: isMe ? '0 4px 12px rgba(124, 58, 237, 0.2)' : '0 4px 12px rgba(0, 0, 0, 0.1)'
+                  boxShadow: isMe ? '0 4px 12px rgba(124, 58, 237, 0.2)' : '0 4px 12px rgba(0, 0, 0, 0.1)',
+                  whiteSpace: 'pre-line'
                 }}>
                   {msg.content}
+
+                  {msg.attachmentUrl && (
+                    <div style={{
+                      marginTop: '0.85rem',
+                      padding: '0.85rem 1rem',
+                      background: isMe ? 'rgba(0, 0, 0, 0.25)' : 'var(--echo-surface)',
+                      borderRadius: '14px',
+                      border: '1px solid rgba(255, 255, 255, 0.15)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      gap: '0.75rem',
+                      flexWrap: 'wrap',
+                    }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem' }}>
+                        <div style={{ width: '36px', height: '36px', borderRadius: '10px', background: 'rgba(239, 68, 68, 0.15)', color: '#ef4444', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                          <FileText size={20} />
+                        </div>
+                        <div>
+                          <div style={{ fontWeight: '800', fontSize: '0.85rem', color: isMe ? '#fff' : 'var(--echo-text)' }}>
+                            {msg.attachmentName || 'Echo Medical Prescription (PDF)'}
+                          </div>
+                          <div style={{ fontSize: '0.7rem', color: isMe ? 'rgba(255,255,255,0.7)' : 'var(--echo-text-muted)' }}>
+                            Digitally Signed on Echo Letterhead • PDF
+                          </div>
+                        </div>
+                      </div>
+
+                      <div style={{ display: 'flex', gap: '0.4rem', flexWrap: 'wrap' }}>
+                        <a
+                          href={msg.attachmentUrl}
+                          target="_blank"
+                          rel="noreferrer"
+                          style={{
+                            padding: '0.45rem 0.95rem',
+                            borderRadius: '8px',
+                            background: isMe ? '#ffffff' : 'var(--echo-primary)',
+                            color: isMe ? '#0f172a' : '#ffffff',
+                            fontSize: '0.78rem',
+                            fontWeight: '700',
+                            textDecoration: 'none',
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: '0.4rem',
+                            boxShadow: '0 2px 6px rgba(0,0,0,0.08)',
+                          }}
+                        >
+                          <FileText size={14} /> View PDF
+                        </a>
+                      </div>
+                    </div>
+                  )}
                 </div>
                 <VoiceMessageButton
                   text={msg.content}

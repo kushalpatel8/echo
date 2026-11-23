@@ -7,17 +7,18 @@ import Link from 'next/link';
 import ThemeToggle from '@/components/ThemeToggle';
 import MobileDashboard from '@/components/MobileDashboard';
 import BackButton from '@/components/BackButton';
-import { LayoutDashboard, CheckSquare, BarChart2, User, LogOut, Sparkles, Heart, Clock, Menu } from 'lucide-react';
+import { LayoutDashboard, CheckSquare, BarChart2, User, LogOut, Sparkles, Heart, Clock, Menu, Pill, FileText, ExternalLink, Trash2 } from 'lucide-react';
 import { formatName } from '@/lib/utils';
 import { DASH_THEMES, type DashTheme } from '@/moodthemes';
 
-type Tab = 'overview' | 'tasks' | 'mood-history' | 'profile';
+type Tab = 'overview' | 'tasks' | 'prescriptions' | 'mood-history' | 'profile';
 
 const TABS: { id: Tab; label: string; icon: React.ReactNode }[] = [
-  { id: 'overview',      label: '🏠 Overview',      icon: <LayoutDashboard size={16} /> },
-  { id: 'tasks',         label: '✅ My Tasks',       icon: <CheckSquare size={16} /> },
-  { id: 'mood-history',  label: '📊 Mood History',   icon: <BarChart2 size={16} /> },
-  { id: 'profile',       label: '👤 Profile',        icon: <User size={16} /> },
+  { id: 'overview',      label: '🏠 Overview',       icon: <LayoutDashboard size={16} /> },
+  { id: 'tasks',         label: '✅ My Tasks',        icon: <CheckSquare size={16} /> },
+  { id: 'prescriptions', label: '💊 Prescriptions',  icon: <Pill size={16} /> },
+  { id: 'mood-history',  label: '📊 Mood History',    icon: <BarChart2 size={16} /> },
+  { id: 'profile',       label: '👤 Profile',         icon: <User size={16} /> },
 ];
 
 const moodColors: Record<string, string> = {
@@ -32,6 +33,7 @@ export default function UserDashboard() {
   const [dashTheme, setDashTheme] = useState<DashTheme>('celestial');
   const [dbUser, setDbUser] = useState<Record<string, unknown> | null>(null);
   const [tasks, setTasks] = useState<Record<string, unknown>[]>([]);
+  const [prescriptions, setPrescriptions] = useState<Record<string, unknown>[]>([]);
   const [moodLogs, setMoodLogs] = useState<Record<string, unknown>[]>([]);
   const [editName, setEditName] = useState('');
   const [saving, setSaving] = useState(false);
@@ -51,8 +53,23 @@ export default function UserDashboard() {
     };
     syncUser();
     fetch('/api/tasks').then(r => r.json()).then(d => setTasks(d.tasks || []));
+    fetch('/api/prescriptions').then(r => r.json()).then(d => setPrescriptions(d.prescriptions || []));
     fetch('/api/mood').then(r => r.json()).then(d => setMoodLogs(d.logs || []));
   }, [router, clerkUser]);
+
+  const handleDeletePrescription = async (prescriptionId: string) => {
+    if (!confirm('Are you sure you want to delete this prescription? This action cannot be undone.')) return;
+    try {
+      const res = await fetch(`/api/prescriptions?id=${prescriptionId}`, { method: 'DELETE' });
+      if (res.ok) {
+        setPrescriptions(prev => prev.filter(p => p._id !== prescriptionId));
+      } else {
+        alert('Failed to delete prescription');
+      }
+    } catch {
+      alert('Failed to delete prescription');
+    }
+  };
 
   const updateTask = async (taskId: string, status: string) => {
     await fetch('/api/tasks', { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ taskId, status }) });
@@ -280,6 +297,7 @@ export default function UserDashboard() {
                   <div style={{ display: 'flex', gap: '1.25rem', flexWrap: 'wrap', justifyContent: 'center' }}>
                     {[
                       { label: 'Pending', value: pendingTasks, icon: <Clock size={18} />, color: '#f59e0b', bg: 'rgba(245,158,11,0.12)', border: 'rgba(245,158,11,0.25)' },
+                      { label: 'Prescriptions', value: prescriptions.length, icon: <Pill size={18} />, color: '#0d9488', bg: 'rgba(13,148,136,0.12)', border: 'rgba(13,148,136,0.25)' },
                       { label: 'Completed', value: completedTasks, icon: <CheckSquare size={18} />, color: '#22c55e', bg: 'rgba(34,197,94,0.12)', border: 'rgba(34,197,94,0.25)' },
                       { label: 'Mood Checks', value: moodLogs.length, icon: <Heart size={18} />, color: '#a78bfa', bg: 'rgba(167,139,250,0.12)', border: 'rgba(167,139,250,0.25)' },
                     ].map(stat => (
@@ -393,6 +411,114 @@ export default function UserDashboard() {
                       )}
                     </div>
                     <p style={{ fontSize: '0.75rem', color: 'var(--echo-text-muted)', marginTop: '0.75rem' }}>Assigned by: {task.assignerName as string}</p>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* ── PRESCRIPTIONS TAB ── */}
+        {tab === 'prescriptions' && (
+          <div className="animate-fade-in-up">
+            <h2 className="section-heading">💊 My Prescriptions</h2>
+            {prescriptions.length === 0 ? (
+              <div className="glass" style={{ padding: '4rem 2rem', textAlign: 'center', borderRadius: '24px', border: '1px solid var(--echo-border)', background: 'var(--echo-surface)' }}>
+                <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>💊</div>
+                <p style={{ color: 'var(--echo-text-muted)' }}>No medical prescriptions issued yet.</p>
+                <p style={{ color: 'var(--echo-text-muted)', fontSize: '0.8125rem', marginTop: '0.5rem' }}>When your doctor prescribes medication during consultation, you can view your official signed PDF prescriptions here.</p>
+              </div>
+            ) : (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                {prescriptions.map((rx: any) => (
+                  <div key={rx._id} className="glass echo-card" style={{ padding: '1.5rem', borderRadius: '20px', border: '1px solid var(--echo-border)', background: 'var(--echo-surface)' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1rem', flexWrap: 'wrap', gap: '0.75rem' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                        <div style={{ width: '42px', height: '42px', borderRadius: '12px', background: 'rgba(13,148,136,0.12)', color: '#0d9488', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                          <FileText size={22} />
+                        </div>
+                        <div>
+                          <h3 style={{ fontWeight: '800', fontSize: '1.0625rem', color: 'var(--echo-text)', margin: 0 }}>
+                            Medical Prescription • Dr. {rx.doctorName}
+                          </h3>
+                          <div style={{ fontSize: '0.75rem', color: 'var(--echo-text-muted)', marginTop: '0.2rem' }}>
+                            Prescribed on {new Date(rx.createdAt).toLocaleDateString([], { month: 'short', day: 'numeric', year: 'numeric' })} • Digitally Signed on Echo Letterhead
+                          </div>
+                        </div>
+                      </div>
+
+                      <span className="badge badge-green" style={{ fontSize: '0.75rem' }}>
+                        ✓ Official Digital Rx
+                      </span>
+                    </div>
+
+                    {/* Medications list */}
+                    <div style={{ background: 'var(--echo-surface-2)', borderRadius: '14px', padding: '1rem', marginBottom: '1rem', border: '1px solid var(--echo-border)' }}>
+                      <div style={{ fontSize: '0.75rem', fontWeight: '800', color: currentTheme.primary, textTransform: 'uppercase', marginBottom: '0.5rem', letterSpacing: '0.05em' }}>
+                        Prescribed Medication Schedule ({rx.medicines?.length || 0}):
+                      </div>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                        {rx.medicines?.map((med: any, idx: number) => (
+                          <div key={idx} style={{ fontSize: '0.875rem', color: 'var(--echo-text)', display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.25rem' }}>
+                            <div>
+                              <strong>{idx + 1}. {med.name}</strong> <span style={{ color: '#0d9488' }}>[{med.dosage}]</span>
+                              {med.instructions && <div style={{ fontSize: '0.75rem', color: 'var(--echo-text-muted)', fontStyle: 'italic' }}>Note: {med.instructions}</div>}
+                            </div>
+                            <div style={{ fontSize: '0.75rem', color: 'var(--echo-text-muted)' }}>
+                              {med.frequency} • {med.duration}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {rx.notes && (
+                      <div style={{ fontSize: '0.8125rem', color: 'var(--echo-text-muted)', marginBottom: '1rem', background: 'var(--echo-bg)', padding: '0.75rem 1rem', borderRadius: '10px' }}>
+                        <strong>Doctor&apos;s Advice:</strong> {rx.notes}
+                      </div>
+                    )}
+
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.75rem' }}>
+                      <div style={{ fontSize: '0.75rem', color: 'var(--echo-text-muted)' }}>
+                        ✍️ {rx.digitalSignature}
+                      </div>
+
+                      <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+                        {rx.chatId && (
+                          <Link href={`/chat/${rx.chatId}`} style={{ textDecoration: 'none' }}>
+                            <button className="btn-secondary" style={{ padding: '0.45rem 0.85rem', fontSize: '0.8125rem', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+                              <ExternalLink size={13} /> Open Chat
+                            </button>
+                          </Link>
+                        )}
+                        {rx.pdfUrl && (
+                          <a href={rx.pdfUrl} target="_blank" rel="noreferrer" style={{ textDecoration: 'none' }}>
+                            <button className="btn-primary" style={{ padding: '0.45rem 1rem', fontSize: '0.8125rem', background: currentTheme.primary, display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+                              <FileText size={14} /> View PDF
+                            </button>
+                          </a>
+                        )}
+                        <button
+                          type="button"
+                          onClick={() => handleDeletePrescription(rx._id as string)}
+                          className="btn-secondary"
+                          style={{
+                            padding: '0.45rem 0.85rem',
+                            fontSize: '0.8125rem',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '0.35rem',
+                            color: '#ef4444',
+                            borderColor: 'rgba(239, 68, 68, 0.3)',
+                            background: 'rgba(239, 68, 68, 0.06)',
+                            cursor: 'pointer',
+                          }}
+                          title="Delete Prescription"
+                        >
+                          <Trash2 size={13} /> Delete
+                        </button>
+                      </div>
+                    </div>
                   </div>
                 ))}
               </div>

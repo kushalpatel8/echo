@@ -7,6 +7,9 @@ const MessageSchema = new Schema<IMessage>({
   senderId: { type: String, required: true },
   senderName: { type: String, required: true },
   content: { type: String, required: true },
+  attachmentUrl: { type: String },
+  attachmentType: { type: String },
+  attachmentName: { type: String },
   timestamp: { type: Date, default: Date.now },
 });
 
@@ -24,4 +27,8 @@ const ChatSchema = new Schema<IChat>({
   isActive: { type: Boolean, default: true },
 }, { timestamps: true });
 
-export default models.Chat || model<IChat>('Chat', ChatSchema);
+if (models.Chat) {
+  delete models.Chat;
+}
+
+export default model<IChat>('Chat', ChatSchema);

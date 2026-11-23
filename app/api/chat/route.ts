@@ -89,7 +89,7 @@ export async function POST(req: NextRequest) {
   if (!userId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
   const body = await req.json();
-  const { action, chatId, content, targetUserId } = body;
+  const { action, chatId, content, targetUserId, attachmentUrl, attachmentType, attachmentName } = body;
 
   await connectDB();
 
@@ -114,16 +114,19 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ chat: enriched });
     }
 
+    const helper = [sender, target].find(u => u.role === 'doctor' || u.role === 'volunteer');
+    const patient = [sender, target].find(u => u.role !== 'doctor' && u.role !== 'volunteer') || target;
+
     const chat = await Chat.create({
       participants: [userId, targetUserId],
       participantNames: [sender.name, target.name],
-      userId: userId,
-      userName: sender.name,
-      helperId: targetUserId,
-      helperName: target.name,
-      helperRole: target.role,
-      doctorId: target.role === 'doctor' ? targetUserId : undefined,
-      volunteerId: target.role === 'volunteer' ? targetUserId : undefined,
+      userId: patient.clerkId,
+      userName: patient.name,
+      helperId: helper?.clerkId,
+      helperName: helper?.name,
+      helperRole: (helper?.role === 'doctor' || helper?.role === 'volunteer') ? helper.role : undefined,
+      doctorId: helper?.role === 'doctor' ? helper.clerkId : undefined,
+      volunteerId: helper?.role === 'volunteer' ? helper.clerkId : undefined,
       messages: [],
     });
 
@@ -200,6 +203,9 @@ export async function POST(req: NextRequest) {
       senderId: userId,
       senderName: sender.name,
       content,
+      attachmentUrl,
+      attachmentType,
+      attachmentName,
       timestamp: new Date(),
     });
     await chat.save();

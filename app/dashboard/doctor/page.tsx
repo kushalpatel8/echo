@@ -7,19 +7,21 @@ import Link from 'next/link';
 import ThemeToggle from '@/components/ThemeToggle';
 import BackButton from '@/components/BackButton';
 import BanAppealBanner from '@/components/BanAppealBanner';
-import { Stethoscope, Users, Inbox, User, LogOut, Sparkles, Activity, Menu, Trophy, ClipboardList } from 'lucide-react';
+import { Stethoscope, Users, Inbox, User, LogOut, Sparkles, Activity, Menu, Trophy, ClipboardList, Pill } from 'lucide-react';
 import { formatName } from '@/lib/utils';
 import { DASH_THEMES, type DashTheme } from '@/moodthemes';
 import TaskAssignmentSection from '@/components/TaskAssignmentSection';
+import DoctorMedicationSection from '@/components/DoctorMedicationSection';
 
-type Tab = 'overview' | 'patients' | 'requests' | 'tasks' | 'profile';
+type Tab = 'overview' | 'patients' | 'requests' | 'tasks' | 'medication' | 'profile';
 
 const TABS: { id: Tab; label: string; icon: React.ReactNode }[] = [
-  { id: 'overview',  label: '📊 Overview',           icon: <Activity size={15} /> },
-  { id: 'patients',  label: '👥 Patient Chats',      icon: <Users size={15} /> },
-  { id: 'requests',  label: '📨 Requests',           icon: <Inbox size={15} /> },
-  { id: 'tasks',     label: '📋 Assign Tasks',       icon: <ClipboardList size={15} /> },
-  { id: 'profile',   label: '👤 Profile',             icon: <User size={15} /> },
+  { id: 'overview',   label: '📊 Overview',           icon: <Activity size={15} /> },
+  { id: 'patients',   label: '👥 Patient Chats',      icon: <Users size={15} /> },
+  { id: 'requests',   label: '📨 Requests',           icon: <Inbox size={15} /> },
+  { id: 'tasks',      label: '📋 Assign Tasks',       icon: <ClipboardList size={15} /> },
+  { id: 'medication', label: '💊 Prescribe Medicine', icon: <Pill size={15} /> },
+  { id: 'profile',    label: '👤 Profile',             icon: <User size={15} /> },
 ];
 
 export default function DoctorDashboard() {
@@ -31,6 +33,7 @@ export default function DoctorDashboard() {
   const [chats, setChats] = useState<Record<string, unknown>[]>([]);
   const [requests, setRequests] = useState<Record<string, unknown>[]>([]);
   const [tasksCount, setTasksCount] = useState<number>(0);
+  const [prescriptionsCount, setPrescriptionsCount] = useState<number>(0);
   const [preselectedUserId, setPreselectedUserId] = useState<string | undefined>(undefined);
   const [editName, setEditName] = useState('');
   const [saving, setSaving] = useState(false);
@@ -53,6 +56,7 @@ export default function DoctorDashboard() {
     fetch('/api/chat').then(r => r.json()).then(d => setChats(d.chats || []));
     fetch('/api/connections?type=received').then(r => r.json()).then(d => setRequests(d.requests || []));
     fetch('/api/tasks').then(r => r.json()).then(d => setTasksCount(d.tasks?.length || 0));
+    fetch('/api/prescriptions').then(r => r.json()).then(d => setPrescriptionsCount(d.prescriptions?.length || 0));
   }, [router]);
 
   const updateRequestStatus = async (requestId: string, status: 'accepted' | 'rejected') => {
@@ -340,6 +344,7 @@ export default function DoctorDashboard() {
                     <div style={{ display: 'flex', gap: '1.25rem', flexWrap: 'wrap', marginBottom: '2rem', justifyContent: 'center' }}>
                       {[
                         { label: 'Active Patients', value: activePatients, color: '#67e8f9', bg: 'rgba(103,232,249,0.12)', border: 'rgba(103,232,249,0.25)' },
+                        { label: 'Prescriptions', value: prescriptionsCount, color: '#0d9488', bg: 'rgba(13,148,136,0.12)', border: 'rgba(13,148,136,0.25)' },
                         { label: 'Tasks Prescribed', value: tasksCount, color: '#22c55e', bg: 'rgba(34,197,94,0.12)', border: 'rgba(34,197,94,0.25)' },
                         { label: 'Pending Requests', value: pendingRequests, color: '#fbbf24', bg: 'rgba(251,191,36,0.12)', border: 'rgba(251,191,36,0.25)' },
                         { label: 'Status', value: appStatus as string || 'Pending', color: appStatus === 'approved' ? '#22c55e' : '#f59e0b', bg: appStatus === 'approved' ? 'rgba(34,197,94,0.12)' : 'rgba(245,158,11,0.12)', border: appStatus === 'approved' ? 'rgba(34,197,94,0.25)' : 'rgba(245,158,11,0.25)' },
@@ -385,7 +390,7 @@ export default function DoctorDashboard() {
                       return (
                         <div key={chat._id as string} style={{ position: 'relative' }}>
                           <Link href={`/chat/${chat._id}`} style={{ textDecoration: 'none' }}>
-                            <div className="glass echo-card" style={{ padding: '1.25rem 1.5rem', borderRadius: '20px', border: '1px solid var(--echo-border)', background: 'var(--echo-surface)', display: 'flex', gap: '1rem', alignItems: 'center', paddingRight: '12rem' }}>
+                            <div className="glass echo-card" style={{ padding: '1.25rem 1.5rem', borderRadius: '20px', border: '1px solid var(--echo-border)', background: 'var(--echo-surface)', display: 'flex', gap: '1rem', alignItems: 'center', paddingRight: '18rem' }}>
                               <div style={{ width: '48px', height: '48px', borderRadius: '50%', background: `linear-gradient(135deg, ${currentTheme.primary}, ${currentTheme.secondary})`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: '700', color: 'white', flexShrink: 0 }}>
                                 {otherName[0]}
                               </div>
@@ -403,30 +408,53 @@ export default function DoctorDashboard() {
                               </div>
                             </div>
                           </Link>
-                          <div style={{ position: 'absolute', right: '1.25rem', top: '50%', transform: 'translateY(-50%)', display: 'flex', alignItems: 'center', gap: '0.5rem', zIndex: 2 }}>
+                          <div style={{ position: 'absolute', right: '1.25rem', top: '50%', transform: 'translateY(-50%)', display: 'flex', alignItems: 'center', gap: '0.4rem', zIndex: 2 }}>
                             {otherUserId && (
-                              <button
-                                type="button"
-                                onClick={(e) => {
-                                  e.preventDefault();
-                                  e.stopPropagation();
-                                  setPreselectedUserId(otherUserId);
-                                  setTab('tasks');
-                                }}
-                                className="btn-secondary"
-                                style={{
-                                  padding: '0.35rem 0.65rem',
-                                  fontSize: '0.75rem',
-                                  fontWeight: '600',
-                                  display: 'flex',
-                                  alignItems: 'center',
-                                  gap: '0.3rem',
-                                  color: currentTheme.primary,
-                                  borderColor: `${currentTheme.primary}44`,
-                                }}
-                              >
-                                <ClipboardList size={13} /> Assign Task
-                              </button>
+                              <>
+                                <button
+                                  type="button"
+                                  onClick={(e) => {
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                    setPreselectedUserId(otherUserId);
+                                    setTab('medication');
+                                  }}
+                                  className="btn-primary"
+                                  style={{
+                                    padding: '0.35rem 0.65rem',
+                                    fontSize: '0.75rem',
+                                    fontWeight: '600',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '0.25rem',
+                                    background: '#0d9488',
+                                  }}
+                                >
+                                  <Pill size={12} /> Prescribe
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={(e) => {
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                    setPreselectedUserId(otherUserId);
+                                    setTab('tasks');
+                                  }}
+                                  className="btn-secondary"
+                                  style={{
+                                    padding: '0.35rem 0.65rem',
+                                    fontSize: '0.75rem',
+                                    fontWeight: '600',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '0.3rem',
+                                    color: currentTheme.primary,
+                                    borderColor: `${currentTheme.primary}44`,
+                                  }}
+                                >
+                                  <ClipboardList size={13} /> Assign Task
+                                </button>
+                              </>
                             )}
                             <button onClick={(e) => { e.preventDefault(); e.stopPropagation(); deleteChat(chat._id as string); }} style={{ background: 'rgba(239,68,68,0.1)', border: 'none', color: '#ef4444', width: '32px', height: '32px', borderRadius: '8px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>🗑️</button>
                           </div>
@@ -564,6 +592,20 @@ export default function DoctorDashboard() {
                   role="doctor"
                   preselectedUserId={preselectedUserId}
                   onTasksUpdated={(count) => setTasksCount(count)}
+                />
+              </div>
+            )}
+
+            {/* ── MEDICATION ── */}
+            {tab === 'medication' && (
+              <div className="animate-fade-in-up">
+                <DoctorMedicationSection
+                  doctorName={(dbUser?.name as string) || clerkUser?.fullName || 'Doctor'}
+                  doctorDegree={((dbUser?.doctorProfile as Record<string, unknown>)?.degree as string) || 'M.D. Healthcare Professional'}
+                  doctorLicense={((dbUser?.doctorProfile as Record<string, unknown>)?.licenseNumber as string) || 'Verified Telehealth Practitioner'}
+                  currentThemePrimary={currentTheme.primary}
+                  preselectedPatientId={preselectedUserId}
+                  onPrescriptionSent={(count) => setPrescriptionsCount(count)}
                 />
               </div>
             )}
