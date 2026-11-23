@@ -10,6 +10,7 @@ import BanAppealBanner from '@/components/BanAppealBanner';
 import { HandHeart, MessageSquare, ClipboardList, User, LogOut, Sparkles, Star, Activity, Menu, Trophy } from 'lucide-react';
 import { formatName } from '@/lib/utils';
 import { DASH_THEMES, type DashTheme } from '@/moodthemes';
+import TaskAssignmentSection from '@/components/TaskAssignmentSection';
 
 type Tab = 'overview' | 'chats' | 'tasks' | 'profile';
 
@@ -27,10 +28,10 @@ export default function VolunteerDashboard() {
   const [dashTheme, setDashTheme] = useState<DashTheme>('forest');
   const [dbUser, setDbUser] = useState<Record<string, unknown> | null>(null);
   const [chats, setChats] = useState<Record<string, unknown>[]>([]);
-  const [tasks, setTasks] = useState<Record<string, unknown>[]>([]);
+  const [tasksCount, setTasksCount] = useState<number>(0);
+  const [preselectedUserId, setPreselectedUserId] = useState<string | undefined>(undefined);
   const [editName, setEditName] = useState('');
   const [saving, setSaving] = useState(false);
-  const [newTask, setNewTask] = useState({ title: '', description: '', assigneeId: '' });
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const currentTheme = DASH_THEMES[dashTheme];
@@ -46,15 +47,8 @@ export default function VolunteerDashboard() {
       } else router.push('/role-selection');
     });
     fetch('/api/chat').then(r => r.json()).then(d => setChats(d.chats || []));
-    fetch('/api/tasks').then(r => r.json()).then(d => setTasks(d.tasks || []));
+    fetch('/api/tasks').then(r => r.json()).then(d => setTasksCount(d.tasks?.length || 0));
   }, [router]);
-
-  const createTask = async () => {
-    if (!newTask.title || !newTask.assigneeId) return;
-    const res = await fetch('/api/tasks', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(newTask) });
-    const data = await res.json();
-    if (data.task) { setTasks(prev => [data.task, ...prev]); setNewTask({ title: '', description: '', assigneeId: '' }); }
-  };
 
   const saveProfile = async () => {
     setSaving(true);
@@ -303,7 +297,7 @@ export default function VolunteerDashboard() {
                 <div style={{ display: 'flex', gap: '1.25rem', flexWrap: 'wrap', justifyContent: 'center' }}>
                   {[
                     { label: 'Active Chats', value: activeChats, color: '#a78bfa', bg: 'rgba(167,139,250,0.12)', border: 'rgba(167,139,250,0.25)' },
-                    { label: 'Tasks Created', value: tasks.length, color: '#22c55e', bg: 'rgba(34,197,94,0.12)', border: 'rgba(34,197,94,0.25)' },
+                    { label: 'Tasks Created', value: tasksCount, color: '#22c55e', bg: 'rgba(34,197,94,0.12)', border: 'rgba(34,197,94,0.25)' },
                     { label: 'Rating', value: `${rating}/5 ⭐`, color: '#fbbf24', bg: 'rgba(251,191,36,0.12)', border: 'rgba(251,191,36,0.25)' },
                     { label: 'Status', value: appStatus as string || 'Pending', color: appStatus === 'approved' ? '#22c55e' : '#f59e0b', bg: appStatus === 'approved' ? 'rgba(34,197,94,0.12)' : 'rgba(245,158,11,0.12)', border: appStatus === 'approved' ? 'rgba(34,197,94,0.25)' : 'rgba(245,158,11,0.25)' },
                   ].map(stat => (
@@ -333,13 +327,15 @@ export default function VolunteerDashboard() {
               <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                 {chats.map((chat: Record<string, unknown>) => {
                   const participants = chat.participantNames as string[];
-                  const myIndex = (chat.participants as string[]).indexOf(dbUser?.clerkId as string);
+                  const participantIds = (chat.participants as string[]) || [];
+                  const myIndex = participantIds.indexOf(dbUser?.clerkId as string);
                   const otherName = participants[1 - myIndex] || 'User';
+                  const otherUserId = participantIds.find(p => p !== dbUser?.clerkId) || (chat.userId as string);
                   const lastMsg = (chat.messages as Record<string, unknown>[])?.slice(-1)[0];
                   return (
                     <div key={chat._id as string} style={{ position: 'relative' }}>
                       <Link href={`/chat/${chat._id}`} style={{ textDecoration: 'none' }}>
-                        <div className="glass echo-card" style={{ padding: '1.25rem 1.5rem', borderRadius: '20px', border: '1px solid var(--echo-border)', background: 'var(--echo-surface)', display: 'flex', gap: '1rem', alignItems: 'center', paddingRight: '4rem' }}>
+                        <div className="glass echo-card" style={{ padding: '1.25rem 1.5rem', borderRadius: '20px', border: '1px solid var(--echo-border)', background: 'var(--echo-surface)', display: 'flex', gap: '1rem', alignItems: 'center', paddingRight: '12rem' }}>
                           <div style={{ width: '48px', height: '48px', borderRadius: '50%', background: `linear-gradient(135deg, ${currentTheme.primary}, ${currentTheme.secondary})`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: '700', color: 'white', flexShrink: 0 }}>
                             {otherName[0]}
                           </div>
@@ -357,7 +353,50 @@ export default function VolunteerDashboard() {
                           </div>
                         </div>
                       </Link>
-                      <button onClick={() => deleteChat(chat._id as string)} style={{ position: 'absolute', right: '1.25rem', top: '50%', transform: 'translateY(-50%)', background: 'rgba(239,68,68,0.1)', border: 'none', color: '#ef4444', width: '32px', height: '32px', borderRadius: '8px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 2 }}>🗑️</button>
+                      <div style={{ position: 'absolute', right: '1.25rem', top: '50%', transform: 'translateY(-50%)', display: 'flex', alignItems: 'center', gap: '0.5rem', zIndex: 2 }}>
+                        {otherUserId && (
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              e.stopPropagation();
+                              setPreselectedUserId(otherUserId);
+                              setTab('tasks');
+                            }}
+                            className="btn-secondary"
+                            style={{
+                              padding: '0.35rem 0.65rem',
+                              fontSize: '0.75rem',
+                              fontWeight: '600',
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: '0.3rem',
+                              color: currentTheme.primary,
+                              borderColor: `${currentTheme.primary}44`,
+                            }}
+                          >
+                            <ClipboardList size={13} /> Assign Task
+                          </button>
+                        )}
+                        <button
+                          type="button"
+                          onClick={() => deleteChat(chat._id as string)}
+                          style={{
+                            background: 'rgba(239,68,68,0.1)',
+                            border: 'none',
+                            color: '#ef4444',
+                            width: '32px',
+                            height: '32px',
+                            borderRadius: '8px',
+                            cursor: 'pointer',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center'
+                          }}
+                        >
+                          🗑️
+                        </button>
+                      </div>
                     </div>
                   );
                 })}
@@ -369,28 +408,13 @@ export default function VolunteerDashboard() {
         {/* ── TASKS ── */}
         {tab === 'tasks' && (
           <div className="animate-fade-in-up">
-            <h2 className="section-heading">📋 Assign Tasks</h2>
-            <div className="glass" style={{ padding: '1.75rem', borderRadius: '24px', border: '1px solid var(--echo-border)', background: 'var(--echo-surface)', marginBottom: '2rem' }}>
-              <h3 style={{ fontWeight: '700', fontSize: '1.0625rem', color: 'var(--echo-text)', marginBottom: '1.25rem' }}>Create New Task</h3>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                <div><label className="echo-label">Task Title</label><input className="echo-input" placeholder="e.g., Daily journaling" value={newTask.title} onChange={e => setNewTask(p => ({ ...p, title: e.target.value }))} /></div>
-                <div><label className="echo-label">Description</label><textarea className="echo-input" placeholder="Describe the task..." value={newTask.description} onChange={e => setNewTask(p => ({ ...p, description: e.target.value }))} style={{ minHeight: '80px' }} /></div>
-                <div><label className="echo-label">User Clerk ID</label><input className="echo-input" placeholder="Enter the user's Clerk ID" value={newTask.assigneeId} onChange={e => setNewTask(p => ({ ...p, assigneeId: e.target.value }))} /><p style={{ fontSize: '0.75rem', color: 'var(--echo-text-muted)', marginTop: '0.25rem' }}>Found in the chat window of the user.</p></div>
-                <button className="btn-primary" onClick={createTask} style={{ background: currentTheme.primary }}>Assign Task</button>
-              </div>
-            </div>
-            {tasks.length > 0 && (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-                {tasks.map((task: Record<string, unknown>) => (
-                  <div key={task._id as string} className="glass echo-card" style={{ padding: '1.25rem 1.5rem', borderRadius: '20px', border: '1px solid var(--echo-border)', background: 'var(--echo-surface)' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                      <div><div style={{ fontWeight: '700', color: 'var(--echo-text)' }}>{task.title as string}</div><div style={{ fontSize: '0.8125rem', color: 'var(--echo-text-muted)' }}>{task.description as string}</div></div>
-                      <span className={`badge badge-${task.status === 'completed' ? 'green' : task.status === 'in-progress' ? 'yellow' : 'purple'}`}>{task.status as string}</span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
+            <h2 className="section-heading" style={{ marginBottom: '1.5rem' }}>📋 Assign Wellness Tasks</h2>
+            <TaskAssignmentSection
+              currentThemePrimary={currentTheme.primary}
+              role="volunteer"
+              preselectedUserId={preselectedUserId}
+              onTasksUpdated={(count) => setTasksCount(count)}
+            />
           </div>
         )}
 

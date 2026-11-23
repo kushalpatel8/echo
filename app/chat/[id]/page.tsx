@@ -7,6 +7,8 @@ import { useParams } from 'next/navigation';
 import BackButton from '@/components/BackButton';
 import { useVoice } from '@/hooks/useVoice';
 import { VoiceHeaderControls, VoiceMessageButton, VoiceInputButton } from '@/components/VoiceControls';
+import AssignTaskModal from '@/components/AssignTaskModal';
+import { ClipboardList } from 'lucide-react';
 import type { Chat, ChatMessage as Message } from '@/types';
 
 export default function ChatPage() {
@@ -19,6 +21,7 @@ export default function ChatPage() {
   const [sending, setSending] = useState(false);
   const [rating, setRating] = useState(0);
   const [rated, setRated] = useState(false);
+  const [showAssignTask, setShowAssignTask] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
   const prevMsgCountRef = useRef(0);
 
@@ -220,6 +223,24 @@ export default function ChatPage() {
             hasSynthesisSupport={hasSynthesisSupport}
           />
 
+          {isHelper && otherId && (
+            <button
+              onClick={() => setShowAssignTask(true)}
+              className="btn-primary"
+              style={{
+                padding: '0.45rem 0.85rem',
+                fontSize: '0.75rem',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.35rem',
+                background: 'var(--echo-primary)',
+                borderRadius: '8px',
+              }}
+            >
+              <ClipboardList size={13} /> Assign Task
+            </button>
+          )}
+
           <button 
             onClick={handleDelete}
             className="btn-secondary"
@@ -311,6 +332,16 @@ export default function ChatPage() {
           {sending ? '...' : 'Send'}
         </button>
       </div>
+
+      {isHelper && otherId && (
+        <AssignTaskModal
+          isOpen={showAssignTask}
+          onClose={() => setShowAssignTask(false)}
+          targetUserId={otherId}
+          targetUserName={otherName}
+          currentThemePrimary="var(--echo-primary)"
+        />
+      )}
     </div>
   );
 }

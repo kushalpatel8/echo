@@ -117,8 +117,18 @@ export interface ITask extends Document {
   assignerId: string;
   assignerName: string;
   assigneeId: string;
+  assigneeName?: string;
   status: 'pending' | 'in-progress' | 'completed';
   createdAt: Date;
+}
+
+export interface AssigneeCandidate {
+  clerkId: string;
+  name: string;
+  imageUrl?: string;
+  isOnline?: boolean;
+  isDirect?: boolean;
+  relationship: string;
 }
 
 export interface ISuggestion extends Document {
